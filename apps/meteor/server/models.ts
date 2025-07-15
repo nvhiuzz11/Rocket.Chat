@@ -84,6 +84,7 @@ import type { Collection } from 'mongodb';
 
 import { trashCollection } from './database/trash';
 import { db } from './database/utils';
+import { TasksRaw } from './models/raw/Tasks';
 
 registerModel('IAnalyticsModel', new AnalyticsRaw(db));
 registerModel('IAppLogsModel', new AppsLogsModel(db));
@@ -169,3 +170,6 @@ registerModel('IVideoConferenceModel', new VideoConferenceRaw(db));
 registerModel('IVoipRoomModel', new VoipRoomRaw(db, trashCollection));
 registerModel('IWebdavAccountsModel', new WebdavAccountsRaw(db));
 registerModel('IWorkspaceCredentialsModel', new WorkspaceCredentialsRaw(db));
+
+// Register the Tasks model after raw models are registered
+registerModel('ITasksModel', new TasksRaw(db));
