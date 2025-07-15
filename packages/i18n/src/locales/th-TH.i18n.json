@@ -1,6 +1,5 @@
 {
   "500": "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์",
-  "files": "ไฟล์",
   "#channel": "ช่องทาง",
   "0_Errors_Only": "0 - แสดงข้อผิดพลาดเท่านั้น",
   "1_Errors_and_Information": "1 - แสดงข้อผิดพลาดและข้อมูล",
@@ -2078,6 +2077,7 @@
   "TargetRoom": "ห้องเป้าหมาย",
   "TargetRoom_Description": "ห้องที่จะมีการส่งข้อความซึ่งเป็นผลมาจากเหตุการณ์นี้ถูกไล่ออก อนุญาตให้มีห้องเป้าหมายเพียงห้องเดียวและต้องมีอยู่",
   "Team": "ทีม",
+  "Team_Tasks": "งานทีม",
   "Teams_New_Broadcast_Description": "เฉพาะผู้ใช้ที่ได้รับอนุญาตเท่านั้นที่สามารถเขียนข้อความใหม่ แต่ผู้ใช้คนอื่น ๆ จะสามารถตอบกลับได้",
   "Teams_New_Description_Label": "หัวข้อเรื่อง",
   "Teams_New_Name_Label": "ชื่อ",
@@ -2374,6 +2374,7 @@
   "Your_push_was_sent_to_s_devices": "การกดของคุณถูกส่งไปยังอุปกรณ์%s",
   "Your_server_link": "ลิงค์เซิร์ฟเวอร์ของคุณ",
   "Your_workspace_is_ready": "พื้นที่ทำงานของคุณพร้อมใช้งานแล้ว🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ไม่ไช่ {{role}} by {{user_by}}",
   "access-mailer": "หน้าจอ Access Mailer",
   "access-mailer_description": "อนุญาตให้ส่งอีเมลมวลไปยังผู้ใช้ทั้งหมด",
   "access-permissions": "หน้าจอสิทธิ์การเข้าถึง",
@@ -2551,6 +2552,7 @@
   "every_second": "ทุกๆวินาที",
   "every_six_hours": "ทุกๆหกชั่วโมง",
   "except_pinned": "(ยกเว้นผู้ที่ถูกตรึงไว้)",
+  "files": "ไฟล์",
   "force-delete-message": "บังคับให้ลบข้อความ",
   "force-delete-message_description": "อนุญาตให้ลบข้อความโดยเลี่ยงข้อ จำกัด ทั้งหมด",
   "github_no_public_email": "คุณไม่มีอีเมลเป็นอีเมลสาธารณะในบัญชี GitHub ของคุณ",
@@ -2740,6 +2742,5 @@
   "yesterday": "เมื่อวาน",
   "you_are_in_preview_mode_of": "คุณอยู่ในโหมดดูตัวอย่างของช่อง # <strong>{{room_name}}</strong>",
   "your_message": "ข้อความของคุณ",
-  "your_message_optional": "ข้อความของคุณ (ไม่จำเป็น)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ไม่ไช่ {{role}} by {{user_by}}"
+  "your_message_optional": "ข้อความของคุณ (ไม่จำเป็น)"
 }

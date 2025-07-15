@@ -1,6 +1,5 @@
 {
   "500": "Дотоод серверийн алдаа",
-  "files": "файлууд",
   "#channel": "#cуваг",
   "0_Errors_Only": "0 - Зөвхөн алдаанууд",
   "1_Errors_and_Information": "1 - Алдаа ба мэдээлэл",
@@ -2080,6 +2079,7 @@
   "TargetRoom": "Зорилтот өрөө",
   "TargetRoom_Description": "Энэ үйл явдлын үр дүнд гарсан мэдэгдлүүдийг илгээх болно. Зөвхөн нэг зорилтот өрөөнд зөвшөөрөгдсөн байх ёстой.",
   "Team": "Баг",
+  "Team_Tasks": "Багийн даалгавар",
   "Teams_New_Broadcast_Description": "Зөвхөн эрх бүхий хэрэглэгч шинэ мессеж бичиж чаддаг боловч бусад хэрэглэгч хариулах боломжтой болно",
   "Teams_New_Description_Label": "Сэдэв",
   "Teams_New_Name_Label": "Нэр",
@@ -2377,6 +2377,8 @@
   "Your_push_was_sent_to_s_devices": "Таны түлхэлт %s төхөөрөмж рүү илгээгдсэн",
   "Your_server_link": "Таны серверийн холбоос",
   "Your_workspace_is_ready": "Таны ажлын талбарыг ашиглахад бэлэн байна",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} тооны хоосон өрөөнүүд автоматаар устгагдах болно",
+  "__username__was_set__role__by__user_by_": "__ус_name__ __role_ __",
   "access-mailer": "Захидлын дэлгэцийн хандалт",
   "access-mailer_description": "Бүх хэрэглэгчдэд масс имэйл илгээх зөвшөөрөл.",
   "access-permissions": "Зөвшөөрөгдсөн дэлгэцийн хандалт",
@@ -2553,6 +2555,7 @@
   "every_second": "Секунд тутамд",
   "every_six_hours": "Зургаан цаг тутам",
   "except_pinned": "(хаалтлагдсанаас бусад)",
+  "files": "файлууд",
   "force-delete-message": "Зурвас устгах хүч",
   "force-delete-message_description": "Бүх хязгаарлалтыг багтаасан мессежийг устгах зөвшөөрөл",
   "github_no_public_email": "Та өөрийн GitHub дансанд нийтийн имэйлээр ямар ч имэйл хүлээж авахгүй",
@@ -2744,7 +2747,5 @@
   "yesterday": "өчигдөр",
   "you_are_in_preview_mode_of": "Та сувгийн урьдчилан харах горимд байна <strong>{{room_name}}</strong>",
   "your_message": "таны зурвас",
-  "your_message_optional": "таны мессеж (заавал биш)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} тооны хоосон өрөөнүүд автоматаар устгагдах болно",
-  "__username__was_set__role__by__user_by_": "__ус_name__ __role_ __"
+  "your_message_optional": "таны мессеж (заавал биш)"
 }

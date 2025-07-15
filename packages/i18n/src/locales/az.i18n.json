@@ -1,6 +1,5 @@
 {
   "500": "Daxili Server Xətası",
-  "files": "faylları",
   "#channel": "#kanal",
   "0_Errors_Only": "0 - Yalnız səhvlər",
   "1_Errors_and_Information": "1 - Səhvlər və məlumatlar",
@@ -2084,6 +2083,7 @@
   "TargetRoom": "Hədəf otağı",
   "TargetRoom_Description": "Bu hadisə nəticəsində atılan mesajların göndəriləcəyi otaq. Yalnız bir hədəf otaq icazə verilir və mövcud olmalıdır.",
   "Team": "Komanda",
+  "Team_Tasks": "Komanda Tapşırıqları",
   "Teams_New_Broadcast_Description": "Yalnız səlahiyyətli istifadəçilər yeni mesaj yaza bilər, lakin digər istifadəçilər cavab verə biləcəklər",
   "Teams_New_Description_Label": "Mövzu",
   "Teams_New_Name_Label": "Adı",
@@ -2387,6 +2387,8 @@
   "Your_push_was_sent_to_s_devices": "Sizin itəniz%s cihazlarına göndərildi",
   "Your_server_link": "Sizin server bağlantınız",
   "Your_workspace_is_ready": "İş yeriniz 🎉 istifadə etməyə hazırdır",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} artıq {{user_by}} tərəfindən {{role}} deyil",
+  "__username__was_set__role__by__user_by_": "{{username}}, {{user_by}} tərəfindən {{role}} təyin edildi",
   "access-mailer": "Erişim poçtu ekranı",
   "access-mailer_description": "Bütün istifadəçilərə kütləvi e-poçt göndərmək üçün icazə.",
   "access-permissions": "Erişim icazəsi ekranı",
@@ -2566,6 +2568,7 @@
   "every_second": "Hər saniyədə bir dəfə",
   "every_six_hours": "Hər altı saatda bir dəfə",
   "except_pinned": "(qapalı olanlar istisna olmaqla)",
+  "files": "faylları",
   "force-delete-message": "Mesajı silin",
   "force-delete-message_description": "Bütün məhdudiyyətləri atlayaraq bir mesajı silmək üçün icazə",
   "github_no_public_email": "GitHub hesabınızda ictimai e-poçt olaraq heç bir e-poçtunuz yoxdur",
@@ -2759,7 +2762,5 @@
   "yesterday": "dünən",
   "you_are_in_preview_mode_of": "Kanalın önizleme rejimində olan # <strong>{{room_name}}</strong>",
   "your_message": "sənin mesajın",
-  "your_message_optional": "mesajınız (isteğe bağlı)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} artıq {{user_by}} tərəfindən {{role}} deyil",
-  "__username__was_set__role__by__user_by_": "{{username}}, {{user_by}} tərəfindən {{role}} təyin edildi"
+  "your_message_optional": "mesajınız (isteğe bağlı)"
 }

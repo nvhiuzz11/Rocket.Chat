@@ -1,6 +1,5 @@
 {
   "500": "Gwall Gweinyddwr Mewnol",
-  "files": "ffeiliau",
   "#channel": "#channel",
   "0_Errors_Only": "0 - Gwallau yn Unig",
   "1_Errors_and_Information": "1 - Gwallau a Gwybodaeth",
@@ -2077,6 +2076,7 @@
   "TargetRoom": "Ystafell Darged",
   "TargetRoom_Description": "Yr ystafell lle bydd negeseuon yn cael eu hanfon sy'n deillio o'r digwyddiad hwn yn cael ei danio. Dim ond un ystafell darged sy'n cael ei ganiatáu a rhaid iddo fodoli.",
   "Team": "Tîm",
+  "Team_Tasks": "Tasgau Tîm",
   "Teams_New_Broadcast_Description": "Dim ond defnyddwyr awdurdodedig all ysgrifennu negeseuon newydd, ond bydd y defnyddwyr eraill yn gallu ymateb",
   "Teams_New_Description_Label": "Pwnc",
   "Teams_New_Name_Label": "Enw",
@@ -2379,6 +2379,8 @@
   "Your_push_was_sent_to_s_devices": "Anfonwyd eich gwthio i ddyfeisiau %s",
   "Your_server_link": "Dolen eich gweinydd",
   "Your_workspace_is_ready": "Mae'ch gweithle yn barod i ddefnyddio 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} bellach yn {{role}} gan {{user_by}}",
+  "__username__was_set__role__by__user_by_": "Gosodwyd {{username}} {{role}} gan {{user_by}}",
   "access-mailer": "Mynediad Mailer Screen",
   "access-mailer_description": "Caniatâd i anfon e-bost màs i bob defnyddiwr.",
   "access-permissions": "Sgrîn Caniatâd Mynediad",
@@ -2558,6 +2560,7 @@
   "every_second": "Unwaith bob eiliad",
   "every_six_hours": "Unwaith bob chwe awr",
   "except_pinned": "(ac eithrio'r rhai sy'n cael eu pinio)",
+  "files": "ffeiliau",
   "force-delete-message": "Neges Dileu Heddlu",
   "force-delete-message_description": "Caniatâd i ddileu neges osgoi pob cyfyngiad",
   "github_no_public_email": "Nid oes gennych unrhyw e-bost fel e-bost cyhoeddus yn eich cyfrif GitHub",
@@ -2747,7 +2750,5 @@
   "yesterday": "ddoe",
   "you_are_in_preview_mode_of": "Rydych chi mewn modd rhagolwg o sianel # <strong>{{room_name}}</strong>",
   "your_message": "dy neges",
-  "your_message_optional": "eich neges (dewisol)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} bellach yn {{role}} gan {{user_by}}",
-  "__username__was_set__role__by__user_by_": "Gosodwyd {{username}} {{role}} gan {{user_by}}"
+  "your_message_optional": "eich neges (dewisol)"
 }

@@ -1,6 +1,5 @@
 {
   "500": "កំហុសខាងក្នុងម៉ាស៊ីនម៉េ",
-  "files": "ឯកសារ",
   "#channel": "ឆានែល",
   "0_Errors_Only": "0 - កំហុសប៉ុណ្ណោះ",
   "12_Hour": "នាឡិការ 12 ម៉ោង",
@@ -2376,6 +2375,7 @@
   "TargetRoom": "បន្ទប់គោលដៅ",
   "TargetRoom_Description": "បន្ទប់ដែលសារនឹងត្រូវបានផ្ញើដែលជាលទ្ធផលនៃព្រឹត្តិការណ៍នេះត្រូវបានបញ្ឈប់។ មានតែបន្ទប់គោលដៅតែមួយប៉ុណ្ណោះដែលត្រូវបានអនុញ្ញាតហើយវាត្រូវតែមាន។",
   "Team": "ក្រុម",
+  "Team_Tasks": "កិច្ចការក្រុម",
   "Teams_New_Add_members_Label": "សាមាជិក",
   "Teams_New_Broadcast_Description": "មានតែអ្នកប្រើដែលបានអនុញ្ញាតអាចសរសេរសារថ្មីប៉ុន្តែអ្នកប្រើផ្សេងទៀតនឹងអាចឆ្លើយតបបាន",
   "Teams_New_Description_Label": "ប្រធានបទ",
@@ -2705,6 +2705,10 @@
   "Your_push_was_sent_to_s_devices": "ការជំរុញរបស់អ្នកត្រូវបានបញ្ជូនទៅកាន់ឧបករណ៍ %s បាន",
   "Your_server_link": "តំណភ្ជាប់ម៉ាស៊ីនមេរបស់អ្នក",
   "Your_workspace_is_ready": "កន្លែងធ្វើការរបស់អ្នករួចរាល់ដើម្បីប្រើ🎉",
+  "__count__empty_rooms_will_be_removed_automatically": "ចំនួនបន្ទប់ដែលនៅសល់នឹងត្រូវលុបចោលដោយស្វ័យប្រវត្តិ។",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> នឹងត្រូវលុបចោលដោយស្វ័យប្រវត្តិ៖ <br/> {{rooms}} ។",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}  មិនមាន {{role}}by {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} ត្រូវបានកំណត់តួនាទីជា {{role}} ដោយ {{user_by}}",
   "access-mailer": "ចូលប្រើ Mailer Screen",
   "access-mailer_description": "សិទ្ធិក្នុងការផ្ញើអ៊ីម៉ែលដ៏ច្រើនទៅអ្នកប្រើទាំងអស់។",
   "access-permissions": "សិទ្ធិចូលដំណើរការអេក្រង់",
@@ -2907,6 +2911,7 @@
   "every_six_hours": "រៀងរាល់ 6 ម៉ោងម្តង",
   "except_pinned": "(លើកលែងតែអ្នកដែលត្រូវបានគេភ្ជាប់)",
   "expression": "ការបញ្ចេញមតិ",
+  "files": "ឯកសារ",
   "force-delete-message": "បង្ខំលុបសារ",
   "force-delete-message_description": "សិទ្ធិក្នុងការលុបសារដោយឆ្លងកាត់ការរឹតបន្តឹងទាំងអស់",
   "github_no_public_email": "អ្នក​មិន​មាន​អ៊ីមែល​សាធារណៈ​ក្នុង​ GitHub នៅ​ឡើយ​ទេ",
@@ -3112,9 +3117,5 @@
   "yesterday": "កាលពីម្សិលមិញ",
   "you_are_in_preview_mode_of": "អ្នក​ស្ថិត​ក្នុង​ទម្រង់​មើល​ជា​មុន​នៃ​ប៉ុស្តិ៍ #<strong>{{room_name}}</strong>",
   "your_message": "សារ​របស់​អ្នក",
-  "your_message_optional": "សាររបស់អ្នក (ស្រេចចិត្ត)",
-  "__count__empty_rooms_will_be_removed_automatically": "ចំនួនបន្ទប់ដែលនៅសល់នឹងត្រូវលុបចោលដោយស្វ័យប្រវត្តិ។",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> នឹងត្រូវលុបចោលដោយស្វ័យប្រវត្តិ៖ <br/> {{rooms}} ។",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}  មិនមាន {{role}}by {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} ត្រូវបានកំណត់តួនាទីជា {{role}} ដោយ {{user_by}}"
+  "your_message_optional": "សាររបស់អ្នក (ស្រេចចិត្ត)"
 }

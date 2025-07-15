@@ -1,6 +1,5 @@
 {
   "500": "خطای داخلی سرور",
-  "files": "فایل ها",
   "#channel": "#کانال",
   "%_of_conversations": "% از گفتگو ها",
   "0_Errors_Only": "0 - فقط خطاها ",
@@ -2372,6 +2371,7 @@
   "TargetRoom": "اتاق هدف",
   "TargetRoom_Description": "اتاق که پیام ها ارسال می شود که نتیجه این رویداد است اخراج می شود. فقط یک اتاق هدف مجاز است و باید وجود داشته باشد.",
   "Team": "تیم",
+  "Team_Tasks": "وظایف تیم",
   "Teams": "تیم‌ها",
   "Teams_New_Broadcast_Description": "فقط کاربران مجاز میتوانند پیام های جدیدی بنویسند، اما کاربران دیگر قادر خواهند بود پاسخ دهند",
   "Teams_New_Description_Label": "موضوع",
@@ -2678,6 +2678,12 @@
   "Your_push_was_sent_to_s_devices": "فشار خود را به دستگاه %s را ارسال شد",
   "Your_server_link": "لینک سرور شما",
   "Your_workspace_is_ready": "فضای کاری شما آماده استفاده است",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} اتاق خالی به طور خودکار حذف خواهد شد.",
+  "__count__message_pruned_one": "{{count}} پیام حذف شد",
+  "__count__message_pruned_other": "{{count}} پیام‌ حذف شد",
+  "__roomName__was_added_to_favorites": "{{roomName}} به موارد دلخواه اضافه شد",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} دیگر توسط {{user_by}} {{role}} نمی شود",
+  "__username__was_set__role__by__user_by_": "{{username}} توسط {{user_by}} به عنوان {{role}} تعیین شد",
   "access-mailer": "Access Mailer Screen",
   "access-mailer_description": "مجوز ارسال ایمیل انبوه به همه کاربران",
   "access-permissions": "دسترسی به صفحه مجوزها",
@@ -2882,6 +2888,7 @@
   "every_second": "یک بار در هر ثانیه",
   "every_six_hours": "هر شش ساعت یکبار",
   "except_pinned": "(به استثنای مواردی که بسته شده اند)",
+  "files": "فایل ها",
   "force-delete-message": "خاموش کردن پیام",
   "force-delete-message_description": "مجاز به حذف یک پیام در دور زدن همه محدودیت ها",
   "github_no_public_email": "شما هیچ ایمیلی به عنوان ایمیل عمومی در اکانت گیت هابتان ندارید",
@@ -3108,11 +3115,5 @@
   "yesterday": "دیروز",
   "you_are_in_preview_mode_of": "شما در حالت پیش نمایش از کانال # <strong>{{room_name}}</strong> هستند",
   "your_message": "پیام شما",
-  "your_message_optional": "پیام شما(انتخابی)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} اتاق خالی به طور خودکار حذف خواهد شد.",
-  "__count__message_pruned_one": "{{count}} پیام حذف شد",
-  "__count__message_pruned_other": "{{count}} پیام‌ حذف شد",
-  "__roomName__was_added_to_favorites": "{{roomName}} به موارد دلخواه اضافه شد",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} دیگر توسط {{user_by}} {{role}} نمی شود",
-  "__username__was_set__role__by__user_by_": "{{username}} توسط {{user_by}} به عنوان {{role}} تعیین شد"
+  "your_message_optional": "پیام شما(انتخابی)"
 }

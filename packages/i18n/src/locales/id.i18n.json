@@ -1,6 +1,5 @@
 {
   "500": "Kesalahan server dari dalam",
-  "files": "file",
   "#channel": "#saluran",
   "0_Errors_Only": "0 - Kesalahan Hanya",
   "1_Errors_and_Information": "1 - Kesalahan dan Informasi",
@@ -2081,6 +2080,7 @@
   "TargetRoom": "Ruang sasaran",
   "TargetRoom_Description": "Ruang di mana pesan akan dikirim yang merupakan hasil dari acara ini dipecat. Hanya satu ruangan target yang diizinkan dan harus ada.",
   "Team": "Tim",
+  "Team_Tasks": "Tugas Tim",
   "Teams_New_Broadcast_Description": "Hanya pengguna yang berwenang yang dapat menulis pesan baru, tetapi pengguna lain akan dapat membalas",
   "Teams_New_Description_Label": "Tema",
   "Teams_New_Name_Label": "Nama",
@@ -2385,6 +2385,8 @@
   "Your_push_was_sent_to_s_devices": "push dikirim ke%s perangkat",
   "Your_server_link": "Tautan server Anda",
   "Your_workspace_is_ready": "Ruang kerja Anda siap digunakan 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} tidak lagi {{role}} oleh {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} ditetapkan {{role}} oleh {{user_by}}",
   "access-mailer": "Akses Mailer Screen",
   "access-mailer_description": "Izin mengirim email massal ke semua pengguna.",
   "access-permissions": "Layar izin akses",
@@ -2564,6 +2566,7 @@
   "every_second": "Sekali setiap detik",
   "every_six_hours": "Setiap enam jam sekali",
   "except_pinned": "(kecuali yang disematkan)",
+  "files": "file",
   "force-delete-message": "Paksa Hapus Pesan",
   "force-delete-message_description": "Izin untuk menghapus pesan yang melewati semua batasan",
   "github_no_public_email": "Anda tidak memiliki email publik di akun GitHub anda.",
@@ -2763,7 +2766,5 @@
   "yesterday": "kemarin",
   "you_are_in_preview_mode_of": "Anda berada di dalam moda preview untuk channel #<strong>{{room_name}}</strong>",
   "your_message": "pesan Anda",
-  "your_message_optional": "pesan Anda (opsional)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} tidak lagi {{role}} oleh {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} ditetapkan {{role}} oleh {{user_by}}"
+  "your_message_optional": "pesan Anda (opsional)"
 }

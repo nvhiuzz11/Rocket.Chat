@@ -1,6 +1,5 @@
 {
   "500": "內部伺服器錯誤",
-  "files": "檔案",
   "#channel": "#頻道",
   "%_of_conversations": "% 的會話",
   "0_Errors_Only": "0 - 只有錯誤",
@@ -3440,6 +3439,7 @@
   "TargetRoom_Description": "將被發送的消息將被解僱，這是該事件的結果。只有一個目標房間是允許的，它必須存在。",
   "Team": "團隊",
   "Team_Mapping": "團隊映射",
+  "Team_Tasks": "團隊任務",
   "Teams": "團隊",
   "Teams_New_Add_members_Label": "新增成員",
   "Teams_New_Broadcast_Description": "只有授權使用者才能寫新訊息，但其他使用者將能夠回覆",
@@ -3937,6 +3937,10 @@
   "Your_temporary_password_is_password": "您的暫時密碼是 <strong>[password]</strong>。",
   "Your_workspace_is_ready": "您的工作區已準備好使用🎉",
   "Zapier": "Zapier",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} 空的房間將會自動移除。",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> 空的房間將會自動移除:<br/> {{rooms}}。",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}不再是{{role}}，由{{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{user_by}}設定{{username}}為{{role}}的身份",
   "access-mailer": "存取郵件寄送畫面",
   "access-mailer_description": "允許寄送大量電子郵件給所有使用者",
   "access-permissions": "存取權限設定畫面",
@@ -4208,6 +4212,7 @@
   "except_pinned": "（固定的除外）",
   "expression": "正規表示法",
   "file_pruned": "檔案已修剪",
+  "files": "檔案",
   "force-delete-message": "強制刪除訊息",
   "force-delete-message_description": "允許刪除繞過所有限制的訊息",
   "get-password-policy-forbidRepeatingCharacters": "密碼不應包含重複字元",
@@ -4574,9 +4579,5 @@
   "you_are_in_preview_mode_of": "您正在預覽頻道 #<strong>{{room_name}}</strong>",
   "you_are_in_preview_mode_of_incoming_livechat": "您在這個即時聊天為預覽模式",
   "your_message": "您的訊息",
-  "your_message_optional": "您的訊息（選填）",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} 空的房間將會自動移除。",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> 空的房間將會自動移除:<br/> {{rooms}}。",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}不再是{{role}}，由{{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{user_by}}設定{{username}}為{{role}}的身份"
+  "your_message_optional": "您的訊息（選填）"
 }

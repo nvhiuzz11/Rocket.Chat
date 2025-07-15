@@ -1,6 +1,5 @@
 {
   "500": "Iekšējā servera kļūda",
-  "files": "faili",
   "#channel": "#kanāls",
   "%_of_conversations": "% no sarunām",
   "0_Errors_Only": "0 - Tikai kļūdas",
@@ -2096,6 +2095,7 @@
   "TargetRoom": "Mērķa istaba",
   "TargetRoom_Description": "Istaba ir vieta kurā tiks nosūtīti ziņojumi, kuri ir rezultāts pasākuma uzsākšanai. Ir atļauta tikai viena mērķa istaba, un tai ir jāeksistē.",
   "Team": "Komanda",
+  "Team_Tasks": "Komandas uzdevumi",
   "Teams_New_Broadcast_Description": "Tikai pilnvaroti lietotāji var rakstīt jaunus ziņojumus, bet citi lietotāji varēs atbildēt",
   "Teams_New_Description_Label": "Temats",
   "Teams_New_Name_Label": "Vārds",
@@ -2387,6 +2387,7 @@
   "Your_push_was_sent_to_s_devices": "Jūsu push tika nosūtīts uz %s ierīcēm",
   "Your_server_link": "Jūsu servera saite",
   "Your_workspace_is_ready": "Jūsu darbastacija ir gatava lietošanai 🎉",
+  "__username__was_set__role__by__user_by_": "lietotājvārds tika iestatīts loma lietotājs",
   "access-mailer": "Piekļūt sūtītāja ekrānam",
   "access-mailer_description": "Atļauja nosūtīt masu e-pastu visiem lietotājiem.",
   "access-permissions": "Piekļūt Atļauju ekrānam",
@@ -2564,6 +2565,7 @@
   "every_second": "Reizi sekundē",
   "every_six_hours": "Reizi ik pēc sešām stundām",
   "except_pinned": "(izslēgt tos, kas ir piesprausti)",
+  "files": "faili",
   "force-delete-message": "Piespiedu dzēst ziņojumu",
   "force-delete-message_description": "Atļauja izdzēst ziņu, apejot visus ierobežojumus",
   "github_no_public_email": "Jums nav neviena e-pasta kā publiska e-pasta jūsu GitHub kontā",
@@ -2752,6 +2754,5 @@
   "will_be_able_to": "varēs",
   "yesterday": "vakar",
   "your_message": "Jūsu ziņojums",
-  "your_message_optional": "Jūsu ziņojums (nav obligāti)",
-  "__username__was_set__role__by__user_by_": "lietotājvārds tika iestatīts loma lietotājs"
+  "your_message_optional": "Jūsu ziņojums (nav obligāti)"
 }

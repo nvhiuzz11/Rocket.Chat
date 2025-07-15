@@ -933,6 +933,7 @@
   "Sync_Users": "ئەزانى قەدەملەش",
   "Sync_success": "قەدەملەش ئۇتۇقلۇق بولدى",
   "Tag": "خەتكۈش",
+  "Team_Tasks": "گۇرۇپپا ۋەزىپىلىرى",
   "Teams_New_Add_members_Label": "قوللانچىلار",
   "Teams_New_Description_Label": "سۆھبەتنىڭ تېمىسى",
   "Teams_New_Name_Label": "ئىسىم فامىلە",
@@ -1111,6 +1112,8 @@
   "Your_file_has_been_deleted": "سىزنىڭ ھۆججىتىڭىز ئاللىبۇرۇن يۇيۇۋېتىلدى .",
   "Your_password_is_wrong": "پارول خاتا !",
   "Your_push_was_sent_to_s_devices": "ئۈسكىنىگە يوللاندى %s سىزنىڭ ئىتتىرگىنىڭىز",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{user_by}} ئەمدى {{username}} نىڭ {{role}} رولىغا_ئېنىقلىما_بەرمەيدۇ",
+  "__username__was_set__role__by__user_by_": "{{user_by}} بۇ {{username}} غا {{role}} رولىنى_بەردە",
   "add-user": "ئابۇنت قوشۇش",
   "and": "ۋە",
   "are_typing": "كىرگۈزۈۋاتىدۇ",
@@ -1254,7 +1257,5 @@
   "unauthorized": "ھوقۇق بېرىلمىدى",
   "view-logs": "زىيارەت قىلغاندىكى كۈندىلىك خاتىرە",
   "will_be_able_to": "چوقۇم",
-  "you_are_in_preview_mode_of": "قانالنى كۆرۈۋاتىسىز #<strong>{{room_name}}</strong> سىز",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{user_by}} ئەمدى {{username}} نىڭ {{role}} رولىغا_ئېنىقلىما_بەرمەيدۇ",
-  "__username__was_set__role__by__user_by_": "{{user_by}} بۇ {{username}} غا {{role}} رولىنى_بەردە"
+  "you_are_in_preview_mode_of": "قانالنى كۆرۈۋاتىسىز #<strong>{{room_name}}</strong> سىز"
 }

@@ -1,6 +1,5 @@
 {
   "500": "ເກີດຂໍ້ຜິດພາດຂອງເຄື່ອງແມ່ຂ່າຍພາຍໃນ",
-  "files": "ໄຟລ໌",
   "#channel": "#channel",
   "%_of_conversations": "% ຂອງການສົນທະນາ",
   "0_Errors_Only": "0 - ຂໍ້ຜິດພາດເທົ່ານັ້ນ",
@@ -2111,6 +2110,7 @@
   "TargetRoom": "Target Room",
   "TargetRoom_Description": "ຫ້ອງທີ່ຂໍ້ຄວາມຈະຖືກສົ່ງໄປເປັນຜົນມາຈາກເຫດການນີ້ຖືກຍິງ. ມີພຽງແຕ່ຫນຶ່ງຫ້ອງເປົ້າຫມາຍທີ່ຖືກອະນຸຍາດແລະມັນຕ້ອງມີ.",
   "Team": "ທີມງານ",
+  "Team_Tasks": "ວຽກງານທີມ",
   "Teams_New_Broadcast_Description": "ພຽງຜູ້ໃຊ້ທີ່ມີອໍານາດສາມາດຂຽນຂໍ້ຄວາມໃຫມ່ແຕ່ຜູ້ໃຊ້ອື່ນໆຈະສາມາດຕອບ",
   "Teams_New_Description_Label": "ກະທູ້",
   "Teams_New_Name_Label": "ຊື່",
@@ -2414,6 +2414,10 @@
   "Your_push_was_sent_to_s_devices": "ການຊຸກຍູ້ຂອງທ່ານໄດ້ຖືກສົ່ງໄປອຸປະກອນ %s",
   "Your_server_link": "ເຊື່ອມຕໍ່ເຊີຟເວີຂອງທ່ານ",
   "Your_workspace_is_ready": "ພື້ນທີ່ເຮັດວຽກຂອງທ່ານແມ່ນພ້ອມທີ່ຈະໃຊ້🎉",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} ຫ້ອງທີ່ຫວ່າງຈະຖືກລືບອອກໂດຍອັດຕະໂນມັດ.",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> ຫ້ອງທີ່ຫວ່າງຈະຖືກລືບອອກໂດຍອັດຕະໂນມັດ: <br/> {{rooms}}.",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ບໍ່ມີອີກຕໍ່ໄປ {{role}} by {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} ໄດ້ກຳນົດໄວ້ {{role}} by {{user_by}}",
   "access-mailer": "ເຂົ້າເຖິງໜ້າຈໍ Mailer",
   "access-mailer_description": "ການອະນຸຍາດສົ່ງອີເມວຈໍານວນຫຼາຍໃຫ້ກັບຜູ້ໃຊ້ທຸກຄົນ.",
   "access-permissions": "ໜ້າຈໍການອະນຸຍາດການເຂົ້າເຖິງ",
@@ -2599,6 +2603,7 @@
   "every_second": "ທຸກຄັ້ງທີສອງ",
   "every_six_hours": "ທຸກຄັ້ງຫົກຊົ່ວໂມງ",
   "except_pinned": "(ຍົກເວັ້ນຜູ້ທີ່ຖືກຈັບຢູ່)",
+  "files": "ໄຟລ໌",
   "force-delete-message": "Force Delete Message",
   "force-delete-message_description": "ການອະນຸຍາດທີ່ຈະລຶບຂໍ້ຄວາມໂດຍບໍ່ມີຂໍ້ຈໍາກັດທັງຫມົດ",
   "github_no_public_email": "ທ່ານບໍ່ມີອີເມລອີເມລສາທາລະນະຢູ່ໃນບັນຊີ GitHub ຂອງທ່ານ",
@@ -2790,9 +2795,5 @@
   "yesterday": "ມື້ວານນີ້",
   "you_are_in_preview_mode_of": "ທ່ານຢູ່ໃນຮູບແບບສະແດງຂອງຊ່ອງ # <strong>{{room_name}}</strong>",
   "your_message": "ຂໍ້​ຄວາມ​ຂອງ​ເຈົ້າ",
-  "your_message_optional": "ຂໍ້ຄວາມຂອງທ່ານ (ທາງເລືອກ)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} ຫ້ອງທີ່ຫວ່າງຈະຖືກລືບອອກໂດຍອັດຕະໂນມັດ.",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> ຫ້ອງທີ່ຫວ່າງຈະຖືກລືບອອກໂດຍອັດຕະໂນມັດ: <br/> {{rooms}}.",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ບໍ່ມີອີກຕໍ່ໄປ {{role}} by {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} ໄດ້ກຳນົດໄວ້ {{role}} by {{user_by}}"
+  "your_message_optional": "ຂໍ້ຄວາມຂອງທ່ານ (ທາງເລືອກ)"
 }

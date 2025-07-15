@@ -1,6 +1,5 @@
 {
   "500": "Notranja napaka strežnika",
-  "files": "datoteke",
   "#channel": "#kanal",
   "0_Errors_Only": "0 - Samo napake",
   "1_Errors_and_Information": "1 - Napake in informacije",
@@ -2080,6 +2079,7 @@
   "TargetRoom": "Ciljna soba",
   "TargetRoom_Description": "Soba, na katero bodo poslana sporočila, ki so rezultat tega dogodka. Dovoljena je samo ena ciljna, že obstoječa soba. ",
   "Team": "Ekipa",
+  "Team_Tasks": "Naloge ekipe",
   "Teams_New_Broadcast_Description": "Samo pooblaščeni uporabniki lahko napišejo nova sporočila, drugi uporabniki pa bodo lahko odgovorili",
   "Teams_New_Description_Label": "Tema",
   "Teams_New_Name_Label": "Ime",
@@ -2382,6 +2382,8 @@
   "Your_push_was_sent_to_s_devices": "Vaš potisk je bil poslan v naprave %s",
   "Your_server_link": "Povezava strežnika",
   "Your_workspace_is_ready": "Vaš delovni prostor je pripravljen za uporabo 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ni več {{role}} by {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} je bil nastavljen kot {{role}} by {{user_by}}",
   "access-mailer": "Dostop do pošiljateljevega zaslona",
   "access-mailer_description": "Dovoljenje za pošiljanje elektronskega sporočila vsem uporabnikom.",
   "access-permissions": "Dostop do Zaslona z dovoljenji",
@@ -2555,6 +2557,7 @@
   "every_second": "Enkrat na sekundo",
   "every_six_hours": "Enkrat na šest ur",
   "except_pinned": "(razen tistih, ki so pripeti)",
+  "files": "datoteke",
   "force-delete-message": "Prisilno izbriši sporočilo",
   "force-delete-message_description": "Dovoljenje za brisanje sporočil, mimo vseh omejitev",
   "github_no_public_email": "V svojem računu GitHub nimate nobenega e-poštnega naslova kot javnega.",
@@ -2747,7 +2750,5 @@
   "yesterday": "včeraj",
   "you_are_in_preview_mode_of": "V načinu predogleda kanala #<strong>{{room_name}}</strong>",
   "your_message": "vaše sporočilo",
-  "your_message_optional": "vaše sporočilo (neobvezno)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ni več {{role}} by {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} je bil nastavljen kot {{role}} by {{user_by}}"
+  "your_message_optional": "vaše sporočilo (neobvezno)"
 }

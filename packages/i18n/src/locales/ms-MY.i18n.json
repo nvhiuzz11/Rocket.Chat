@@ -1,6 +1,5 @@
 {
   "500": "Ralat Pelayan Dalaman",
-  "files": "fail",
   "#channel": "#channel",
   "0_Errors_Only": "0 - Kesilapan Hanya",
   "1_Errors_and_Information": "1 - Kesilapan dan Maklumat",
@@ -2083,6 +2082,7 @@
   "TargetRoom": "Bilik sasaran",
   "TargetRoom_Description": "Bilik di mana mesej akan dihantar yang merupakan hasil daripada peristiwa ini dipecat. Hanya satu ruang sasaran dibenarkan dan mesti wujud.",
   "Team": "Pasukan",
+  "Team_Tasks": "Tugas Pasukan",
   "Teams_New_Add_members_Label": "Ahli",
   "Teams_New_Broadcast_Description": "Hanya pengguna yang dibenarkan boleh menulis mesej baharu, tetapi pengguna lain akan dapat membalasnya",
   "Teams_New_Description_Label": "Topic",
@@ -2385,6 +2385,7 @@
   "Your_push_was_sent_to_s_devices": "push anda telah dihantar ke peranti %s",
   "Your_server_link": "Pautan pelayan anda",
   "Your_workspace_is_ready": "Ruang kerja anda sedia untuk menggunakan 🎉",
+  "__username__was_set__role__by__user_by_": "__nama pengguna__ ditubuhkan {{role}} oleh {{user_by}}",
   "access-mailer": "Skrin Akses Mailer",
   "access-mailer_description": "Kebenaran untuk menghantar e-mel massa kepada semua pengguna.",
   "access-permissions": "Skrin kebenaran akses",
@@ -2562,6 +2563,7 @@
   "every_second": "Sekali setiap saat",
   "every_six_hours": "Sekali setiap enam jam",
   "except_pinned": "(kecuali yang disematkan)",
+  "files": "fail",
   "force-delete-message": "Tekan Padam Mesej",
   "force-delete-message_description": "Kebenaran untuk memadamkan mesej melangkau semua sekatan",
   "github_no_public_email": "Anda tidak mempunyai sebarang e-mel umum pada akaun GitHub anda",
@@ -2761,6 +2763,5 @@
   "yesterday": "semalam",
   "you_are_in_preview_mode_of": "Anda berapa di dalam mod pralihat saluran #<strong>{{room_name}}</strong>",
   "your_message": "mesej anda",
-  "your_message_optional": "mesej anda (pilihan)",
-  "__username__was_set__role__by__user_by_": "__nama pengguna__ ditubuhkan {{role}} oleh {{user_by}}"
+  "your_message_optional": "mesej anda (pilihan)"
 }

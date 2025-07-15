@@ -1,6 +1,5 @@
 {
   "500": "Унутраная памылка сервера",
-  "files": "файлы",
   "#channel": "#канал",
   "0_Errors_Only": "0 - Толькі памылкі",
   "12_Hour": "12-гадзінавы фармат",
@@ -2103,6 +2102,7 @@
   "TargetRoom": "мэтавай нумар",
   "TargetRoom_Description": "Памяшканне, у якім будуць адпраўляцца паведамленні, якія з'яўляюцца вынікам гэтай падзеі звальняюць. Толькі адна мэта нумар дазволены, і яна павінна існаваць.",
   "Team": "каманда",
+  "Team_Tasks": "Каманднія задачы",
   "Teams_New_Broadcast_Description": "Толькі аўтарызаваныя карыстальнікі могуць пакідаць новыя паведамленні, але іншыя карыстальнікі змогуць адказаць",
   "Teams_New_Description_Label": "тэма",
   "Teams_New_Name_Label": "імя",
@@ -2406,6 +2406,8 @@
   "Your_push_was_sent_to_s_devices": "Ваш штуршок быў адпраўлены ў%s прылад",
   "Your_server_link": "Ваша спасылка сервера",
   "Your_workspace_is_ready": "Ваша працоўная вобласць гатова да выкарыстання 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} более не {{role}} па рашэнні {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} быў усталяваны {{role}} па рашэнні {{user_by}}",
   "access-mailer": "Доступ да старонцы мейлера",
   "access-mailer_description": "Дазвол на масавую рассылку электроннай пошты для ўсіх карыстальнікаў.",
   "access-permissions": "Доступ да старонцы дазволаў",
@@ -2586,6 +2588,7 @@
   "every_second": "Пасля таго, як кожная секунда",
   "every_six_hours": "Пасля кожных шасці гадзін",
   "except_pinned": "(За выключэннем тых, якія ўскладалі)",
+  "files": "файлы",
   "force-delete-message": "Force Выдаліць паведамленне",
   "force-delete-message_description": "Дазвол на выдаленне паведамленні ў абыход усіх абмежаванняў",
   "github_no_public_email": "У вас няма адрасы электроннай пошты ў якасці публічнай электроннай пошты ў вашым акаўнце GitHub",
@@ -2781,7 +2784,5 @@
   "yesterday": "учора",
   "you_are_in_preview_mode_of": "Вы знаходзіцеся ў рэжыме папярэдняга прагляду канала # <strong>{{room_name}}</strong>",
   "your_message": "тваё паведамленне",
-  "your_message_optional": "Ваша паведамленне (па жаданні)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} более не {{role}} па рашэнні {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} быў усталяваны {{role}} па рашэнні {{user_by}}"
+  "your_message_optional": "Ваша паведамленне (па жаданні)"
 }

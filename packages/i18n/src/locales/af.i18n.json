@@ -1,6 +1,5 @@
 {
   "500": "Interne bedienerfout",
-  "files": "lêers",
   "#channel": "#channel",
   "0_Errors_Only": "0 - Slegs foute",
   "1_Errors_and_Information": "1 - foute en inligting",
@@ -2082,6 +2081,7 @@
   "TargetRoom": "Teiken kamer",
   "TargetRoom_Description": "Die kamer waar boodskappe gestuur sal word, is 'n gevolg van die feit dat hierdie gebeurtenis ontslaan word. Slegs een teikenkamer is toegelaat en moet bestaan.",
   "Team": "Span",
+  "Team_Tasks": "Span Take",
   "Teams_New_Broadcast_Description": "Slegs gemagtigde gebruikers kan nuwe boodskappe skryf, maar die ander gebruikers sal kan antwoord",
   "Teams_New_Description_Label": "onderwerp",
   "Teams_New_Name_Label": "naam",
@@ -2385,6 +2385,8 @@
   "Your_push_was_sent_to_s_devices": "Jou druk is gestuur na%s toestelle",
   "Your_server_link": "Jou bediener skakel",
   "Your_workspace_is_ready": "Jou werkruimte is gereed om 🎉 te gebruik",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} is nie meer {{role}} deur {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} is ingestel {{role}} deur {{user_by}}",
   "access-mailer": "Toegang tot die Mailer-skerm",
   "access-mailer_description": "Toestemming om massa-e-pos aan alle gebruikers te stuur.",
   "access-permissions": "Toegangtoestemmings skerm",
@@ -2564,6 +2566,7 @@
   "every_second": "Een keer per sekonde",
   "every_six_hours": "Een keer elke ses uur",
   "except_pinned": "(behalwe dié wat vasgespyker is)",
+  "files": "lêers",
   "force-delete-message": "Force verwyder boodskap",
   "force-delete-message_description": "Toestemming om 'n boodskap te verwyder wat alle beperkings ignoreer",
   "github_no_public_email": "Jy het geen e-pos as publieke e-pos in jou GitHub-rekening nie",
@@ -2755,7 +2758,5 @@
   "yesterday": "gister",
   "you_are_in_preview_mode_of": "Jy is in die voorskou af van kanaal # <strong>{{room_name}}</strong>",
   "your_message": "jou boodskap",
-  "your_message_optional": "jou boodskap (opsioneel)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} is nie meer {{role}} deur {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} is ingestel {{role}} deur {{user_by}}"
+  "your_message_optional": "jou boodskap (opsioneel)"
 }

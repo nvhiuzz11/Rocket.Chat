@@ -1,6 +1,5 @@
 {
   "500": "İç Sunucu Hatası",
-  "files": "dosyalar",
   "#channel": "#kanal",
   "%_of_conversations": "Konuşmaların %'si",
   "0_Errors_Only": "0 - Yalnızca Hatalar",
@@ -2467,6 +2466,7 @@
   "TargetRoom": "Hedef Oda",
   "TargetRoom_Description": "Bu olayın tetiklenmesinin sonucu olan mesajların gönderileceği oda. Tek bir hedef odaya izin verilir ve var olması gerekir.",
   "Team": "Takım",
+  "Team_Tasks": "Takım Görevleri",
   "Teams_New_Add_members_Label": "Üyeler",
   "Teams_New_Broadcast_Description": "Yalnızca yetkili kullanıcılar yeni ileti yazabilir, ancak diğer kullanıcılar yanıtlayabilir.",
   "Teams_New_Description_Label": "Konu",
@@ -2828,6 +2828,8 @@
   "Your_question": "Sorunuz",
   "Your_server_link": "Sunucu bağlantınız",
   "Your_workspace_is_ready": "Çalışma alanınız kullanılmaya hazır 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} adlı kullanıcı {{user_by}} tarafından {{role}} rolünden çıkarıldı.",
+  "__username__was_set__role__by__user_by_": "{{username}} adlı kullanıcı {{user_by}} tarafından {{role}} rolüne atandı.",
   "access-mailer": "Posta Göndericisine Erişim",
   "access-mailer_description": "Kullanıcılara toplu e-posta gönderme izni",
   "access-permissions": "İzinler Ekranına Erişim",
@@ -3035,6 +3037,7 @@
   "every_six_hours": "6 saatte bir",
   "except_pinned": "(tutturulmuş olanlar hariç)",
   "expression": "İfade",
+  "files": "dosyalar",
   "force-delete-message": "İletiyi Sil zorla",
   "force-delete-message_description": "Tüm kısıtlamaları atlayarak bir iletiyi silmek için izin",
   "github_no_public_email": "Sen GitHub hesabınızda kamu e-posta olarak herhangi bir e-posta yok",
@@ -3269,7 +3272,5 @@
   "you_are_in_preview_mode_of": "#<strong>{{room_name}}</strong> kanalının önizleme modundasınız.",
   "you_are_in_preview_mode_of_incoming_livechat": "Gelen canlı görüşme için önizleme modundasınız",
   "your_message": "iletiniz",
-  "your_message_optional": "iletiniz (isteğe bağlı)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} adlı kullanıcı {{user_by}} tarafından {{role}} rolünden çıkarıldı.",
-  "__username__was_set__role__by__user_by_": "{{username}} adlı kullanıcı {{user_by}} tarafından {{role}} rolüne atandı."
+  "your_message_optional": "iletiniz (isteğe bağlı)"
 }

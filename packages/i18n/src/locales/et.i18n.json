@@ -55,6 +55,7 @@
   "Skip": "Jäta vahele",
   "Start_Chat": "Alusta vestlust",
   "Survey": "Uuring",
+  "Team_Tasks": "Meeskonna ülesanded",
   "Thank_you_for_your_feedback": "Aitäh tagasiside eest",
   "Try_now": "Proovi nüüd",
   "Type_your_email": "Sisesta oma e-mail",
@@ -62,6 +63,8 @@
   "Type_your_name": "Sisestage oma nimi",
   "Upload_file_question": "Faili üles laadima?",
   "User_left": "Kasutaja lahkus",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ei ole enam {{role}} poolt {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} määrati {{role}} poolt {{user_by}}",
   "access-mailer_description": "Luba saata mass e-kiri kõikidele kasutajatele.",
   "access-permissions": "Juurdepääsu õiguste ekraan",
   "access-permissions_description": "Muutke eri rollide õigusi.",
@@ -73,7 +76,5 @@
   "meteor_status_reconnect_in_other": "proovin uuesti {{count}} sekundi pärast...",
   "meteor_status_try_now_offline": "Ühenda uuesti",
   "meteor_status_try_now_waiting": "Proovi nüüd",
-  "meteor_status_waiting": "Ootan serveriga ühendust,",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ei ole enam {{role}} poolt {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} määrati {{role}} poolt {{user_by}}"
+  "meteor_status_waiting": "Ootan serveriga ühendust,"
 }

@@ -1,6 +1,5 @@
 {
   "500": "内部サーバーエラー",
-  "files": "ファイル",
   "#channel": "#チャネル",
   "%_of_conversations": "会話の割合（%）",
   "0_Errors_Only": "0 - エラーのみ",
@@ -3550,6 +3549,7 @@
   "Team_Mapping": "チームマッピング",
   "Team_Remove_from_team": "チームから削除",
   "Team_Remove_from_team_modal_content": "このChannelを{{teamName}}から削除しますか？チャネルはワークスペースに戻ります。",
+  "Team_Tasks": "チームタスク",
   "Team_has_been_deleted": "チームが削除されました。",
   "Team_what_is_this_team_about": "このチームの概要",
   "Teams": "チーム",
@@ -4122,6 +4122,10 @@
   "Your_temporary_password_is_password": "一時的なパスワードは<strong>[password]</strong>です。",
   "Your_workspace_is_ready": "ワークスペースを使用できます🎉",
   "Zapier": "Zapier",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}}個の空のルームが自動的に削除されます。",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold>個の空のルームが自動的に削除されます：<br/> {{rooms}}。",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}は{{user_by}}によって{{role}}ではなくなりました",
+  "__username__was_set__role__by__user_by_": "{{user_by}}によって{{role}}が{{username}}に設定されました",
   "access-mailer": "メーラー画面にアクセス",
   "access-mailer_description": "すべてのユーザーにメールを一斉送信する権限",
   "access-permissions": "アクセス権限画面",
@@ -4395,6 +4399,7 @@
   "except_pinned": "（固定されているものを除く）",
   "expression": "式",
   "file_pruned": "整理されたファイル",
+  "files": "ファイル",
   "force-delete-message": "メッセージを強制的に削除",
   "force-delete-message_description": "すべての制限をバイパスしてメッセージを削除する権限",
   "get-password-policy-forbidRepeatingCharacters": "パスワードに繰り返し文字を含めないでください",
@@ -4814,9 +4819,5 @@
   "you_are_in_preview_mode_of": "チャネル#<strong>{{room_name}}</strong>のプレビューモードです",
   "you_are_in_preview_mode_of_incoming_livechat": "現在このチャットのプレビューモードです",
   "your_message": "あなたのメッセージ",
-  "your_message_optional": "メッセージ（オプション）",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}}個の空のルームが自動的に削除されます。",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold>個の空のルームが自動的に削除されます：<br/> {{rooms}}。",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}は{{user_by}}によって{{role}}ではなくなりました",
-  "__username__was_set__role__by__user_by_": "{{user_by}}によって{{role}}が{{username}}に設定されました"
+  "your_message_optional": "メッセージ（オプション）"
 }

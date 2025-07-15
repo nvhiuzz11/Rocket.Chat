@@ -1,6 +1,5 @@
 {
   "500": "Interne Server Fout",
-  "files": "bestanden",
   "#channel": "#kanaal",
   "%_of_conversations": "% van gesprekken",
   "0_Errors_Only": "0 - Alleen fouten",
@@ -3574,6 +3573,7 @@
   "Team_Mapping": "Teamtoewijzing",
   "Team_Remove_from_team": "Verwijderen uit team",
   "Team_Remove_from_team_modal_content": "Wil je dit kanaal uit {{teamName}} verwijderen? Het kanaal wordt terug naar de werkruimte verplaatst.",
+  "Team_Tasks": "Teamtaken",
   "Team_has_been_deleted": "Team is verwijderd.",
   "Team_what_is_this_team_about": "Waar gaat dit team over",
   "Teams": "Teams",
@@ -4153,6 +4153,10 @@
   "Your_temporary_password_is_password": "Uw tijdelijke wachtwoord is: <strong>[password]</strong>",
   "Your_workspace_is_ready": "Je werkruimte is klaar voor gebruik 🎉",
   "Zapier": "Zapier",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} lege kamers worden automatisch verwijderd.",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> lege kamers worden automatisch verwijderd: <br/> {{rooms}}",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} is niet langer {{role}} door {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} werd ingesteld op {{role}} door {{user_by}}",
   "access-mailer": "Toegang tot het Mailer-scherm",
   "access-mailer_description": "Toestemming om massa-e-mail naar alle gebruikers te verzenden.",
   "access-permissions": "Open het toegangsrechten scherm",
@@ -4428,6 +4432,7 @@
   "except_pinned": "(behalve degene die zijn vastgemaakt)",
   "expression": "Uitdrukking",
   "file_pruned": "bestand gesnoeid",
+  "files": "bestanden",
   "force-delete-message": "Het verwijderen van bericht forceren",
   "force-delete-message_description": "Toestemming om een bericht te verwijderen waarbij alle beperkingen worden omzeild",
   "get-password-policy-forbidRepeatingCharacters": "Het wachtwoord mag geen herhalende tekens bevatten",
@@ -4856,9 +4861,5 @@
   "you_are_in_preview_mode_of": "U bevindt zich in de previewmomdus van het kanaal #<strong>{{room_name}}</strong>",
   "you_are_in_preview_mode_of_incoming_livechat": "U bevindt zich in de preview-modus van deze chat",
   "your_message": "jouw bericht",
-  "your_message_optional": "uw bericht (optioneel)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} lege kamers worden automatisch verwijderd.",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> lege kamers worden automatisch verwijderd: <br/> {{rooms}}",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} is niet langer {{role}} door {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} werd ingesteld op {{role}} door {{user_by}}"
+  "your_message_optional": "uw bericht (optioneel)"
 }

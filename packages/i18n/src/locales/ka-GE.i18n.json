@@ -1,6 +1,5 @@
 {
   "500": "შიდა სერვერული შეცდომა",
-  "files": "ფაილები",
   "#channel": "#არხი",
   "%_of_conversations": "საუბრების %",
   "0_Errors_Only": "0 - მხოლოდ შეცდომები",
@@ -2783,6 +2782,7 @@
   "TargetRoom": "სამიძნე ოთახი",
   "TargetRoom_Description": "ოთახი, რომელშიც გაიგზავნება შეტყობინებები, რომლებიც ამ მოვლენის შედეგია.მხოლოდ ერთი ოთახია დაშვებული და ის უნდა არსებობდეს.",
   "Team": "გუნდი",
+  "Team_Tasks": "გუნდის ამოცანები",
   "Teams_New_Add_members_Label": "წევრები",
   "Teams_New_Broadcast_Description": "მხოლოდ ავტორიზებულ მომხმარებლებს შეუძლიათ ახალი შეტყობინების დაწერა, მაგრამ სხვა მომხმარებლებს შეეძლებათ პასუხის გაცემა",
   "Teams_New_Description_Label": "თემა",
@@ -3180,6 +3180,10 @@
   "Your_server_link": "თქვენი სერვერის მისამართი",
   "Your_temporary_password_is_password": "თქვენი დროებითი პაროლია არის <strong>[password]</strong>",
   "Your_workspace_is_ready": "თქვენი სამუშაო გარემო მზად არის სამუშაოდ 🎉",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} ცარიელი ოთახი ავტომატურად მოიხსნება.",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> ცარიელი ოთახები ავტომატურად წაიშლება: <br/> {{rooms}}.",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}ჩამეორთვა {{role}} {{user_by}}მიერ",
+  "__username__was_set__role__by__user_by_": "{{username}} -ს მისცა {{role}} უფლება მომხმარებელმა: {{user_by}}",
   "access-mailer": "წვდომა Mailer-ზე",
   "access-mailer_description": "მასობრივი ელ.ფოსტის ყველა მომხმარებლისთვის გაგზავნის ნებართვა.",
   "access-permissions": "უფლებების გვერდზე წვდომა",
@@ -3400,6 +3404,7 @@
   "every_six_hours": "ექვს საათში ერთხელ",
   "except_pinned": "(გარდა იმისა, რომლებიც მიმაგრებულია)",
   "expression": "გამოხატვა",
+  "files": "ფაილები",
   "force-delete-message": "შეტყობინებების იძულებითი წაშლა",
   "force-delete-message_description": "შეზღუდვების გვერდის ავლით შეტყობინებების წაშლის უფლება",
   "github_no_public_email": "თქვენ არ გაქვთ მითითებული საჯარო ელ.ფოსტა GitHub-თვის",
@@ -3665,9 +3670,5 @@
   "you_are_in_preview_mode_of": "თქვენ ხართ არხის #<strong>{{room_name}}</strong>-ის გადახედვის რეჟიმში",
   "you_are_in_preview_mode_of_incoming_livechat": "თქვენ ხართ ამ ჩატის გადახედვის რეჟიმში",
   "your_message": "თქვენი შეტყობინება",
-  "your_message_optional": "თქვენი შეტყობინება (დამატებით)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} ცარიელი ოთახი ავტომატურად მოიხსნება.",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> ცარიელი ოთახები ავტომატურად წაიშლება: <br/> {{rooms}}.",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}}ჩამეორთვა {{role}} {{user_by}}მიერ",
-  "__username__was_set__role__by__user_by_": "{{username}} -ს მისცა {{role}} უფლება მომხმარებელმა: {{user_by}}"
+  "your_message_optional": "თქვენი შეტყობინება (დამატებით)"
 }

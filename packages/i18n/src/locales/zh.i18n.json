@@ -1,6 +1,5 @@
 {
   "500": "内部服务器错误",
-  "files": "文件",
   "#channel": "#频道",
   "%_of_conversations": "% 的会话",
   "0_Errors_Only": "0 - 仅错误",
@@ -3144,6 +3143,7 @@
   "TargetRoom": "目标Room",
   "TargetRoom_Description": "事件被触发所产生的结果将被发送到哪个聊天室？仅允许设置一个目标聊天室，且该聊天室必须是存在的。",
   "Team": "团队",
+  "Team_Tasks": "团队任务",
   "Teams_New_Add_members_Label": "成员",
   "Teams_New_Broadcast_Description": "只有授权用户才能发送新消息，但其他用户可以回复消息",
   "Teams_New_Description_Label": "话题",
@@ -3604,6 +3604,10 @@
   "Your_server_link": "您的服务器链接",
   "Your_temporary_password_is_password": "您的暂时密码为 <strong>[password]</strong>。",
   "Your_workspace_is_ready": "您的工作区已准备好使用🎉",
+  "__count__empty_rooms_will_be_removed_automatically": "将会自动移除 {{count}} 个空聊天室。",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "将会自动移除以下 <bold>{{count}}</bold> 个空聊天室：<br/>{{rooms}}",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{user_by}} 移除了 {{username}} 的 {{role}} 角色",
+  "__username__was_set__role__by__user_by_": "{{user_by}} 设置  {{username}} 为 {{role}} 角色",
   "access-mailer": "访问邮件程序屏幕",
   "access-mailer_description": "向所有用户发送大量电子邮件的权限。",
   "access-permissions": "访问权限屏幕",
@@ -3846,6 +3850,7 @@
   "except_pinned": "（固定的除外）",
   "expression": "表达式",
   "file_pruned": "文件已修剪",
+  "files": "文件",
   "force-delete-message": "强制删除消息",
   "force-delete-message_description": "绕过所有限制删除消息的权限",
   "get-password-policy-forbidRepeatingCharacters": "密码不应包含重复的字符",
@@ -4139,9 +4144,5 @@
   "you_are_in_preview_mode_of": "您正在预览频道 #<strong>{{room_name}}</strong>",
   "you_are_in_preview_mode_of_incoming_livechat": "您正在此聊天的预览模式中",
   "your_message": "你的消息",
-  "your_message_optional": "你的消息（可选）",
-  "__count__empty_rooms_will_be_removed_automatically": "将会自动移除 {{count}} 个空聊天室。",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "将会自动移除以下 <bold>{{count}}</bold> 个空聊天室：<br/>{{rooms}}",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{user_by}} 移除了 {{username}} 的 {{role}} 角色",
-  "__username__was_set__role__by__user_by_": "{{user_by}} 设置  {{username}} 为 {{role}} 角色"
+  "your_message_optional": "你的消息（可选）"
 }

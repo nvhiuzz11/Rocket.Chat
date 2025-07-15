@@ -1,6 +1,5 @@
 {
   "500": "உள்ளக சர்வர் பிழை",
-  "files": "கோப்புகளை",
   "#channel": "#channel",
   "0_Errors_Only": "0 - பிழைகளை மட்டும்",
   "1_Errors_and_Information": "1 - பிழைகள் மற்றும் தகவல்",
@@ -2084,6 +2083,7 @@
   "TargetRoom": "இலக்கு அறை",
   "TargetRoom_Description": "இந்த நிகழ்வின் விளைவாக நிகழ்ந்த செய்திகள் அனுப்பப்படும் அறை. ஒரு இலக்கு அறை மட்டுமே அனுமதிக்கப்பட்டு அது இருக்க வேண்டும்.",
   "Team": "அணி",
+  "Team_Tasks": "குழு பணிகள்",
   "Teams_New_Add_members_Label": "உறுப்பினர்கள்",
   "Teams_New_Broadcast_Description": "அங்கீகரிக்கப்பட்ட பயனர்கள் மட்டுமே புதிய செய்திகளை எழுத முடியும், ஆனால் பிற பயனர்கள் பதிலளிப்பார்கள்",
   "Teams_New_Description_Label": "தலைப்பு",
@@ -2387,6 +2387,8 @@
   "Your_push_was_sent_to_s_devices": "உங்கள் மிகுதி% கள் சாதனங்கள் அனுப்பப்பட்டது",
   "Your_server_link": "உங்கள் சர்வர் இணைப்பு",
   "Your_workspace_is_ready": "உங்கள் பணியிடம் use பயன்படுத்த தயாராக உள்ளது",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} {{user_by}} மூலம், {{role}} இனி ஆகிறது",
+  "__username__was_set__role__by__user_by_": "{{username}} {{user_by}} மூலம் {{role}} அமைக்கப்பட்டது",
   "access-mailer": "அணுகல் அஞ்சல் திரையில்",
   "access-mailer_description": "அனைத்து பயனர்களுக்கும் வெகுஜன மின்னஞ்சலை அனுப்பி அனுமதி.",
   "access-permissions": "அணுகல் அனுமதிகள் திரை",
@@ -2566,6 +2568,7 @@
   "every_second": "ஒவ்வொரு வினாடியும் ஒருமுறை",
   "every_six_hours": "ஒவ்வொரு ஆறு மணி நேரம்",
   "except_pinned": "(பின்னிணைக்கப்பட்டவை தவிர)",
+  "files": "கோப்புகளை",
   "force-delete-message": "செய்தி நீக்கு",
   "force-delete-message_description": "எல்லா கட்டுப்பாடுகளையும் தவிர்த்து ஒரு செய்தியை நீக்க அனுமதி",
   "github_no_public_email": "நீங்கள் உங்கள் மகிழ்ச்சியா கணக்கில் பொது மின்னஞ்சல் என எந்த மின்னஞ்சல் இல்லை",
@@ -2761,7 +2764,5 @@
   "yesterday": "நேற்று",
   "you_are_in_preview_mode_of": "நீங்கள் சேனல் # <strong>{{room_name}}</strong> முன்னோட்ட முறையில் உள்ளன",
   "your_message": "உங்கள் தகவல்",
-  "your_message_optional": "உங்கள் செய்தி (விரும்பினால்)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} {{user_by}} மூலம், {{role}} இனி ஆகிறது",
-  "__username__was_set__role__by__user_by_": "{{username}} {{user_by}} மூலம் {{role}} அமைக்கப்பட்டது"
+  "your_message_optional": "உங்கள் செய்தி (விரும்பினால்)"
 }

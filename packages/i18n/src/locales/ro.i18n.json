@@ -1,6 +1,5 @@
 {
   "500": "eroare interna a serverului",
-  "files": "fișiere",
   "#channel": "#canal",
   "0_Errors_Only": "0 - Doar erori.",
   "1_Errors_and_Information": "1 - Erori și informații",
@@ -2082,6 +2081,7 @@
   "TargetRoom": "Target Room",
   "TargetRoom_Description": "Camera în care vor fi trimise mesajele care sunt rezultatul declanșării acestui eveniment. Numai o cameră țintă este permisă și trebuie să existe.",
   "Team": "Echipă",
+  "Team_Tasks": "Sarcini echipă",
   "Teams_New_Add_members_Label": "Membri",
   "Teams_New_Broadcast_Description": "Numai utilizatorii autorizați pot scrie mesaje noi, dar ceilalți utilizatori vor putea răspunde",
   "Teams_New_Description_Label": "Subiect",
@@ -2385,6 +2385,8 @@
   "Your_push_was_sent_to_s_devices": "Mesajul Push a fost trimis la %s dispozitive",
   "Your_server_link": "Linkul dvs. de server",
   "Your_workspace_is_ready": "Spațiul dvs. de lucru este gata de utilizare 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} nu mai este {{role}}, prin {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} a fost stabilită {{role}} de {{user_by}}",
   "access-mailer": "Accesați ecranul Mailer",
   "access-mailer_description": "Permisiunea de a trimite e-mail în masă tuturor utilizatorilor.",
   "access-permissions": "Ecranul Permisiuni de acces",
@@ -2562,6 +2564,7 @@
   "every_second": "O dată la fiecare secundă",
   "every_six_hours": "O dată la șase ore",
   "except_pinned": "(cu excepția celor fixate)",
+  "files": "fișiere",
   "force-delete-message": "Forțați ștergerea mesajului",
   "force-delete-message_description": "Permisiunea de a șterge un mesaj prin ignorarea tuturor restricțiilor",
   "github_no_public_email": "Nu aveți nici un e-mail setat ca e-mail public în contul dumneavoastră GitHub",
@@ -2750,7 +2753,5 @@
   "will_be_able_to": "va putea",
   "yesterday": "ieri",
   "your_message": "mesajul tau",
-  "your_message_optional": "mesajul dvs. (opțional)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} nu mai este {{role}}, prin {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} a fost stabilită {{role}} de {{user_by}}"
+  "your_message_optional": "mesajul dvs. (opțional)"
 }

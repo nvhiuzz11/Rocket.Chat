@@ -1,6 +1,5 @@
 {
   "500": "שגיאת שרת פנימית",
-  "files": "קבצים",
   "#channel": "#קבוצה",
   "%_of_conversations": "אחוז מהשיחות",
   "0_Errors_Only": "0 - שגיאות בלבד",
@@ -1154,6 +1153,7 @@
   "Sync_success": "הצלחת Sync",
   "System_messages": "הודעות מערכת",
   "Tag": "תָג",
+  "Team_Tasks": "משימות צוות",
   "Teams_New_Add_members_Label": "חברים",
   "Teams_New_Broadcast_Description": "רק משתמשים מורשים יוכלו לכתוב הודעות, אבל שאר המשתמשים יכולים להגיב",
   "Teams_New_Description_Label": "נושא",
@@ -1373,6 +1373,9 @@
   "Your_password_is_wrong": "הסיסמה שלך שגויה!",
   "Your_push_was_sent_to_s_devices": "הודעת ה-push נשלח בהצלחה ל-%s מכשירים",
   "Your_question": "השאלה שלך",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} קבוצות ריקות יוסרו אוטומטית",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} הוא כבר לא {{role}}, על ידי {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} נקבע {{role}} על ידי {{user_by}}",
   "access-mailer_description": "הרשאה לשליחת מיילים לכלל המשתמשים",
   "add-user": "הוספת משתמש",
   "and": "ו",
@@ -1476,6 +1479,7 @@
   "every_minute": "כל דקה",
   "every_second": "כל שניה",
   "every_six_hours": "כל 6 שעות",
+  "files": "קבצים",
   "force-delete-message": "כפה מחיקת הודעה",
   "github_no_public_email": "אין לך אף כתובת דוא״ל פומבית בחשבון ה־GitHub שלך",
   "hours": "שעות",
@@ -1545,8 +1549,5 @@
   "yesterday": "אתמול",
   "you_are_in_preview_mode_of": "אתה במצב תצוגה מקדימה של קבוצה #<strong>{{room_name}}</strong>",
   "you_are_in_preview_mode_of_incoming_livechat": "אתה במצב תצוגה מקדימה של השיחה הזאת",
-  "your_message": "ההודעה שלך",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} קבוצות ריקות יוסרו אוטומטית",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} הוא כבר לא {{role}}, על ידי {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} נקבע {{role}} על ידי {{user_by}}"
+  "your_message": "ההודעה שלך"
 }

@@ -1,6 +1,5 @@
 {
   "500": "Εσωτερικό Σφάλμα Διακομιστή",
-  "files": "αρχεία",
   "#channel": "#κανάλι",
   "%_of_conversations": "% των συνομιλιών",
   "0_Errors_Only": "0 - Σφάλματα Μόνο",
@@ -2088,6 +2087,7 @@
   "TargetRoom": "Στοχευόμενη αίθουσα",
   "TargetRoom_Description": "Το δωμάτιο στο οποίο στέλνονται τα μηνύματα, τα οποία είναι αποτέλεσμα της εκτόξευσης αυτού του συμβάντος. Μόνο ένα δωμάτιο στόχευσης επιτρέπεται και πρέπει να υπάρχει.",
   "Team": "Ομάδα",
+  "Team_Tasks": "Εργασίες ομάδας",
   "Teams_New_Add_members_Label": "Μέλη",
   "Teams_New_Broadcast_Description": "Μόνο οι εξουσιοδοτημένοι χρήστες μπορούν να γράψουν νέα μηνύματα, αλλά οι άλλοι χρήστες θα μπορούν να απαντήσουν",
   "Teams_New_Description_Label": "Θέμα",
@@ -2392,6 +2392,8 @@
   "Your_push_was_sent_to_s_devices": "ώθηση σας στάλθηκε σε συσκευές %s",
   "Your_server_link": "Σύνδεσμος διακομιστή σας",
   "Your_workspace_is_ready": "Ο χώρος εργασίας σας είναι έτοιμος για χρήση 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "Ο {{username}} δεν είναι πλέον {{role}} από τον {{user_by}}",
+  "__username__was_set__role__by__user_by_": "Ο {{username}} ορίστηκε ως {{role}} από τον {{user_by}}",
   "access-mailer": "Πρόσβαση στην Οθόνη της Αλληλογραφίας",
   "access-mailer_description": "Άδεια για μαζική αποστολή αλληλογραφίας σε όλους τους χρήστες.",
   "access-permissions": "Πρόσβαση στην Οθόνη των Αδειών",
@@ -2572,6 +2574,7 @@
   "every_second": "Κάθε δευτερόλεπτο",
   "every_six_hours": "Μια φορά κάθε έξι ώρες",
   "except_pinned": "(εκτός από εκείνα που είναι καρφωμένα)",
+  "files": "αρχεία",
   "force-delete-message": "Μήνυμα διαγραφής δύναμης",
   "force-delete-message_description": "Άδεια διαγραφής ενός μηνύματος παρακάμπτοντας όλους τους περιορισμούς",
   "github_no_public_email": "Δεν έχεις κανένα δημόσιο email στον GitHub λογαριασμό σου",
@@ -2763,7 +2766,5 @@
   "yesterday": "εχθές",
   "you_are_in_preview_mode_of": "Είστε σε κατάσταση προεπισκόπησης του καναλιού #<strong>{{room_name}}</strong>",
   "your_message": "το μήνυμά σου",
-  "your_message_optional": "το μήνυμά σας (προαιρετικό)",
-  "__username__is_no_longer__role__defined_by__user_by_": "Ο {{username}} δεν είναι πλέον {{role}} από τον {{user_by}}",
-  "__username__was_set__role__by__user_by_": "Ο {{username}} ορίστηκε ως {{role}} από τον {{user_by}}"
+  "your_message_optional": "το μήνυμά σας (προαιρετικό)"
 }

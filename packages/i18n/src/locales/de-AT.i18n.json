@@ -1,6 +1,5 @@
 {
   "500": "Interner Serverfehler",
-  "files": "Dateien",
   "#channel": "#Raum",
   "0_Errors_Only": "0 - nur Fehler",
   "1_Errors_and_Information": "1 - Fehler und Informationen",
@@ -2084,6 +2083,7 @@
   "TargetRoom": "Zielraum",
   "TargetRoom_Description": "Der Raum, in dem Nachrichten gesendet werden, die ein Ergebnis dieses Ereignisses sind. Nur ein Zielraum ist erlaubt und muss existieren.",
   "Team": "Mannschaft",
+  "Team_Tasks": "Team-Aufgaben",
   "Teams_New_Broadcast_Description": "Nur autorisierte Benutzer können neue Nachrichten schreiben, die anderen Benutzer können jedoch antworten",
   "Teams_New_Description_Label": "Thema",
   "Teams_New_Name_Label": "Name",
@@ -2387,6 +2387,8 @@
   "Your_push_was_sent_to_s_devices": "Die Push-Nachricht wurde an %s Geräte gesendet.",
   "Your_server_link": "Ihre Serververbindung",
   "Your_workspace_is_ready": "Ihr Arbeitsbereich ist einsatzbereit 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ist nicht länger {{role}}. Geändert durch {{user_by}}.",
+  "__username__was_set__role__by__user_by_": "{{username}} ist jetzt {{role}}, geändert von {{user_by}}",
   "access-mailer": "Zugriff auf Mailer-Bildschirm",
   "access-mailer_description": "Berechtigung zum Senden von Massen-E-Mails an alle Benutzer.",
   "access-permissions": "Zugriffsberechtigungsbildschirm",
@@ -2566,6 +2568,7 @@
   "every_second": "Einmal jede Sekunde",
   "every_six_hours": "Einmal alle sechs Stunden",
   "except_pinned": "(außer denen, die gepinnt sind)",
+  "files": "Dateien",
   "force-delete-message": "Nachricht erzwingen",
   "force-delete-message_description": "Berechtigung zum Löschen einer Nachricht unter Umgehung aller Einschränkungen",
   "github_no_public_email": "Sie haben keine öffentliche E-Mail-Adresse in Ihrem GitHub-Account.",
@@ -2755,7 +2758,5 @@
   "yesterday": "gestern",
   "you_are_in_preview_mode_of": "Sie befinden sich im Vorschaumodus des Kanals #<strong>{{room_name}}</strong>.",
   "your_message": "ihre Nachricht",
-  "your_message_optional": "ihre optionale Nachricht",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ist nicht länger {{role}}. Geändert durch {{user_by}}.",
-  "__username__was_set__role__by__user_by_": "{{username}} ist jetzt {{role}}, geändert von {{user_by}}"
+  "your_message_optional": "ihre optionale Nachricht"
 }

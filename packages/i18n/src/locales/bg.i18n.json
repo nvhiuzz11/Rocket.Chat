@@ -1,6 +1,5 @@
 {
   "500": "Вътрешна грешка на сървъра",
-  "files": "файлове",
   "#channel": "#канал",
   "0_Errors_Only": "0 - Само Грешки",
   "1_Errors_and_Information": "1 - Грешки и Информация",
@@ -2079,6 +2078,7 @@
   "TargetRoom": "Целева стая",
   "TargetRoom_Description": "Стаята, в която ще бъдат изпратени съобщения, които са резултат от изстрелването на това събитие. Само една целева стая е разрешена и трябва да съществува.",
   "Team": "екип",
+  "Team_Tasks": "Екипни задачи",
   "Teams_New_Broadcast_Description": "Само оторизираните потребители могат да пишат нови съобщения, но останалите потребители ще могат да отговорят",
   "Teams_New_Description_Label": "тема",
   "Teams_New_Name_Label": "Име",
@@ -2380,6 +2380,8 @@
   "Your_push_was_sent_to_s_devices": "Натискането ви бе изпратено на %s устройства",
   "Your_server_link": "Вашата сървърна връзка",
   "Your_workspace_is_ready": "Работното ви пространство е готово за използване 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} вече не е {{role}} от {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} бе зададено {{role}} от {{user_by}}",
   "access-mailer": "Достъп до екрана на Mailer",
   "access-mailer_description": "Разрешение за изпращане на масов имейл до всички потребители.",
   "access-permissions": "Екран за разрешения за достъп",
@@ -2559,6 +2561,7 @@
   "every_second": "Веднъж на всеки секунда",
   "every_six_hours": "Веднъж на всеки шест часа",
   "except_pinned": "(с изключение на тези, които са закрепени)",
+  "files": "файлове",
   "force-delete-message": "Съобщение за изтриване на сила",
   "force-delete-message_description": "Разрешение за изтриване на съобщение, заобикалящо всички ограничения",
   "github_no_public_email": "Нямате имейл като публичен имейл в профила си в GitHub",
@@ -2748,7 +2751,5 @@
   "yesterday": "вчера",
   "you_are_in_preview_mode_of": "Вие сте в режим на визуализация на канал # <strong>{{room_name}}</strong>",
   "your_message": "твоето съобщение",
-  "your_message_optional": "Вашето съобщение (по избор)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} вече не е {{role}} от {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} бе зададено {{role}} от {{user_by}}"
+  "your_message_optional": "Вашето съобщение (по избор)"
 }

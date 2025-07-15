@@ -1,6 +1,5 @@
 {
   "500": "Xeletiya Pêşkêşkara Herêmî",
-  "files": "pelan",
   "#channel": "#qenal",
   "0_Errors_Only": "0 - Errors Tenê",
   "1_Errors_and_Information": "1 - Errors û Information",
@@ -2077,6 +2076,7 @@
   "TargetRoom": "Armanca Armanc",
   "TargetRoom_Description": "Odeya ku li peyamên ku dê bêne şandin, encameke vê bûyerê şewitandin. Tenê tenê odeya armanca destûr e û divê ew heye.",
   "Team": "Kom",
+  "Team_Tasks": "Peywirên Tîmê",
   "Teams_New_Add_members_Label": "ئەندامان",
   "Teams_New_Broadcast_Description": "Tenê bikarhênerên xwedîkirî dikarin dikarin peyamên nû binivîse, lê bikarhênerên din dê bikaribin bersiv bikin",
   "Teams_New_Description_Label": "Mijar",
@@ -2380,6 +2380,8 @@
   "Your_push_was_sent_to_s_devices": "push xwe ji bo cîhazên %s hate şandin",
   "Your_server_link": "Girêdana serverê",
   "Your_workspace_is_ready": "Karên te yên amadekar e amade ye",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} e êdî {{role}}, ji aliyê {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} {{role}} destê {{user_by}} hat avakirin",
   "access-mailer": "Daxistina Mailer Screen",
   "access-mailer_description": "Destûra ji bo hemû bikarhênerên e-nameya girseyî bişînin.",
   "access-permissions": "Destûra Serîlêdanê",
@@ -2558,6 +2560,7 @@
   "every_second": "Gava her duyemîn",
   "every_six_hours": "Piştî her şeş saetan",
   "except_pinned": "(bila wan ên ku guneh kirin)",
+  "files": "pelan",
   "force-delete-message": "Daxistina Peyamê Mijar",
   "force-delete-message_description": "Destûra ku ji bo hemî sînor veşartina peyamek jêbirin",
   "github_no_public_email": "لە هەژماری گیتهەبەکەت هیچ ئیمەیڵێکی کراوەی گشتیت نیە",
@@ -2746,7 +2749,5 @@
   "yesterday": "do",
   "you_are_in_preview_mode_of": "Tu di moda preview ya kanala # <strong>{{room_name}}</strong> in",
   "your_message": "peyama we",
-  "your_message_optional": "Peyama we (bijartî)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} e êdî {{role}}, ji aliyê {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} {{role}} destê {{user_by}} hat avakirin"
+  "your_message_optional": "Peyama we (bijartî)"
 }

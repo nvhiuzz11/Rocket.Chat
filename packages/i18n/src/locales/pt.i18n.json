@@ -1,6 +1,5 @@
 {
   "500": "Erro Interno do Servidor",
-  "files": "ficheiros",
   "#channel": "#canal",
   "%_of_conversations": "% de conversas",
   "0_Errors_Only": "0 - Apenas erros",
@@ -2405,6 +2404,7 @@
   "TargetRoom": "Sala de destino",
   "TargetRoom_Description": "A sala onde as mensagens serão enviadas, que são o resultado desse evento a ser disparado. Somente uma sala-alvo é permitido e deve existir.",
   "Team": "Equipa",
+  "Team_Tasks": "Tarefas da equipa",
   "Teams_New_Add_members_Label": "Membros",
   "Teams_New_Broadcast_Description": "Apenas utilizadores autorizados podem escrever novas mensagens, mas os outros utilizadores poderão responder",
   "Teams_New_Description_Label": "Tópico",
@@ -2752,6 +2752,10 @@
   "Your_question": "A sua pergunta",
   "Your_server_link": "O link do seu servidor",
   "Your_workspace_is_ready": "O seu espaço de trabalho está pronto a usar 🎉",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} salas vazias serão removidas automáticamente.",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> salas vazias serão removidas automáticamente:<br/> {{rooms}}.",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} já não pertence a {{role}}, por {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} foi definido como {{role}} por {{user_by}}",
   "access-mailer": "Aceder ao ecrã do Mailer",
   "access-mailer_description": "Permissão para enviar e-mails em massa para todos os utilizadores.",
   "access-permissions": "Ecrã de permissões de acesso",
@@ -2955,6 +2959,7 @@
   "every_six_hours": "Uma vez a cada seis horas",
   "except_pinned": "(Excepto aqueles que estão fixos)",
   "expression": "Expressão",
+  "files": "ficheiros",
   "force-delete-message": "Forçar a remoção da mensagem",
   "force-delete-message_description": "Permissão para apagar uma mensagem ignorando todas as restrições",
   "github_no_public_email": "Não possui um e-mail público na sua conta GitHub",
@@ -3171,9 +3176,5 @@
   "yesterday": "ontem",
   "you_are_in_preview_mode_of": "Modo de pré-visualização do canal #<strong>{{room_name}}</strong>",
   "your_message": "sua mensagem",
-  "your_message_optional": "sua mensagem (opcional)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} salas vazias serão removidas automáticamente.",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> salas vazias serão removidas automáticamente:<br/> {{rooms}}.",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} já não pertence a {{role}}, por {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} foi definido como {{role}} por {{user_by}}"
+  "your_message_optional": "sua mensagem (opcional)"
 }

@@ -1,6 +1,5 @@
 {
   "500": "Interna Servila Eraro",
-  "files": "dosierojn",
   "#channel": "#kanalo",
   "0_Errors_Only": "0 - Nur Eraroj",
   "1_Errors_and_Information": "1 - Eraroj kaj Informo",
@@ -2082,6 +2081,7 @@
   "TargetRoom": "Celoĉambro",
   "TargetRoom_Description": "La ĉambro kie sendos mesaĝojn, kiuj estas rezulto de ĉi tiu okazaĵo estanta pafita. Nur unu blanka ĉambro estas permesita kaj ĝi devas ekzisti.",
   "Team": "Teamo",
+  "Team_Tasks": "Teamaj Taskoj",
   "Teams_New_Broadcast_Description": "Nur rajtigitaj uzantoj povas skribi novajn mesaĝojn, sed la aliaj uzantoj povos respondi",
   "Teams_New_Description_Label": "Temo",
   "Teams_New_Name_Label": "Nomo",
@@ -2386,6 +2386,8 @@
   "Your_server_link": "Via servilo-ligilo",
   "Your_temporary_password_is_password": "Via provizora pasvorto estas: <strong>[pasvorto]</strong>",
   "Your_workspace_is_ready": "Via labora spaco pretas uzi 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ne plu estas {{role}} per {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} estis difinita {{role}} per {{user_by}}",
   "access-mailer": "Aliro Mailer-Ekrano",
   "access-mailer_description": "Permeso sendi multan retpoŝton al ĉiuj uzantoj.",
   "access-permissions": "Aliro Permeskribo",
@@ -2565,6 +2567,7 @@
   "every_second": "Fojo ĉiu dua",
   "every_six_hours": "Fojo ĉiu ses horoj",
   "except_pinned": "(krom tiuj, kiuj estas kovritaj)",
+  "files": "dosierojn",
   "force-delete-message": "Forigi Forigi Mesaĝon",
   "force-delete-message_description": "Permeso forigi mesaĝon preterpasante ĉiujn limigojn",
   "github_no_public_email": "Vi ne havas retpoŝton kiel publika retpoŝto en via konto de GitHub",
@@ -2756,7 +2759,5 @@
   "yesterday": "hieraŭ",
   "you_are_in_preview_mode_of": "Vi estas antaŭvida maniero de kanalo # <strong>{{room_name}}</strong>",
   "your_message": "via mesaĝo",
-  "your_message_optional": "via mesaĝo (laŭvola)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} ne plu estas {{role}} per {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} estis difinita {{role}} per {{user_by}}"
+  "your_message_optional": "via mesaĝo (laŭvola)"
 }

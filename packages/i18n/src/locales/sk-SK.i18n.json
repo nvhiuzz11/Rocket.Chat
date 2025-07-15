@@ -1,6 +1,5 @@
 {
   "500": "Interná chyba servera",
-  "files": "súbory",
   "#channel": "#kanál",
   "0_Errors_Only": "0 - Len chyby",
   "12_Hour": "12 hodinový formát času",
@@ -2089,6 +2088,7 @@
   "TargetRoom": "Cieľová miestnosť",
   "TargetRoom_Description": "Miestnosť, kde sa posielajú správy, ktoré sú výsledkom vypálení tejto udalosti. Len jedna cieľová miestnosť je povolená a musí existovať.",
   "Team": "tím",
+  "Team_Tasks": "Tímové úlohy",
   "Teams_New_Broadcast_Description": "Iba autorizovaní používatelia môžu písať nové správy, ale ostatní používatelia budú môcť odpovedať",
   "Teams_New_Description_Label": "téma",
   "Teams_New_Name_Label": "Názov",
@@ -2391,6 +2391,8 @@
   "Your_push_was_sent_to_s_devices": "Posun bol odoslaný na zariadenia%s",
   "Your_server_link": "Váš odkaz na server",
   "Your_workspace_is_ready": "Váš pracovný priestor je pripravený na použitie 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "používateľovi {{username}} bola zrušená funkcia {{role}} používateľom {{user_by}}",
+  "__username__was_set__role__by__user_by_": "používateľovi {{username}} bola nastavená funkcia {{role}} používateľom {{user_by}}",
   "access-mailer": "Prístup k obrazovke mailového klienta",
   "access-mailer_description": "Povolenie na posielanie hromadného e-mailu všetkým používateľom.",
   "access-permissions": "Obrazovka povoľovania prístupov",
@@ -2572,6 +2574,7 @@
   "every_second": "Raz za sekundu",
   "every_six_hours": "Raz za šesť hodín",
   "except_pinned": "(okrem tých, ktoré sú pripnuté)",
+  "files": "súbory",
   "force-delete-message": "Vynútiť vymazanie správy",
   "force-delete-message_description": "Povolenie na odstránenie správy obchádzajúce všetky obmedzenia",
   "github_no_public_email": "V účte GitHub nemáte žiadny e-mail ako verejnú e-mailovú správu",
@@ -2761,7 +2764,5 @@
   "yesterday": "včera",
   "you_are_in_preview_mode_of": "Nachádzate sa v režime náhľadu kanálu # <strong>{{room_name}}</strong>",
   "your_message": "tvoja správa",
-  "your_message_optional": "Vaša správa (voliteľné)",
-  "__username__is_no_longer__role__defined_by__user_by_": "používateľovi {{username}} bola zrušená funkcia {{role}} používateľom {{user_by}}",
-  "__username__was_set__role__by__user_by_": "používateľovi {{username}} bola nastavená funkcia {{role}} používateľom {{user_by}}"
+  "your_message_optional": "Vaša správa (voliteľné)"
 }

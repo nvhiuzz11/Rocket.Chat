@@ -1,6 +1,5 @@
 {
   "500": "Lỗi máy chủ",
-  "files": "các tập tin",
   "#channel": "kênh ",
   "%_of_conversations": "% các cuộc hội thoại",
   "0_Errors_Only": "0 - Chỉ lỗi",
@@ -2173,6 +2172,7 @@
   "TargetRoom": "Phòng mục tiêu",
   "TargetRoom_Description": "Phòng chứa tin nhắn sẽ được gửi đi là kết quả của sự kiện này bị sa thải. Chỉ cho phép một phòng mục tiêu và nó phải tồn tại.",
   "Team": "Đội",
+  "Team_Tasks": "Nhiệm vụ nhóm",
   "Teams_New_Broadcast_Description": "Chỉ những người dùng được ủy quyền mới có thể viết thư mới, nhưng những người dùng khác sẽ có thể trả lời",
   "Teams_New_Description_Label": "Đề tài",
   "Teams_New_Name_Label": "Tên",
@@ -2475,6 +2475,9 @@
   "Your_push_was_sent_to_s_devices": "Đã được gửi tới % thiết bị",
   "Your_server_link": "Đường dẫn máy chủ của bạn",
   "Your_workspace_is_ready": "Workspace của bạn đã sẵn sàng",
+  "__count__empty_rooms_will_be_removed_automatically": "{{count}} phòng trống sẽ được gỡ bỏ tự động.",
+  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> phòng trống sẽ được gỡ bỏ tự động: <br/> {{rooms}}.",
+  "__username__was_set__role__by__user_by_": "{{username}} đã được đặt {{role}} bởi {{user_by}}",
   "access-mailer": "Truy cập màn hình xử lý mail",
   "access-mailer_description": "Quyền gửi nhiều email tới tất cả người dùng.",
   "access-permissions": "Truy cập màn hình cấp quyền",
@@ -2653,6 +2656,7 @@
   "every_second": "Mỗi giây một lần",
   "every_six_hours": "Mỗi sáu giờ một lần",
   "except_pinned": "(ngoại trừ những thứ được ghim)",
+  "files": "các tập tin",
   "force-delete-message": "Buộc xóa tin nhắn",
   "force-delete-message_description": "Cho phép xóa một tin nhắn bỏ qua tất cả các hạn chế",
   "github_no_public_email": "Bạn không có bất kỳ email nào dưới dạng email công khai trong tài khoản GitHub của mình",
@@ -2850,8 +2854,5 @@
   "yesterday": "hôm qua",
   "you_are_in_preview_mode_of": "Bạn đang ở chế độ xem trước của kênh # <strong>{{room_name}}</strong>",
   "your_message": "tin nhắn của bạn",
-  "your_message_optional": "tin nhắn của bạn (tùy chọn)",
-  "__count__empty_rooms_will_be_removed_automatically": "{{count}} phòng trống sẽ được gỡ bỏ tự động.",
-  "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> phòng trống sẽ được gỡ bỏ tự động: <br/> {{rooms}}.",
-  "__username__was_set__role__by__user_by_": "{{username}} đã được đặt {{role}} bởi {{user_by}}"
+  "your_message_optional": "tin nhắn của bạn (tùy chọn)"
 }

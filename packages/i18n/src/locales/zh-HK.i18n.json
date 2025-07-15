@@ -1,6 +1,5 @@
 {
   "500": "內部伺服器錯誤",
-  "files": "档",
   "#channel": "#頻道",
   "%_of_conversations": "% 的会话",
   "0_Errors_Only": "0  - 仅错误",
@@ -2109,6 +2108,7 @@
   "TargetRoom": "目标室",
   "TargetRoom_Description": "将被发送的消息将被解雇，这是该事件的结果。只有一个目标房间是允许的，它必须存在。",
   "Team": "球队",
+  "Team_Tasks": "團隊任務",
   "Teams_New_Add_members_Label": "成员",
   "Teams_New_Broadcast_Description": "只有授权用户才能写新消息，但其他用户将能够回复",
   "Teams_New_Description_Label": "话题",
@@ -2408,6 +2408,8 @@
   "Your_push_was_sent_to_s_devices": "您的推送已发送到％s设备",
   "Your_server_link": "您的服务器链接",
   "Your_workspace_is_ready": "您的工作区已准备好使用🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": " {{user_by}}  已把 {{username}} 從 {{role}} 中移除",
+  "__username__was_set__role__by__user_by_": " {{user_by}}  已把 {{username}} 加進 {{role}} 中",
   "access-mailer": "访问邮件程序屏幕",
   "access-mailer_description": "允许向所有用户发送大量电子邮件。",
   "access-permissions": "访问权限屏幕",
@@ -2586,6 +2588,7 @@
   "every_second": "每秒一次",
   "every_six_hours": "每六小时一次",
   "except_pinned": "（固定的除外）",
+  "files": "档",
   "force-delete-message": "强制删除消息",
   "force-delete-message_description": "允许删除绕过所有限制的消息",
   "github_no_public_email": "在您的GitHub上帐户中，您没有设置任何电子邮件作为公共电子邮件地址。",
@@ -2775,7 +2778,5 @@
   "yesterday": "昨天",
   "you_are_in_preview_mode_of": "您正在预览频道 #<strong>{{room_name}}</strong>",
   "your_message": "你的信息",
-  "your_message_optional": "你的信息（可选）",
-  "__username__is_no_longer__role__defined_by__user_by_": " {{user_by}}  已把 {{username}} 從 {{role}} 中移除",
-  "__username__was_set__role__by__user_by_": " {{user_by}}  已把 {{username}} 加進 {{role}} 中"
+  "your_message_optional": "你的信息（可选）"
 }

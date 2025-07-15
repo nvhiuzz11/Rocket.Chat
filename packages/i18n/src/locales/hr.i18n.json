@@ -1,6 +1,5 @@
 {
   "500": "Interna pogreška poslužitelja",
-  "files": "slika",
   "#channel": "#soba",
   "%_of_conversations": "% razgovora",
   "0_Errors_Only": "0 - Samo Pogreške",
@@ -2205,6 +2204,7 @@
   "TargetRoom": "Ciljana soba",
   "TargetRoom_Description": "Soba u kojoj će biti poslane poruke koje su rezultat toga događaja. Samo jedna ciljna soba je dopuštena i mora postojati.",
   "Team": "Tim",
+  "Team_Tasks": "Timski zadaci",
   "Teams_New_Add_members_Label": "Članovi",
   "Teams_New_Broadcast_Description": "Samo ovlašteni korisnici mogu napisati nove poruke, ali ostali će korisnici moći odgovoriti",
   "Teams_New_Description_Label": "Tema",
@@ -2510,6 +2510,8 @@
   "Your_push_was_sent_to_s_devices": "Push obavijest je poslana %s uređaje",
   "Your_server_link": "Veza poslužitelja",
   "Your_workspace_is_ready": "Radni je prostor spreman za upotrebu 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{user_by}} je uklonio {{username}} iz {{role}} grupe",
+  "__username__was_set__role__by__user_by_": "{{user_by}} je postavio {{username}} u {{role}} grupu ",
   "access-mailer": "Pristup zaslonu Mailer",
   "access-mailer_description": "Dopuštenje za slanje masovne poruke svim korisnicima.",
   "access-permissions": "Zaslon pristupa dozvolama",
@@ -2698,6 +2700,7 @@
   "every_second": "Jednom u sekundi",
   "every_six_hours": "Svakih šest sati",
   "except_pinned": "(osim onih koje su zabodene)",
+  "files": "slika",
   "force-delete-message": "Snaga brisanja poruke",
   "force-delete-message_description": "Dozvola za brisanje poruke koja zaobilazi sva ograničenja",
   "github_no_public_email": "Nemaš nijedan javni email u svom GitHub računu",
@@ -2890,7 +2893,5 @@
   "yesterday": "jučer",
   "you_are_in_preview_mode_of": "Ti si u preglednom načinu sobe # <strong>{{room_name}}</strong>",
   "your_message": "tvoja poruka",
-  "your_message_optional": "tvoja poruka (opcionalno)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{user_by}} je uklonio {{username}} iz {{role}} grupe",
-  "__username__was_set__role__by__user_by_": "{{user_by}} je postavio {{username}} u {{role}} grupu "
+  "your_message_optional": "tvoja poruka (opcionalno)"
 }

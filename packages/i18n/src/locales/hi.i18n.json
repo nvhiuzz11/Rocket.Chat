@@ -199,6 +199,7 @@
   "Start_Chat": "बातचीत शुरू ",
   "Survey": "सर्वेक्षण",
   "Survey_instructions": "प्रत्येक प्रश्न को अपनी संतुष्टि के अनुसार रेट करें, 1 मतलब कि आप पूरी तरह से असंतुष्ट हैं और 5 का अर्थ है कि आप पूरी तरह से संतुष्ट हैं।",
+  "Team_Tasks": "टीम कार्य",
   "Thank_you_for_your_feedback": "आपकी प्रतिक्रिया के लिए आपका धन्यवाद",
   "Type_your_email": "अपना ईमेल टाइप करें",
   "Type_your_message": "अपना संदेश टाइप करें",
@@ -209,10 +210,10 @@
   "We_are_offline_Sorry_for_the_inconvenience": "हम ऑफ़लाइन हैं। असुविधा के लिए खेद है।",
   "Yes": "हाँ",
   "You": "आप",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} is no longer {{role}} by {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} was set {{role}} by {{user_by}}",
   "access-mailer": "मेलर स्क्रीन एक्सेस करें",
   "access-mailer_description": "सभी उपयोगकर्ताओं को बड़े पैमाने पर ईमेल भेजने की अनुमति।",
   "access-permissions": "अनुमतियाँ स्क्रीन एक्सेस करें",
-  "access-permissions_description": "विभिन्न भूमिकाओं के लिए अनुमतियों को संशोधित करें।",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} is no longer {{role}} by {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} was set {{role}} by {{user_by}}"
+  "access-permissions_description": "विभिन्न भूमिकाओं के लिए अनुमतियों को संशोधित करें।"
 }

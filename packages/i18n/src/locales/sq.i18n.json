@@ -1,6 +1,5 @@
 {
   "500": "Server Error brendshme",
-  "files": "fotografi",
   "#channel": "#kanali",
   "0_Errors_Only": "0 - Gabimet Vetëm",
   "1_Errors_and_Information": "1 - Gabimet dhe Informacione",
@@ -2083,6 +2082,7 @@
   "TargetRoom": "Dhoma e synuar",
   "TargetRoom_Description": "Dhoma ku do të dërgohen mesazhe të cilat janë rezultat i kësaj ngjarjeje. Vetëm një dhomë e synuar është e lejuar dhe duhet të ekzistojë.",
   "Team": "ekip",
+  "Team_Tasks": "Detyrat e ekipit",
   "Teams_New_Add_members_Label": "Anëtarët",
   "Teams_New_Broadcast_Description": "Vetëm përdoruesit e autorizuar mund të shkruajnë mesazhe të reja, por përdoruesit e tjerë do të jenë në gjendje të përgjigjen",
   "Teams_New_Description_Label": "temë",
@@ -2386,6 +2386,8 @@
   "Your_push_was_sent_to_s_devices": "shtytje juaj u dërgua në pajisjet %s",
   "Your_server_link": "Lidhjet e serverit tuaj",
   "Your_workspace_is_ready": "Hapësira e punës tënde është e gatshme të përdorë 🎉",
+  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} nuk është më {{role}}, duke {{user_by}}",
+  "__username__was_set__role__by__user_by_": "{{username}} u {{role}} nga {{user_by}}",
   "access-mailer": "Qasja e ekranit të postës",
   "access-mailer_description": "Leja për të dërguar email masiv për të gjithë përdoruesit.",
   "access-permissions": "Ekrani i Lejeve të Qasjes",
@@ -2566,6 +2568,7 @@
   "every_second": "Një herë në sekondë",
   "every_six_hours": "Çdo gjashtë orë",
   "except_pinned": "(me përjashtim të atyre që janë mbështetur)",
+  "files": "fotografi",
   "force-delete-message": "Forcë fshini mesazhin",
   "force-delete-message_description": "Leja për të fshirë një mesazh duke anashkaluar të gjitha kufizimet",
   "github_no_public_email": "Ju nuk keni ndonjë email si email publik në llogarinë tuaj GitHub",
@@ -2757,7 +2760,5 @@
   "yesterday": "dje",
   "you_are_in_preview_mode_of": "Je në modalitetin paraprak të kanalit # <strong>{{room_name}} </strong>",
   "your_message": "Mesazhi juaj",
-  "your_message_optional": "mesazhi juaj (opsional)",
-  "__username__is_no_longer__role__defined_by__user_by_": "{{username}} nuk është më {{role}}, duke {{user_by}}",
-  "__username__was_set__role__by__user_by_": "{{username}} u {{role}} nga {{user_by}}"
+  "your_message_optional": "mesazhi juaj (opsional)"
 }
