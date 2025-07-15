@@ -5,6 +5,7 @@ import { useCreateRoomModal } from './useCreateRoomModal';
 import CreateDiscussion from '../../../components/CreateDiscussion';
 import CreateChannelModal from '../actions/CreateChannelModal';
 import CreateDirectMessage from '../actions/CreateDirectMessage';
+import CreateTaskModal from '../actions/CreateTaskModal';
 import CreateTeamModal from '../actions/CreateTeamModal';
 
 const CREATE_CHANNEL_PERMISSIONS = ['create-c', 'create-p'];
@@ -25,6 +26,7 @@ export const useCreateNewItems = (): GenericMenuItemProps[] => {
 	const createTeam = useCreateRoomModal(CreateTeamModal);
 	const createDiscussion = useCreateRoomModal(CreateDiscussion);
 	const createDirectMessage = useCreateRoomModal(CreateDirectMessage);
+	const createTask = useCreateRoomModal(CreateTaskModal);
 
 	const createChannelItem: GenericMenuItemProps = {
 		id: 'channel',
@@ -59,10 +61,20 @@ export const useCreateNewItems = (): GenericMenuItemProps[] => {
 		},
 	};
 
+	const createTaskItem: GenericMenuItemProps = {
+		id: 'task',
+		content: 'Task',
+		icon: 'list',
+		onClick: () => {
+			createTask();
+		},
+	};
+
 	return [
 		...(canCreateDirectMessages ? [createDirectMessageItem] : []),
 		...(canCreateDiscussion && discussionEnabled ? [createDiscussionItem] : []),
 		...(canCreateChannel ? [createChannelItem] : []),
 		...(canCreateTeam ? [createTeamItem] : []),
+		createTaskItem,
 	];
 };
