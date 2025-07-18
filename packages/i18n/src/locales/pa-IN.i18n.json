@@ -14,6 +14,8 @@
   "Past_Chats": "ਪਿਛਲੀਆਂ ਗੱਲਾਂਬਾਤਾਂ",
   "Private_Chats": "ਨਿੱਜੀ ਗੱਲਾਂਬਾਤਾਂ",
   "Stats_Online_Users": "ਹਾਜ਼ਰ ਵਰਤੋਂਕਾਰ",
+  "Tasks": "ਕਾਰਜ",
+  "Team_Projects": "ਟੀਮ ਪ੍ਰੋਜੈਕਟ",
   "Team_Tasks": "ਟੀਮ ਕਾਰਜ",
   "__count__empty_rooms_will_be_removed_automatically__rooms__": "<bold>{{count}}</bold> empty rooms will be removed automatically:<br/> {{rooms}}.",
   "away": "ਦੂਰ",
