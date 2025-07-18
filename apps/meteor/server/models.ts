@@ -84,7 +84,12 @@ import type { Collection } from 'mongodb';
 
 import { trashCollection } from './database/trash';
 import { db } from './database/utils';
-import { TasksRaw } from './models/raw/Tasks';
+import { ProjectRaw } from './models/Project';
+import { ProjectPropertyRaw } from './models/ProjectProperty';
+import { ProjectTagRaw } from './models/ProjectTag';
+import { TaskRaw } from './models/Task';
+import { TaskPropertyRaw } from './models/TaskProperty';
+import { TaskTagRaw } from './models/TaskTag';
 
 registerModel('IAnalyticsModel', new AnalyticsRaw(db));
 registerModel('IAppLogsModel', new AppsLogsModel(db));
@@ -172,4 +177,9 @@ registerModel('IWebdavAccountsModel', new WebdavAccountsRaw(db));
 registerModel('IWorkspaceCredentialsModel', new WorkspaceCredentialsRaw(db));
 
 // Register the Tasks model after raw models are registered
-registerModel('ITasksModel', new TasksRaw(db));
+registerModel('IProjectModel', new ProjectRaw(db));
+registerModel('IProjectPropertyModel', new ProjectPropertyRaw(db));
+registerModel('IProjectTagModel', new ProjectTagRaw(db));
+registerModel('ITaskModel', new TaskRaw(db));
+registerModel('ITaskPropertyModel', new TaskPropertyRaw(db));
+registerModel('ITaskTagModel', new TaskTagRaw(db));

@@ -1,0 +1,55 @@
+import { BaseRaw } from '@rocket.chat/models';
+import type { Db, IndexDescription } from 'mongodb';
+
+import type { IProject } from '../core-typings/IProject';
+import { Meteor } from 'meteor/meteor';
+
+export class ProjectRaw extends BaseRaw<IProject> {
+	constructor(db: Db) {
+		super(db, 'projects');
+	}
+
+	protected modelIndexes(): IndexDescription[] {
+		return [{ key: { roomId: 1 } }, { key: { teamId: 1 } }, { key: { createdAt: -1 } }];
+	}
+
+	async createProject(
+		userCreator: { _id: string; username: string },
+		projectData: Omit<IProject, '_id' | 'createdAt' | 'createdBy' | '_updatedAt'>,
+	): Promise<IProject> {
+		const now = new Date();
+		const { insertedId } = await this.insertOne({
+			...projectData,
+			createdBy: userCreator,
+			createdAt: now,
+		});
+
+		const project = await this.findOne({ _id: insertedId });
+
+		if (!project) {
+			throw new Meteor.Error('error-project-create-failed', 'Failed to create project');
+		}
+
+		return project;
+	}
+
+	async updateProject(projectId: string, projectData: Partial<IProject>): Promise<void> {
+		await this.updateOne({ _id: projectId }, { $set: projectData });
+	}
+
+	async deleteProject(projectId: string): Promise<void> {
+		await this.deleteOne({ _id: projectId });
+	}
+
+	async getProjectById(projectId: string): Promise<IProject | null> {
+		return this.findOne({ _id: projectId });
+	}
+
+	async getProjectsByRoomId(roomId: string): Promise<IProject[]> {
+		return this.find({ roomId }).toArray();
+	}
+
+	async getProjectsByTeamId(teamId: string): Promise<IProject[]> {
+		return this.find({ teamId }).toArray();
+	}
+}
