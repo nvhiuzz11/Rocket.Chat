@@ -1,18 +1,13 @@
-import { API } from '../api';
+import { Users } from '@rocket.chat/models';
 
 import { db } from '../../../../server/database/utils';
 import { TaskRaw } from '../../../../server/models/Task';
+import { API } from '../api';
 import { getPaginationItems } from '../helpers/getPaginationItems';
-import { Users } from '@rocket.chat/models';
 import { isTaskCreateProps, isTaskUpdateProps } from './rest-typings/task';
-import { DEFAULT_TASK_PROPERTIES } from '../constants/default-data';
-import type { ITaskPropertyType } from '../../../../server/core-typings/ITaskProperty';
-import { TaskPropertyRaw } from '../../../../server/models/TaskProperty';
-import { TaskTagRaw } from '../../../../server/models/TaskTag';
+import type { ITask } from '../../../../server/core-typings/ITask';
 
 const Tasks = new TaskRaw(db);
-const TaskProperty = new TaskPropertyRaw(db);
-const TaskTag = new TaskTagRaw(db);
 
 API.v1.addRoute(
 	'tasks.create',
@@ -25,22 +20,6 @@ API.v1.addRoute(
 			const username = this.user?.username;
 			const task = await Tasks.create({ _id: userId, username }, { title, description, assignees, dueDate, projectId });
 
-			DEFAULT_TASK_PROPERTIES.forEach(async (property) => {
-				const propertyId = await TaskProperty.create({
-					name: property.name,
-					type: property.type as ITaskPropertyType,
-					taskId: task._id,
-				});
-
-				property.data.forEach(async (tag) => {
-					await TaskTag.create({
-						name: tag.name,
-						color: tag.color,
-						taskPropertyId: propertyId,
-						taskId: task._id,
-					});
-				});
-			});
 			return API.v1.success({ task });
 		},
 	},
@@ -196,3 +175,22 @@ API.v1.addRoute(
 		},
 	},
 );
+
+declare module '@rocket.chat/rest-typings' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface Endpoints {
+		'/v1/tasks.create': {
+			POST: (params: { title: string; description: string; assignees: string[]; dueDate: string; projectId: string }) => {
+				task: ITask;
+			};
+		};
+		'/v1/tasks.update': {
+			POST: (params: { taskId: string; data: Partial<ITask> }) => {
+				task: ITask;
+			};
+		};
+		'/v1/tasks.delete': {
+			POST: (params: { taskId: string }) => {};
+		};
+	}
+}

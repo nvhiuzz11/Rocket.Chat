@@ -9,11 +9,11 @@ export class TaskTagRaw extends BaseRaw<ITaskTag> {
 	}
 
 	protected modelIndexes(): IndexDescription[] {
-		return [{ key: { taskId: 1, taskPropertyId: 1 } }];
+		return [{ key: { taskPropertyId: 1 } }];
 	}
 
 	async create(data: Omit<ITaskTag, '_id' | '_updatedAt' | 'order'>): Promise<string> {
-		const lastTag = await this.findOne({ taskId: data.taskId, taskPropertyId: data.taskPropertyId }, { sort: { order: -1 } });
+		const lastTag = await this.findOne({ taskPropertyId: data.taskPropertyId }, { sort: { order: -1 } });
 		const newOrder = (lastTag?.order ?? -1) + 1;
 		const result = await this.insertOne({ ...data, order: newOrder });
 		return result.insertedId;
@@ -23,8 +23,8 @@ export class TaskTagRaw extends BaseRaw<ITaskTag> {
 		return this.findOne({ _id: id }, { sort: { order: 1 } });
 	}
 
-	async findByTaskIdAndPropertyId(taskId: string, taskPropertyId: string): Promise<ITaskTag[]> {
-		return this.find({ taskId, taskPropertyId }, { sort: { order: 1 } }).toArray();
+	async findByPropertyId(taskPropertyId: string): Promise<ITaskTag[]> {
+		return this.find({ taskPropertyId }, { sort: { order: 1 } }).toArray();
 	}
 
 	async updateById(id: string, data: Partial<ITaskTag>): Promise<void> {

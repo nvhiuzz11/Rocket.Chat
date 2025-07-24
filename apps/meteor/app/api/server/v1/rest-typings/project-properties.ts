@@ -1,11 +1,10 @@
+import type { IProjectProperty } from '../../../../../server/core-typings/IProjectProperty';
 import { ajv } from '../Ajv';
 
 type ProjectPropertyCreateProps = {
 	name: string;
 	type: string;
-	projectId: string;
-	order: number;
-	value: string;
+	teamId: string;
 };
 
 const ProjectPropertyCreatePropsSchema = {
@@ -13,33 +12,39 @@ const ProjectPropertyCreatePropsSchema = {
 	properties: {
 		name: { type: 'string' },
 		type: { type: 'string' },
-		projectId: { type: 'string' },
-		order: { type: 'number' },
-		value: { type: 'string' },
+		teamId: { type: 'string' },
 	},
-	required: ['name', 'type', 'projectId', 'value'],
+	required: ['name', 'type', 'teamId'],
 };
 
 export const isProjectPropertyCreateProps = ajv.compile<ProjectPropertyCreateProps>(ProjectPropertyCreatePropsSchema);
 
 type ProjectPropertyUpdateProps = {
-	name?: string;
-	type?: string;
-	projectId?: string;
-	order?: number;
-	value?: string;
+	_id: string;
+	data: Partial<IProjectProperty>;
 };
 
 const ProjectPropertyUpdatePropsSchema = {
 	type: 'object',
 	properties: {
-		name: { type: 'string' },
-		type: { type: 'string' },
-		projectId: { type: 'string' },
-		order: { type: 'number' },
-		value: { type: 'string' },
+		_id: { type: 'string' },
+		data: { type: 'object', additionalProperties: true },
 	},
-	required: [],
+	required: ['_id', 'data'],
 };
 
 export const isProjectPropertyUpdateProps = ajv.compile<ProjectPropertyUpdateProps>(ProjectPropertyUpdatePropsSchema);
+
+type ProjectPropertyDeleteProps = {
+	_id: string;
+};
+
+const ProjectPropertyDeletePropsSchema = {
+	type: 'object',
+	properties: {
+		_id: { type: 'string' },
+	},
+	required: ['_id'],
+};
+
+export const isProjectPropertyDeleteProps = ajv.compile<ProjectPropertyDeleteProps>(ProjectPropertyDeletePropsSchema);

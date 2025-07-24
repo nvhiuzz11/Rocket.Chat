@@ -1,9 +1,9 @@
-import { TASK_PROPERTY_TYPE } from '../../../../definition/task';
 import { db } from '../../../../server/database/utils';
 import { TaskPropertyRaw } from '../../../../server/models/TaskProperty';
 import { TaskTagRaw } from '../../../../server/models/TaskTag';
 import { API } from '../api';
 import { isTaskPropertyCreateProps, isTaskPropertyUpdateProps } from './rest-typings/task-properties';
+import type { ITaskProperty } from '../../../../server/core-typings/ITaskProperty';
 
 const TaskProperty = new TaskPropertyRaw(db);
 const TaskTag = new TaskTagRaw(db);
@@ -16,12 +16,11 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, type, taskId, value } = this.bodyParams;
+			const { name, type, projectId } = this.bodyParams;
 			const taskProperty = await TaskProperty.create({
 				name,
 				type,
-				taskId,
-				value,
+				projectId,
 			});
 			return API.v1.success({ taskProperty });
 		},
@@ -35,34 +34,22 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { taskId } = this.queryParams;
+			const { projectId } = this.queryParams;
 
-			const taskProperties = await TaskProperty.findByTaskId(taskId);
+			if (!projectId) {
+				return API.v1.failure('Project ID is required');
+			}
 
-			const enrichedProperties = await Promise.all(
+			const taskProperties = await TaskProperty.findByProjectId(projectId);
+
+			const processedProperties = await Promise.all(
 				taskProperties.map(async (property) => {
-					if (!property.value) return property;
-
-					if (property.type === TASK_PROPERTY_TYPE.MULTI_SELECT) {
-						const enrichedValues = await Promise.all(
-							property.value.map(async (value) => {
-								const tag = await TaskTag.findById(value._id);
-								return tag ? { ...value, name: tag.name, color: tag.color } : value;
-							}),
-						);
-						return { ...property, value: enrichedValues };
-					}
-
-					if (property.type === TASK_PROPERTY_TYPE.SELECT && property.value?._id) {
-						const tag = await TaskTag.findById(property.value._id);
-						return tag ? { ...property, value: { ...property.value, name: tag.name, color: tag.color } } : property;
-					}
-
-					return property;
+					const tags = await TaskTag.findByPropertyId(property._id);
+					return { ...property, value: tags };
 				}),
 			);
 
-			return API.v1.success({ taskProperties: enrichedProperties });
+			return API.v1.success({ taskProperties: processedProperties });
 		},
 	},
 );
@@ -75,8 +62,8 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { taskId, data } = this.bodyParams;
-			const result = await TaskProperty.updateById(taskId, data);
+			const { _id, data } = this.bodyParams;
+			const result = await TaskProperty.updateById(_id, data);
 			return API.v1.success({ taskProperty: result });
 		},
 	},
@@ -89,9 +76,35 @@ API.v1.addRoute(
 	},
 	{
 		async delete() {
-			const { taskId } = this.bodyParams;
-			const result = await TaskProperty.deleteById(taskId);
+			const { _id } = this.bodyParams;
+			const result = await TaskProperty.deleteById(_id);
 			return API.v1.success({ taskProperty: result });
 		},
 	},
 );
+
+declare module '@rocket.chat/rest-typings' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface Endpoints {
+		'/v1/task-properties.create': {
+			POST: (params: { name: string; type: string; projectId: string }) => {
+				taskProperty: ITaskProperty;
+			};
+		};
+		'/v1/task-properties.list': {
+			GET: (params: { projectId: string }) => {
+				taskProperties: ITaskProperty[];
+			};
+		};
+		'/v1/task-properties.update': {
+			POST: (params: { _id: string; data: Partial<ITaskProperty> }) => {
+				taskProperty: ITaskProperty;
+			};
+		};
+		'/v1/task-properties.delete': {
+			POST: (params: { _id: string }) => {
+				taskProperty: ITaskProperty;
+			};
+		};
+	}
+}

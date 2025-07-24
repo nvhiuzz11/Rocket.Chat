@@ -1,7 +1,8 @@
 import type { IRocketChatRecord, IUser } from '@rocket.chat/core-typings';
 
+import type { ITaskTag } from './ITaskTag';
+
 export interface ITask extends IRocketChatRecord {
-	_id: string;
 	title: string;
 	description?: string;
 	projectId: string;
@@ -9,4 +10,5 @@ export interface ITask extends IRocketChatRecord {
 	assignees?: Pick<IUser, '_id' | 'username'>[];
 	dueDate?: Date;
 	createdAt: Date;
+	properties?: Array<{ taskPropertyId: string; value: ITaskTag['_id'][] }>;
 }

@@ -3,9 +3,8 @@ import { ajv } from '../Ajv';
 type TaskPropertyCreateProps = {
 	name: string;
 	type: string;
-	taskId: string;
+	projectId: string;
 	order: number;
-	value: string;
 };
 
 const TaskPropertyCreatePropsSchema = {
@@ -13,33 +12,26 @@ const TaskPropertyCreatePropsSchema = {
 	properties: {
 		name: { type: 'string' },
 		type: { type: 'string' },
-		taskId: { type: 'string' },
+		projectId: { type: 'string' },
 		order: { type: 'number' },
-		value: { type: 'string' },
 	},
-	required: ['name', 'type', 'taskId', 'value'],
+	required: ['name', 'type', 'projectId', 'order'],
 };
 
 export const isTaskPropertyCreateProps = ajv.compile<TaskPropertyCreateProps>(TaskPropertyCreatePropsSchema);
 
 type TaskPropertyUpdateProps = {
-	name?: string;
-	type?: string;
-	taskId?: string;
-	order?: number;
-	value?: string;
+	_id: string;
+	data: Partial<TaskPropertyCreateProps>;
 };
 
 const TaskPropertyUpdatePropsSchema = {
 	type: 'object',
 	properties: {
-		name: { type: 'string' },
-		type: { type: 'string' },
-		taskId: { type: 'string' },
-		order: { type: 'number' },
-		value: { type: 'string' },
+		_id: { type: 'string' },
+		data: { type: 'object', additionalProperties: true },
 	},
-	required: [],
+	required: ['_id', 'data'],
 };
 
 export const isTaskPropertyUpdateProps = ajv.compile<TaskPropertyUpdateProps>(TaskPropertyUpdatePropsSchema);

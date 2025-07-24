@@ -1,17 +1,19 @@
-const DEFAULT_PROJECT_STATUS_TAGS = [
+import { PROJECT_PROPERTY_TYPES, TASK_PROPERTY_TYPES } from '../../../../definition/project';
+
+export const DEFAULT_PROJECT_STATUS_TAGS = [
 	{
 		name: 'Not Started',
-		color: '#CCCCCC',
+		color: '#2C2C2C',
 		order: 1,
 	},
 	{
 		name: 'In Progress',
-		color: '#3498DB',
+		color: '#153E5C',
 		order: 2,
 	},
 	{
 		name: 'Completed',
-		color: '#2ECC71',
+		color: '#1A4733',
 		order: 3,
 	},
 ];
@@ -19,7 +21,7 @@ const DEFAULT_PROJECT_STATUS_TAGS = [
 export const DEFAULT_PROJECT_PROPERTIES = [
 	{
 		name: 'Status',
-		type: 'SELECT',
+		type: PROJECT_PROPERTY_TYPES.SELECT,
 		order: 1,
 		data: DEFAULT_PROJECT_STATUS_TAGS,
 	},
@@ -28,17 +30,17 @@ export const DEFAULT_PROJECT_PROPERTIES = [
 export const DEFAULT_TASK_STATUS_TAGS = [
 	{
 		name: 'Not Started',
-		color: '#CCCCCC',
+		color: '#2C2C2C',
 		order: 1,
 	},
 	{
 		name: 'In Progress',
-		color: '#3498DB',
+		color: '#153E5C',
 		order: 2,
 	},
 	{
 		name: 'Done',
-		color: '#2ECC71',
+		color: '#1A4733',
 		order: 3,
 	},
 ];
@@ -64,13 +66,13 @@ export const DEFAULT_TASK_PRIORITY_TAGS = [
 export const DEFAULT_TASK_PROPERTIES = [
 	{
 		name: 'Status',
-		type: 'SELECT',
+		type: TASK_PROPERTY_TYPES.SELECT,
 		order: 1,
 		data: DEFAULT_TASK_STATUS_TAGS,
 	},
 	{
 		name: 'Priority',
-		type: 'SELECT',
+		type: TASK_PROPERTY_TYPES.SELECT,
 		order: 2,
 		data: DEFAULT_TASK_PRIORITY_TAGS,
 	},

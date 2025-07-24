@@ -1,14 +1,12 @@
 import type { IRocketChatRecord } from '@rocket.chat/core-typings';
 
-import type { ITaskTag } from './ITaskTag';
+import type { TASK_PROPERTY_TYPES } from '../../definition/project';
 
-export type ITaskPropertyType = 'SELECT' | 'MULTI_SELECT';
+export type ITaskPropertyType = (typeof TASK_PROPERTY_TYPES)[keyof typeof TASK_PROPERTY_TYPES];
 
 export interface ITaskProperty extends IRocketChatRecord {
-	_id: string;
 	name: string;
 	type: ITaskPropertyType;
-	taskId: string;
+	projectId: string;
 	order: number;
-	value?: Pick<ITaskTag, '_id' | 'name'>[];
 }

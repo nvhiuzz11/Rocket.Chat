@@ -2,6 +2,7 @@ import { db } from '../../../../server/database/utils';
 import { TaskTagRaw } from '../../../../server/models/TaskTag';
 import { API } from '../api';
 import { isTaskTagCreateProps, isTaskTagUpdateProps } from './rest-typings/task-tags';
+import type { ITaskTag } from '../../../../server/core-typings/ITaskTag';
 
 const TaskTag = new TaskTagRaw(db);
 
@@ -13,11 +14,10 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, color, taskId, taskPropertyId } = this.bodyParams;
+			const { name, color, taskPropertyId } = this.bodyParams;
 			const taskTag = await TaskTag.create({
 				name,
 				color,
-				taskId,
 				taskPropertyId,
 			});
 			return API.v1.success({ taskTag });
@@ -32,8 +32,8 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { taskId, taskPropertyId } = this.queryParams;
-			const taskTags = await TaskTag.findByTaskIdAndPropertyId(taskId, taskPropertyId);
+			const { taskPropertyId } = this.queryParams;
+			const taskTags = await TaskTag.findByPropertyId(taskPropertyId);
 			return API.v1.success({ taskTags });
 		},
 	},
@@ -47,12 +47,12 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { taskTagId, data } = this.bodyParams;
-			const result = await TaskTag.updateOne({ _id: taskTagId }, { $set: data });
+			const { _id, data } = this.bodyParams;
+			const result = await TaskTag.updateOne({ _id }, { $set: data });
 			if (result.modifiedCount === 0) {
 				return API.v1.failure('Task not found or not updated');
 			}
-			const task = await TaskTag.findById(taskTagId);
+			const task = await TaskTag.findById(_id);
 			return API.v1.success({ task });
 		},
 	},
@@ -65,9 +65,12 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { taskTagId } = this.bodyParams;
+			const { _id } = this.bodyParams;
+			if (!_id) {
+				return API.v1.failure('Task tag ID is required');
+			}
 			try {
-				await TaskTag.deleteById(taskTagId);
+				await TaskTag.deleteById(_id);
 				return API.v1.success();
 			} catch (error) {
 				return API.v1.failure('Failed to delete task tag');
@@ -75,3 +78,27 @@ API.v1.addRoute(
 		},
 	},
 );
+
+declare module '@rocket.chat/rest-typings' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface Endpoints {
+		'/v1/task-tags.create': {
+			POST: (params: { name: string; color: string; taskPropertyId: string }) => {
+				taskTag: ITaskTag;
+			};
+		};
+		'/v1/task-tags.list': {
+			GET: (params: { taskPropertyId: string }) => {
+				taskTags: ITaskTag[];
+			};
+		};
+		'/v1/task-tags.update': {
+			POST: (params: { _id: string; data: Partial<ITaskTag> }) => {
+				taskTag: ITaskTag;
+			};
+		};
+		'/v1/task-tags.delete': {
+			POST: (params: { _id: string }) => {};
+		};
+	}
+}

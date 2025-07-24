@@ -1,9 +1,13 @@
-import { PROJECT_PROPERTY_TYPE } from '../../../../definition/project';
 import { db } from '../../../../server/database/utils';
 import { ProjectPropertyRaw } from '../../../../server/models/ProjectProperty';
 import { ProjectTagRaw } from '../../../../server/models/ProjectTag';
 import { API } from '../api';
-import { isProjectPropertyCreateProps, isProjectPropertyUpdateProps } from './rest-typings/project-properties';
+import {
+	isProjectPropertyCreateProps,
+	isProjectPropertyDeleteProps,
+	isProjectPropertyUpdateProps,
+} from './rest-typings/project-properties';
+import type { IProjectProperty } from '../../../../server/core-typings/IProjectProperty';
 
 const ProjectProperty = new ProjectPropertyRaw(db);
 const ProjectTag = new ProjectTagRaw(db);
@@ -16,12 +20,11 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, type, projectId, value } = this.bodyParams;
+			const { name, type, teamId } = this.bodyParams;
 			const projectProperty = await ProjectProperty.create({
 				name,
 				type,
-				projectId,
-				value,
+				teamId,
 			});
 			return API.v1.success({ projectProperty });
 		},
@@ -35,34 +38,22 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { projectId } = this.queryParams;
+			const { teamId } = this.queryParams;
 
-			const projectProperties = await ProjectProperty.findByProjectId(projectId);
+			if (!teamId) {
+				return API.v1.failure('Team ID is required');
+			}
 
-			const enrichedProperties = await Promise.all(
+			const projectProperties = await ProjectProperty.findByTeamId(teamId);
+
+			const processedProperties = await Promise.all(
 				projectProperties.map(async (property) => {
-					if (!property.value) return property;
-
-					if (property.type === PROJECT_PROPERTY_TYPE.MULTI_SELECT) {
-						const enrichedValues = await Promise.all(
-							property.value.map(async (value) => {
-								const tag = await ProjectTag.findById(value._id);
-								return tag ? { ...value, name: tag.name, color: tag.color } : value;
-							}),
-						);
-						return { ...property, value: enrichedValues };
-					}
-
-					if (property.type === PROJECT_PROPERTY_TYPE.SELECT && property.value?._id) {
-						const tag = await ProjectTag.findById(property.value._id);
-						return tag ? { ...property, value: { ...property.value, name: tag.name, color: tag.color } } : property;
-					}
-
-					return property;
+					const tags = await ProjectTag.findByProjectPropertyId(property._id);
+					return { ...property, value: tags };
 				}),
 			);
 
-			return API.v1.success({ projectProperties: enrichedProperties });
+			return API.v1.success({ projectProperties: processedProperties });
 		},
 	},
 );
@@ -75,8 +66,8 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { projectId, data } = this.bodyParams;
-			const result = await ProjectProperty.updateById(projectId, data);
+			const { _id, data } = this.bodyParams;
+			const result = await ProjectProperty.updateById(_id, data);
 			return API.v1.success({ projectProperty: result });
 		},
 	},
@@ -86,12 +77,39 @@ API.v1.addRoute(
 	'project-properties.delete',
 	{
 		authRequired: true,
+		validateParams: isProjectPropertyDeleteProps,
 	},
 	{
-		async delete() {
-			const { projectId } = this.bodyParams;
-			const result = await ProjectProperty.deleteById(projectId);
+		async post() {
+			const { _id } = this.bodyParams;
+			const result = await ProjectProperty.deleteById(_id);
 			return API.v1.success({ projectProperty: result });
 		},
 	},
 );
+
+declare module '@rocket.chat/rest-typings' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface Endpoints {
+		'/v1/project-properties.create': {
+			POST: (params: { teamId: string; name: string; type: string }) => {
+				projectProperty: IProjectProperty;
+			};
+		};
+		'/v1/project-properties.list': {
+			GET: (params: { teamId: string }) => {
+				projectProperties: IProjectProperty[];
+			};
+		};
+		'/v1/project-properties.update': {
+			POST: (params: { _id: string; data: Partial<IProjectProperty> }) => {
+				projectProperty: IProjectProperty;
+			};
+		};
+		'/v1/project-properties.delete': {
+			POST: (params: { _id: string }) => {
+				projectProperty: IProjectProperty;
+			};
+		};
+	}
+}

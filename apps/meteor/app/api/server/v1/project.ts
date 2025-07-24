@@ -1,17 +1,18 @@
 import { Users } from '@rocket.chat/models';
+
+import type { IProject } from '../../../../server/core-typings/IProject';
 import { db } from '../../../../server/database/utils';
 import { ProjectRaw } from '../../../../server/models/Project';
-import { ProjectPropertyRaw } from '../../../../server/models/ProjectProperty';
+import { TaskPropertyRaw } from '../../../../server/models/TaskProperty';
+import { TaskTagRaw } from '../../../../server/models/TaskTag';
 import { API } from '../api';
 import { getPaginationItems } from '../helpers/getPaginationItems';
 import { isProjectCreateProps, isProjectUpdateProps } from './rest-typings/project';
-import { DEFAULT_PROJECT_PROPERTIES } from '../constants/default-data';
-import type { IProjectPropertyType } from '../../../../server/core-typings/IProjectProperty';
-import { ProjectTagRaw } from '../../../../server/models/ProjectTag';
+import { DEFAULT_TASK_PROPERTIES } from '../constants/default-data';
 
 const Project = new ProjectRaw(db);
-const ProjectProperty = new ProjectPropertyRaw(db);
-const ProjectTag = new ProjectTagRaw(db);
+const TaskProperty = new TaskPropertyRaw(db);
+const TaskTag = new TaskTagRaw(db);
 
 API.v1.addRoute(
 	'projects.create',
@@ -21,24 +22,23 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, description, teamId, roomId } = this.bodyParams;
+			const { name, description, teamId, roomId, properties } = this.bodyParams;
 			const userId = this.userId;
 			const username = this.user?.username;
-			const project = await Project.createProject({ _id: userId, username }, { name, description, teamId, roomId });
+			const project = await Project.createProject({ _id: userId, username }, { name, description, teamId, roomId, properties });
 
-			DEFAULT_PROJECT_PROPERTIES.forEach(async (property) => {
-				const propertyId = await ProjectProperty.create({
+			DEFAULT_TASK_PROPERTIES.forEach(async (property) => {
+				const propertyId = await TaskProperty.create({
 					name: property.name,
-					type: property.type as IProjectPropertyType,
+					type: property.type,
 					projectId: project._id,
 				});
 
 				property.data.forEach(async (tag) => {
-					await ProjectTag.create({
+					await TaskTag.create({
 						name: tag.name,
 						color: tag.color,
-						projectPropertyId: propertyId,
-						projectId: project._id,
+						taskPropertyId: propertyId,
 					});
 				});
 			});
@@ -114,6 +114,20 @@ API.v1.addRoute(
 );
 
 API.v1.addRoute(
+	'projects.list.team',
+	{
+		authRequired: true,
+	},
+	{
+		async get() {
+			const { teamId } = this.queryParams;
+			const projects = await Project.find({ teamId }).toArray();
+			return API.v1.success({ projects });
+		},
+	},
+);
+
+API.v1.addRoute(
 	'projects.info',
 	{
 		authRequired: true,
@@ -152,12 +166,17 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { projectId, data } = this.bodyParams;
-			const result = await Project.updateOne({ _id: projectId }, { $set: data });
+			const { _id, data } = this.bodyParams;
+
+			if (!_id) {
+				return API.v1.failure('Project ID is required');
+			}
+
+			const result = await Project.updateOne({ _id }, { $set: data });
 			if (result.modifiedCount === 0) {
 				return API.v1.failure('Project not found or not updated');
 			}
-			const project = await Project.getProjectById(projectId);
+			const project = await Project.getProjectById(_id);
 			return API.v1.success({ project });
 		},
 	},
@@ -170,9 +189,14 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { projectId } = this.bodyParams;
+			const { _id } = this.bodyParams;
+
+			if (!_id) {
+				return API.v1.failure('Project ID is required');
+			}
+
 			try {
-				await Project.deleteProject(projectId);
+				await Project.deleteProject(_id);
 				return API.v1.success();
 			} catch (error) {
 				return API.v1.failure('Failed to delete project');
@@ -180,3 +204,41 @@ API.v1.addRoute(
 		},
 	},
 );
+
+declare module '@rocket.chat/rest-typings' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface Endpoints {
+		'/v1/projects.create': {
+			POST: (params: { name: string; description: string; teamId: string; roomId: string }) => {
+				project: IProject;
+			};
+		};
+
+		'/v1/projects.list': {
+			GET: () => {
+				projects: IProject[];
+				count: number;
+				offset: number;
+				total: number;
+			};
+		};
+		'/v1/projects.list.team': {
+			GET: (params: { teamId: string }) => {
+				projects: IProject[];
+			};
+		};
+		'/v1/projects.info': {
+			GET: (params: { _id: string }) => {
+				project: IProject;
+			};
+		};
+		'/v1/projects.update': {
+			POST: (params: { _id: string; data: Partial<IProject> }) => {
+				project: IProject;
+			};
+		};
+		'/v1/projects.delete': {
+			POST: (params: { _id: string }) => {};
+		};
+	}
+}

@@ -1,14 +1,12 @@
 import type { IRocketChatRecord } from '@rocket.chat/core-typings';
 
-import type { IProjectTag } from './IProjectTag';
+import type { PROJECT_PROPERTY_TYPES } from '../../definition/project';
 
-export type IProjectPropertyType = 'SELECT' | 'MULTI_SELECT';
+export type IProjectPropertyType = (typeof PROJECT_PROPERTY_TYPES)[keyof typeof PROJECT_PROPERTY_TYPES];
 
 export interface IProjectProperty extends IRocketChatRecord {
-	_id: string;
 	name: string;
 	type: IProjectPropertyType;
-	projectId: string;
+	teamId: string;
 	order: number;
-	value?: Pick<IProjectTag, '_id' | 'name'>[];
 }

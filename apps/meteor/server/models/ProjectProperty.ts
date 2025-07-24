@@ -10,11 +10,11 @@ export class ProjectPropertyRaw extends BaseRaw<IProjectProperty> {
 	}
 
 	protected modelIndexes(): IndexDescription[] {
-		return [{ key: { projectId: 1 } }];
+		return [{ key: { teamId: 1 } }];
 	}
 
 	async create(data: Omit<IProjectProperty, '_id' | '_updatedAt' | 'order'>): Promise<string> {
-		const lastProperty = await this.findOne({ projectId: data.projectId }, { sort: { order: -1 } });
+		const lastProperty = await this.findOne({ teamId: data.teamId }, { sort: { order: -1 } });
 		const newOrder = (lastProperty?.order ?? -1) + 1;
 		const result = await this.insertOne({ ...data, order: newOrder });
 		return result.insertedId;
@@ -24,8 +24,8 @@ export class ProjectPropertyRaw extends BaseRaw<IProjectProperty> {
 		return this.findOne({ _id: id });
 	}
 
-	async findByProjectId(projectId: string): Promise<IProjectProperty[]> {
-		return this.find({ projectId }).toArray();
+	async findByTeamId(teamId: string): Promise<IProjectProperty[]> {
+		return this.find({ teamId }, { sort: { order: 1 } }).toArray();
 	}
 
 	async updateById(id: string, data: Partial<IProjectProperty>): Promise<void> {

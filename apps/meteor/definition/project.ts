@@ -4,7 +4,12 @@ export const PROJECT_STATUS = {
 	COMPLETED: 'completed',
 };
 
-export const PROJECT_PROPERTY_TYPE = {
+export const PROJECT_PROPERTY_TYPES = {
+	SELECT: 'SELECT',
+	MULTI_SELECT: 'MULTI_SELECT',
+};
+
+export const TASK_PROPERTY_TYPES = {
 	SELECT: 'SELECT',
 	MULTI_SELECT: 'MULTI_SELECT',
 };

@@ -16,12 +16,19 @@ import {
 import { escapeRegExp } from '@rocket.chat/string-helpers';
 import { Match, check } from 'meteor/check';
 
+import { db } from '../../../../server/database/utils';
 import { eraseRoom } from '../../../../server/lib/eraseRoom';
+import { ProjectPropertyRaw } from '../../../../server/models/ProjectProperty';
+import { ProjectTagRaw } from '../../../../server/models/ProjectTag';
 import { canAccessRoomAsync } from '../../../authorization/server';
 import { hasPermissionAsync, hasAtLeastOnePermissionAsync } from '../../../authorization/server/functions/hasPermission';
 import { removeUserFromRoom } from '../../../lib/server/functions/removeUserFromRoom';
 import { API } from '../api';
+import { DEFAULT_PROJECT_PROPERTIES } from '../constants/default-data';
 import { getPaginationItems } from '../helpers/getPaginationItems';
+
+const ProjectProperty = new ProjectPropertyRaw(db);
+const ProjectTag = new ProjectTagRaw(db);
 
 API.v1.addRoute(
 	'teams.list',
@@ -93,6 +100,22 @@ API.v1.addRoute(
 				members,
 				owner,
 				sidepanel,
+			});
+
+			DEFAULT_PROJECT_PROPERTIES.forEach(async (property) => {
+				const propertyId = await ProjectProperty.create({
+					name: property.name,
+					type: property.type,
+					teamId: team._id,
+				});
+
+				property.data.forEach(async (tag) => {
+					await ProjectTag.create({
+						name: tag.name,
+						color: tag.color,
+						projectPropertyId: propertyId,
+					});
+				});
 			});
 
 			return API.v1.success({ team });

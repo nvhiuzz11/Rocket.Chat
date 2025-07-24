@@ -1,8 +1,9 @@
 import { BaseRaw } from '@rocket.chat/models';
+import { Meteor } from 'meteor/meteor';
 import type { Db, IndexDescription } from 'mongodb';
 
 import type { IProject } from '../core-typings/IProject';
-import { Meteor } from 'meteor/meteor';
+import type { IProjectTag } from '../core-typings/IProjectTag';
 
 export class ProjectRaw extends BaseRaw<IProject> {
 	constructor(db: Db) {
@@ -35,6 +36,14 @@ export class ProjectRaw extends BaseRaw<IProject> {
 
 	async updateProject(projectId: string, projectData: Partial<IProject>): Promise<void> {
 		await this.updateOne({ _id: projectId }, { $set: projectData });
+	}
+
+	async updateProjectProperties(projectId: string, properties: Array<{ propertyId: string; value: IProjectTag['_id'][] }>): Promise<void> {
+		await this.updateOne({ _id: projectId }, { $set: { properties } });
+	}
+
+	async updateProjectProperty(projectId: string, propertyId: string, value: IProjectTag['_id'][]): Promise<void> {
+		await this.updateOne({ _id: projectId }, { $set: { [`properties.${propertyId}`]: value } });
 	}
 
 	async deleteProject(projectId: string): Promise<void> {

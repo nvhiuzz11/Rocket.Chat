@@ -1,9 +1,10 @@
-import { Meteor } from 'meteor/meteor';
 import type { IUser } from '@rocket.chat/core-typings';
 import { BaseRaw } from '@rocket.chat/models';
+import { Meteor } from 'meteor/meteor';
 import type { Db, IndexDescription } from 'mongodb';
 
 import type { ITask } from '../core-typings/ITask';
+import type { ITaskTag } from '../core-typings/ITaskTag';
 
 export class TaskRaw extends BaseRaw<ITask> {
 	constructor(db: Db) {
@@ -11,7 +12,7 @@ export class TaskRaw extends BaseRaw<ITask> {
 	}
 
 	protected modelIndexes(): IndexDescription[] {
-		return [{ key: { projectId: 1 } }, { key: { 'status._id': 1 } }, { key: { dueDate: 1 } }];
+		return [{ key: { projectId: 1 } }];
 	}
 
 	async create(
@@ -38,14 +39,22 @@ export class TaskRaw extends BaseRaw<ITask> {
 	}
 
 	async updateOneById(taskId: string, data: Partial<Omit<ITask, '_id'>>): Promise<void> {
-		await super.updateOne({ _id: taskId }, { $set: { ...data, updatedAt: new Date() } });
+		await super.updateOne({ _id: taskId }, { $set: { ...data } });
+	}
+
+	async updateTaskProperties(taskId: string, properties: Array<{ taskPropertyId: string; value: ITaskTag['_id'][] }>): Promise<void> {
+		await this.updateOne({ _id: taskId }, { $set: { properties } });
+	}
+
+	async updateTaskProperty(taskId: string, taskPropertyId: string, value: ITaskTag['_id'][]): Promise<void> {
+		await this.updateOne({ _id: taskId }, { $set: { [`properties.${taskPropertyId}`]: value } });
 	}
 
 	async delete(taskId: string): Promise<void> {
 		await this.deleteOne({ _id: taskId });
 	}
 
-	async findByProject(projectId: string): Promise<ITask[]> {
+	async findByProjectId(projectId: string): Promise<ITask[]> {
 		return this.find({ projectId }).toArray();
 	}
 
