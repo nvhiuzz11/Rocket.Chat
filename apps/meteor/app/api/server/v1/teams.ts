@@ -107,6 +107,8 @@ API.v1.addRoute(
 					name: property.name,
 					type: property.type,
 					teamId: team._id,
+					required: property.required,
+					systemKey: property?.systemKey ?? null,
 				});
 
 				property.data.forEach(async (tag) => {

@@ -16,11 +16,13 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, type, projectId } = this.bodyParams;
+			const { name, type, projectId, required = false, systemKey } = this.bodyParams;
 			const taskProperty = await TaskProperty.create({
 				name,
 				type,
 				projectId,
+				required,
+				systemKey,
 			});
 			return API.v1.success({ taskProperty });
 		},
@@ -87,7 +89,7 @@ declare module '@rocket.chat/rest-typings' {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Endpoints {
 		'/v1/task-properties.create': {
-			POST: (params: { name: string; type: string; projectId: string }) => {
+			POST: (params: { name: string; type: string; projectId: string; required?: boolean; systemKey?: string }) => {
 				taskProperty: ITaskProperty;
 			};
 		};

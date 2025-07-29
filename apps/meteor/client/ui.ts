@@ -27,6 +27,8 @@ import { useRoomInfoRoomAction } from './hooks/roomActions/useRoomInfoRoomAction
 import { useStarredMessagesRoomAction } from './hooks/roomActions/useStarredMessagesRoomAction';
 import { useTeamChannelsRoomAction } from './hooks/roomActions/useTeamChannelsRoomAction';
 import { useTeamInfoRoomAction } from './hooks/roomActions/useTeamInfoRoomAction';
+import { useTeamProjectRoomAction } from './hooks/roomActions/useTeamProjectRoomAction';
+import { useTeamTasksRoomAction } from './hooks/roomActions/useTeamTasksRoomAction';
 import { useThreadRoomAction } from './hooks/roomActions/useThreadRoomAction';
 import { useUploadedFilesListRoomAction } from './hooks/roomActions/useUploadedFilesListRoomAction';
 import { useUserInfoGroupRoomAction } from './hooks/roomActions/useUserInfoGroupRoomAction';
@@ -65,6 +67,8 @@ export const roomActionHooks = [
 	useRoomInfoRoomAction,
 	useStarredMessagesRoomAction,
 	useTeamChannelsRoomAction,
+	useTeamTasksRoomAction,
+	useTeamProjectRoomAction,
 	useUploadedFilesListRoomAction,
 	useVoIPRoomInfoRoomAction,
 	useWebRTCVideoRoomAction,

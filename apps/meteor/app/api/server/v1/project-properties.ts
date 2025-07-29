@@ -8,6 +8,7 @@ import {
 	isProjectPropertyUpdateProps,
 } from './rest-typings/project-properties';
 import type { IProjectProperty } from '../../../../server/core-typings/IProjectProperty';
+import type { IProjectTag } from '../../../../server/core-typings/IProjectTag';
 
 const ProjectProperty = new ProjectPropertyRaw(db);
 const ProjectTag = new ProjectTagRaw(db);
@@ -20,11 +21,13 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, type, teamId } = this.bodyParams;
+			const { name, type, teamId, required = false, systemKey } = this.bodyParams;
 			const projectProperty = await ProjectProperty.create({
 				name,
 				type,
 				teamId,
+				required,
+				systemKey,
 			});
 			return API.v1.success({ projectProperty });
 		},
@@ -92,13 +95,13 @@ declare module '@rocket.chat/rest-typings' {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Endpoints {
 		'/v1/project-properties.create': {
-			POST: (params: { teamId: string; name: string; type: string }) => {
+			POST: (params: { teamId: string; name: string; type: string; required?: boolean; systemKey?: string }) => {
 				projectProperty: IProjectProperty;
 			};
 		};
 		'/v1/project-properties.list': {
 			GET: (params: { teamId: string }) => {
-				projectProperties: IProjectProperty[];
+				projectProperties: { projectProperties: IProjectProperty[] & { value: IProjectTag[] } };
 			};
 		};
 		'/v1/project-properties.update': {

@@ -24,6 +24,8 @@ export const DEFAULT_PROJECT_PROPERTIES = [
 		type: PROJECT_PROPERTY_TYPES.SELECT,
 		order: 1,
 		data: DEFAULT_PROJECT_STATUS_TAGS,
+		required: true,
+		systemKey: 'status',
 	},
 ];
 
@@ -69,11 +71,15 @@ export const DEFAULT_TASK_PROPERTIES = [
 		type: TASK_PROPERTY_TYPES.SELECT,
 		order: 1,
 		data: DEFAULT_TASK_STATUS_TAGS,
+		required: true,
+		systemKey: 'status',
 	},
 	{
 		name: 'Priority',
 		type: TASK_PROPERTY_TYPES.SELECT,
 		order: 2,
 		data: DEFAULT_TASK_PRIORITY_TAGS,
+		required: false,
+		systemKey: 'priority',
 	},
 ];

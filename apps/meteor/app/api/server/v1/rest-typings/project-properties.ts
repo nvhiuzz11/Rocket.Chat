@@ -5,6 +5,8 @@ type ProjectPropertyCreateProps = {
 	name: string;
 	type: string;
 	teamId: string;
+	required: boolean;
+	systemKey?: string;
 };
 
 const ProjectPropertyCreatePropsSchema = {
@@ -13,6 +15,8 @@ const ProjectPropertyCreatePropsSchema = {
 		name: { type: 'string' },
 		type: { type: 'string' },
 		teamId: { type: 'string' },
+		required: { type: 'boolean' },
+		systemKey: { type: 'string' },
 	},
 	required: ['name', 'type', 'teamId'],
 };

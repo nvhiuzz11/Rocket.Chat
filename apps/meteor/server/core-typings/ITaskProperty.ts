@@ -9,4 +9,6 @@ export interface ITaskProperty extends IRocketChatRecord {
 	type: ITaskPropertyType;
 	projectId: string;
 	order: number;
+	required: boolean;
+	systemKey?: string;
 }

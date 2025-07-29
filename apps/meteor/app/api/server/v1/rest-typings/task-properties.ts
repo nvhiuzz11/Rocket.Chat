@@ -5,6 +5,8 @@ type TaskPropertyCreateProps = {
 	type: string;
 	projectId: string;
 	order: number;
+	required: boolean;
+	systemKey?: string;
 };
 
 const TaskPropertyCreatePropsSchema = {
@@ -14,6 +16,8 @@ const TaskPropertyCreatePropsSchema = {
 		type: { type: 'string' },
 		projectId: { type: 'string' },
 		order: { type: 'number' },
+		required: { type: 'boolean' },
+		systemKey: { type: 'string' },
 	},
 	required: ['name', 'type', 'projectId', 'order'],
 };

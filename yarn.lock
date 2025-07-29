@@ -107,6 +107,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@atlaskit/pragmatic-drag-and-drop@npm:^1.7.4":
+  version: 1.7.4
+  resolution: "@atlaskit/pragmatic-drag-and-drop@npm:1.7.4"
+  dependencies:
+    "@babel/runtime": "npm:^7.0.0"
+    bind-event-listener: "npm:^3.0.0"
+    raf-schd: "npm:^4.0.3"
+  checksum: 10/97fca7f48e6e0bb18ba01ad7637237f0fe28f654686e3c26d77027556c9a2f6f7a07c9af58facd1e0dcc84c1106b4ab341c609865a10762dfaa3ae1922d4c355
+  languageName: node
+  linkType: hard
+
 "@axe-core/playwright@npm:^4.10.2":
   version: 4.10.2
   resolution: "@axe-core/playwright@npm:4.10.2"
@@ -7815,6 +7826,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@rocket.chat/meteor@workspace:apps/meteor"
   dependencies:
+    "@atlaskit/pragmatic-drag-and-drop": "npm:^1.7.4"
     "@axe-core/playwright": "npm:^4.10.2"
     "@babel/core": "npm:~7.26.10"
     "@babel/eslint-parser": "npm:~7.25.9"
@@ -14777,6 +14789,13 @@ __metadata:
   dependencies:
     underscore: "npm:~1.4.4"
   checksum: 10/3c54292fd5f58f31fb5ab267b0604552ee5da6f2098c2a0d4f57b56a32cb394d1d6db369eafef741719c210b48979d652ec964677593e52a0c4bd7061cd9824e
+  languageName: node
+  linkType: hard
+
+"bind-event-listener@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "bind-event-listener@npm:3.0.0"
+  checksum: 10/3d442307ee906b79f041433b065e7b259bd1e5231a74519271cc5beb485f7c469609da9c7f20fdd0b3ab340e4691fee826b76d003c71cf5ad955186aba5c256e
   languageName: node
   linkType: hard
 

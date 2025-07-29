@@ -6,6 +6,7 @@ import ContextualbarButton from './ContextualbarButton';
 import ContextualbarClose from './ContextualbarClose';
 import ContextualbarContent from './ContextualbarContent';
 import ContextualbarDialog from './ContextualbarDialog';
+import ContextualbarDialogResizable from './ContextualbarDialogResizable';
 import ContextualbarEmptyContent from './ContextualbarEmptyContent';
 import ContextualbarFooter from './ContextualbarFooter';
 import ContextualbarHeader from './ContextualbarHeader';
@@ -18,6 +19,7 @@ import ContextualbarSkeletonBody from './ContextualbarSkeletonBody';
 import ContextualbarTitle from './ContextualbarTitle';
 
 export {
+	ContextualbarDialogResizable,
 	Contextualbar,
 	ContextualbarDialog,
 	ContextualbarHeader,

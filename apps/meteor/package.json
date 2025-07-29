@@ -223,6 +223,7 @@
 		"webpack": "~5.99.9"
 	},
 	"dependencies": {
+		"@atlaskit/pragmatic-drag-and-drop": "^1.7.4",
 		"@babel/runtime": "~7.26.10",
 		"@bugsnag/js": "~7.20.2",
 		"@bugsnag/plugin-react": "~7.19.0",

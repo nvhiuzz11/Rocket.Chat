@@ -9,4 +9,6 @@ export interface IProjectProperty extends IRocketChatRecord {
 	type: IProjectPropertyType;
 	teamId: string;
 	order: number;
+	required: boolean;
+	systemKey?: string;
 }

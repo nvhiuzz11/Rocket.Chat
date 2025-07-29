@@ -15,6 +15,7 @@ type RoomAvatarProps = Pick<BaseAvatarProps, 'size'> & {
 };
 
 const RoomAvatar = function RoomAvatar({ room, url, size }: RoomAvatarProps): ReactElement {
+
 	const getRoomPathAvatar = useRoomAvatarPath();
 	const urlFromContext = getRoomPathAvatar(room);
 

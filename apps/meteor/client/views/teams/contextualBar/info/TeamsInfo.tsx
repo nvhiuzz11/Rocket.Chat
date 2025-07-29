@@ -39,7 +39,7 @@ type TeamsInfoProps = {
 
 const TeamsInfo = ({ room, onClickClose, onClickEdit, onClickViewChannels }: TeamsInfoProps): ReactElement => {
 	const { t } = useTranslation();
-
+	console.log('room ', room);
 	const retentionPolicy = useRetentionPolicy(room);
 	const memoizedActions = useTeamActions(room, { onClickEdit });
 

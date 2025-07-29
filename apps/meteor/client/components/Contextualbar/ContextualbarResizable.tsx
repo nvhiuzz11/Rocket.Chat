@@ -4,9 +4,12 @@ import { useLocalStorage } from '@rocket.chat/fuselage-hooks';
 import { Resizable } from 're-resizable';
 import type { ComponentProps } from 'react';
 
-type ContextualbarResizableProps = { defaultWidth: string } & ComponentProps<typeof Resizable>;
+type ContextualbarResizableProps = {
+	defaultWidth: string;
+	maxWidth?: string | number;
+} & Omit<ComponentProps<typeof Resizable>, 'maxWidth'>;
 
-const ContextualbarResizable = ({ defaultWidth, children, ...props }: ContextualbarResizableProps) => {
+const ContextualbarResizable = ({ defaultWidth, maxWidth = '50%', children, ...props }: ContextualbarResizableProps) => {
 	const [contextualbarWidth, setContextualbarWidth] = useLocalStorage('contextualbarWidth', defaultWidth);
 	const [expanded] = useLocalStorage('expand-threads', false);
 
@@ -28,7 +31,7 @@ const ContextualbarResizable = ({ defaultWidth, children, ...props }: Contextual
 				height: '100%',
 			}}
 			minWidth={defaultWidth}
-			maxWidth='50%'
+			maxWidth={maxWidth}
 			minHeight='100%'
 			handleStyles={{ left: { width: '3px', zIndex: expanded ? 5 : 99, left: 0 } }}
 			handleComponent={{ left: <Box className={handleStyle} /> }}
