@@ -10,27 +10,27 @@ import type { IProjectTag } from '../../../../../../server/core-typings/IProject
 import UserAutoCompleteMultipleFederated from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteMultipleFederated';
 import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
 
-type CreateProjectModalProps = {
+type EditProjectModalProps = {
 	onClose: () => void;
 	teamId: string;
 	projectProperties: IProjectProperty[] & { value: IProjectTag[] };
+	reload: () => void;
 };
 
-type CreateProjectModalPayload = {
+type EditProjectModalPayload = {
 	name: string;
 	description: string;
 	members: string[];
 };
 
-const CreateProjectModal = ({ onClose, teamId, projectProperties }: CreateProjectModalProps): ReactElement => {
-	console.log('projectProperties CreateProjectModal', projectProperties);
+const EditProjectModal = ({ onClose, teamId, projectProperties, reload }: EditProjectModalProps): ReactElement => {
+	console.log('projectProperties EditProjectModal', projectProperties);
 	const t = useTranslation();
 	const [isLoading, setIsLoading] = useState(false);
 	const [projectPropertySelected, setProjectPropertySelected] = useState<{ propertyId: string; value: IProjectTag['_id'][] }[]>([]);
 	const addMembersId = useId();
 
-	const createProjectEndpoint = useEndpoint('POST', '/v1/projects.create');
-	const createPrivateChannel = useEndpoint('POST', '/v1/groups.create');
+	const updateProjectEndpoint = useEndpoint('POST', '/v1/projects.update');
 	const dispatchToastMessage = useToastMessageDispatch();
 
 	const {
@@ -38,7 +38,7 @@ const CreateProjectModal = ({ onClose, teamId, projectProperties }: CreateProjec
 		formState: { errors },
 		handleSubmit,
 		control,
-	} = useForm<CreateProjectModalPayload>({
+	} = useForm<EditProjectModalPayload>({
 		defaultValues: {
 			name: '',
 			description: '',
@@ -46,40 +46,27 @@ const CreateProjectModal = ({ onClose, teamId, projectProperties }: CreateProjec
 		},
 	});
 
-	const handleCreateProject = async ({ name, description, members }: CreateProjectModalPayload): Promise<void> => {
+	const handleCreateProject = async ({ name, description }: EditProjectModalPayload): Promise<void> => {
 		try {
-			console.log('handleCreateProject', name, description, members, teamId);
 			console.log('projectPropertySelected', projectPropertySelected);
 
 			setIsLoading(true);
 
-			const channelName = name.replace(/\s/g, '');
-			const createChannelParams = {
-				name: channelName,
-				members,
-				extraData: {
-					teamId,
-					encrypted: false,
-					broadcast: false,
-					readOnly: false,
+			await updateProjectEndpoint({
+				_id: projectProperties._id,
+				data: {
+					name,
+					description,
+					properties: projectPropertySelected,
 				},
-			};
-
-			const roomData = await createPrivateChannel(createChannelParams);
-
-			await createProjectEndpoint({
-				name,
-				description,
-				teamId,
-				roomId: roomData?.group?._id,
-				properties: projectPropertySelected,
 			});
-			dispatchToastMessage({ type: 'success', message: 'Project created successfully' });
+			dispatchToastMessage({ type: 'success', message: 'Project updated successfully' });
 			onClose();
 		} catch (error) {
 			dispatchToastMessage({ type: 'error', message: error });
 		} finally {
 			setIsLoading(false);
+			reload();
 		}
 	};
 
@@ -153,58 +140,6 @@ const CreateProjectModal = ({ onClose, teamId, projectProperties }: CreateProjec
 							)}
 						/>
 					</Field>
-
-					{/* projectProperties  [{
-        "_id": "68820138faa536b93f9dcc71",
-        "name": "Status",
-        "type": "SELECT",
-        "teamId": "68820138faa536b93f9dcc6e",
-        "required": true,
-        "order": 0,
-        "_updatedAt": "2025-07-24T09:47:36.370Z",
-        "value": [
-            {
-                "_id": "68820138faa536b93f9dcc72",
-                "name": "Not Started",
-                "color": "#2C2C2C",
-                "projectPropertyId": "68820138faa536b93f9dcc71",
-                "order": 0,
-                "_updatedAt": "2025-07-24T09:47:36.374Z"
-            },
-            {
-                "_id": "68820138faa536b93f9dcc73",
-                "name": "In Progress",
-                "color": "#153E5C",
-                "projectPropertyId": "68820138faa536b93f9dcc71",
-                "order": 0,
-                "_updatedAt": "2025-07-24T09:47:36.375Z"
-            },
-            {
-                "_id": "68820138faa536b93f9dcc74",
-                "name": "Completed",
-                "color": "#1A4733",
-                "projectPropertyId": "68820138faa536b93f9dcc71",
-                "order": 0,
-                "_updatedAt": "2025-07-24T09:47:36.376Z"
-            }
-        ]
-    }
-] */}
-					{projectProperties?.map((property) => (
-						<Field key={property._id}>
-							<FieldLabel>
-								{property.name}
-								{property.required && '*'}
-							</FieldLabel>
-							<FieldRow>
-								<PropertyInput
-									property={property}
-									value={getPropertyValue(property._id, property.type)}
-									onChange={(value) => handlePropertyChange(property._id, value)}
-								/>
-							</FieldRow>
-						</Field>
-					))}
 				</FieldGroup>
 			</Modal.Content>
 			<Modal.Footer>
@@ -219,4 +154,4 @@ const CreateProjectModal = ({ onClose, teamId, projectProperties }: CreateProjec
 	);
 };
 
-export default CreateProjectModal;
+export default EditProjectModal;

@@ -4,24 +4,18 @@ import { Box, Icon } from '@rocket.chat/fuselage';
 import { useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
+import { darkenColor, lightenColor } from '../../../../../lib/utils/kanbanBoard';
+
 interface IKanbanColumnProps {
-	status: {
-		id: string;
-		name: string;
-		color?: {
-			column: string;
-			card: string;
-			text: string;
-			tag: string;
-			button: string;
-		};
-	};
+	status: ITaskTag;
 	children: React.ReactNode;
 	onTaskDrop?: (taskId: string, newStatus: string) => void;
 	onTaskReorder?: (taskId: string, newIndex: number) => void;
+	onTaskCreate?: () => void;
 }
 
-const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanColumnProps) => {
+const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreate }: IKanbanColumnProps) => {
 	const { t } = useTranslation();
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -31,11 +25,11 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 
 		return dropTargetForElements({
 			element,
-			getData: () => ({ status: status.id }),
+			getData: () => ({ status: status._id }),
 			onDrop: ({ source, location }) => {
 				const { data } = source;
 				if (data && typeof data === 'object' && 'id' in data) {
-					if (data.status === status.id && onTaskReorder) {
+					if (data.status === status._id && onTaskReorder) {
 						// Calculate new index based on drop position relative to card heights
 						const dropY = location.current.input.clientY;
 						const cardsContainer = element.querySelector('[role="list"]');
@@ -57,14 +51,13 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 
 						onTaskReorder(data.id as string, targetIndex);
 					} else if (onTaskDrop) {
-						onTaskDrop(data.id as string, status.id);
+						onTaskDrop(data.id as string, status._id);
 					}
 				}
 			},
 		});
-	}, [status.id, onTaskDrop, onTaskReorder]);
+	}, [status._id, onTaskDrop, onTaskReorder]);
 
-	// Count the number of tasks in this column
 	const taskCount = Array.isArray(children) ? children.length : 0;
 
 	const columnStyle = css`
@@ -72,9 +65,10 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 		flex-direction: column;
 		width: 280px;
 		min-width: 280px;
-		background: ${status.color?.column};
+		background: ${status.color};
 		border-radius: 12px;
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+		border: 0.5px solid ${darkenColor(status?.color, 0.1)};
 		overflow: hidden;
 
 		&:hover {
@@ -85,12 +79,12 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 	`;
 
 	const cardStyle = css`
-		background: ${status.color?.button};
+		background: ${darkenColor(status.color, 0.05)};
 		border-radius: 8px;
 		padding: 16px;
 		cursor: grab;
 		transition: all 0.2s ease;
-		color: ${status.color?.text};
+		color: ${darkenColor(status.color, 0.2)};
 		box-shadow:
 			rgba(0, 0, 0, 0.08) 0px 2px 4px 0px,
 			rgba(255, 255, 255, 0.094) 0px 0px 0px 1px;
@@ -113,12 +107,12 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 					alignItems='center'
 					style={{
 						gap: 'x8',
-						backgroundColor: status.color?.tag,
+						backgroundColor: darkenColor(status.color, 0.2),
 						borderRadius: '12px',
 						padding: '2px 8px',
 					}}
 				>
-					<Icon name='circle' size='x16' color={status.color?.button} />
+					<Icon name='circle' size='x16' color={darkenColor(status.color, 0.5)} />
 					<Box
 						fontScale='p2m'
 						style={{
@@ -130,7 +124,7 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 				</Box>
 				<Box
 					style={{
-						backgroundColor: status.color?.tag,
+						backgroundColor: lightenColor(status.color, 0.2),
 						borderRadius: '12px',
 						padding: '2px 8px',
 						fontSize: '12px',
@@ -147,15 +141,21 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder }: IKanbanCo
 				style={{
 					overflowY: 'auto',
 					gap: '12px',
-					background: status.color?.column,
+					background: status.color,
 				}}
 			>
 				{children}
 
-				<Box className={cardStyle} display='flex' alignItems='center' backgroundColor={status.color?.button}>
-					<Icon name='plus' size='x16' color={status.color?.text} />
-					<Box fontScale='p2m' marginInlineStart='x8' color={status.color?.text}>
-						{t('New_Project')}
+				<Box
+					className={cardStyle}
+					display='flex'
+					alignItems='center'
+					backgroundColor={darkenColor(status.color, 0.05)}
+					onClick={() => onTaskCreate?.()}
+				>
+					<Icon name='plus' size='x16' color={darkenColor(status.color, 0.2)} />
+					<Box fontScale='p2m' marginInlineStart='x8' color={darkenColor(status.color, 0.2)}>
+						{t('New_Task')}
 					</Box>
 				</Box>
 			</Box>

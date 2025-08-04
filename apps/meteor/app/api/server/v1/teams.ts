@@ -102,7 +102,8 @@ API.v1.addRoute(
 				sidepanel,
 			});
 
-			DEFAULT_PROJECT_PROPERTIES.forEach(async (property) => {
+			for (const property of DEFAULT_PROJECT_PROPERTIES) {
+				// eslint-disable-next-line no-await-in-loop
 				const propertyId = await ProjectProperty.create({
 					name: property.name,
 					type: property.type,
@@ -111,14 +112,15 @@ API.v1.addRoute(
 					systemKey: property?.systemKey ?? null,
 				});
 
-				property.data.forEach(async (tag) => {
+				for (const tag of property.data) {
+					// eslint-disable-next-line no-await-in-loop
 					await ProjectTag.create({
 						name: tag.name,
 						color: tag.color,
 						projectPropertyId: propertyId,
 					});
-				});
-			});
+				}
+			}
 
 			return API.v1.success({ team });
 		},

@@ -1,32 +1,25 @@
-import type { IRoom } from '@rocket.chat/core-typings';
+import type { IRoom, ITeam } from '@rocket.chat/core-typings';
 import { GenericMenu } from '@rocket.chat/ui-client';
 import type { GenericMenuItemProps } from '@rocket.chat/ui-client';
 import { useTranslation } from 'react-i18next';
 
 import type { IProject } from '../../../../../../server/core-typings/IProject';
 import { roomCoordinator } from '../../../../../lib/rooms/roomCoordinator';
-import { useDeleteRoom } from '../../../../hooks/roomActions/useDeleteRoom';
+import { useRemoveProject } from '../hook/useRemoveProject';
 
-const TeamsProjectItemMenu = ({ project, reload }: { project: IProject & { room: IRoom }; reload?: () => void }) => {
+const TeamsProjectItemMenu = ({
+	project,
+	team,
+	reload,
+	onOpenProjectDetail,
+}: {
+	project: IProject & { room: IRoom };
+	team: ITeam;
+	reload?: () => void;
+	onOpenProjectDetail?: (project: IProject) => void;
+}) => {
 	const { t } = useTranslation();
-
-	const { handleDelete, canDeleteRoom } = useDeleteRoom(project?.room, { reload });
-
-	// const toggleAutoJoin = {
-	// 	id: 'toggleAutoJoin',
-	// 	icon: room.t === 'c' ? 'hash' : 'hashtag-lock',
-	// 	content: t('Team_Auto-join'),
-	// 	onClick: handleToggleAutoJoin,
-	// 	addon: <CheckBox checked={room.teamDefault} />,
-	// };
-
-	// const removeRoom = {
-	// 	id: 'removeRoom',
-	// 	icon: 'cross',
-	// 	content: t('Team_Remove_from_team'),
-	// 	onClick: handleRemoveRoom,
-	// 	variant: 'danger',
-	// };
+	const { handleRemoveProject, canRemoveProject } = useRemoveProject(project, { reload });
 
 	const goToRoom = {
 		id: 'goToRoom',
@@ -35,11 +28,18 @@ const TeamsProjectItemMenu = ({ project, reload }: { project: IProject & { room:
 		onClick: () => roomCoordinator.openRouteLink(project.room.t, project.room),
 	};
 
-	const deleteRoom = {
-		id: 'deleteRoom',
+	const detailProject = {
+		id: 'Detail',
+		icon: 'info',
+		content: t('Detail'),
+		onClick: () => onOpenProjectDetail?.(project),
+	};
+
+	const deleteProject = {
+		id: 'deleteProject',
 		icon: 'trash',
 		content: t('Delete'),
-		onClick: handleDelete,
+		onClick: handleRemoveProject,
 		variant: 'danger',
 	};
 
@@ -50,7 +50,7 @@ const TeamsProjectItemMenu = ({ project, reload }: { project: IProject & { room:
 			sections={[
 				{
 					title: '',
-					items: [goToRoom, canDeleteRoom && deleteRoom ].filter(Boolean) as GenericMenuItemProps[],
+					items: [detailProject, goToRoom, canRemoveProject && deleteProject].filter(Boolean) as GenericMenuItemProps[],
 				},
 			]}
 		/>

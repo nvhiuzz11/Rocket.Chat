@@ -1,134 +1,166 @@
 import type { IRoom, IUser } from '@rocket.chat/core-typings';
-import { css } from '@rocket.chat/css-in-js';
-import {
-	Table,
-	TableHead,
-	TableBody,
-	TableRow,
-	TableCell,
-	Box,
-	Throbber,
-	ContextualbarEmptyContent,
-	Palette,
-	OptionMenu,
-	IconButton,
-} from '@rocket.chat/fuselage';
-import { usePrefersReducedMotion } from '@rocket.chat/fuselage-hooks';
+import { Box, TableCell, Icon } from '@rocket.chat/fuselage';
 import { RoomAvatar, UserAvatar } from '@rocket.chat/ui-avatar';
-import { useState } from 'react';
+import {
+	createColumnHelper,
+	getCoreRowModel,
+	getSortedRowModel,
+	useReactTable,
+	type SortingState,
+	flexRender,
+} from '@tanstack/react-table';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import TeamsProjectItemMenu from './TeamsProjectItemMenu';
 import type { IProject } from '../../../../../../server/core-typings/IProject';
-import type { IProjectProperty } from '../../../../../../server/core-typings/IProjectProperty';
-import type { IProjectTag } from '../../../../../../server/core-typings/IProjectTag';
-import { usePreventPropagation } from '../../../../../hooks/usePreventPropagation';
+import GenericNoResults from '../../../../../components/GenericNoResults';
+import {
+	GenericTable,
+	GenericTableHeader,
+	GenericTableBody,
+	GenericTableRow,
+	GenericTableHeaderCell,
+	GenericTableLoadingTable,
+} from '../../../../../components/GenericTable';
+
+type ProjectData = IProject & { room: IRoom; createdBy: Pick<IUser, '_id' | 'username'> };
 
 type ProjectTableViewProps = {
-	// Note: The original types were slightly incorrect for a list. Corrected below.
-	projects: (IProject & { room: IRoom; createdBy: Pick<IUser, '_id' | 'username'> })[];
+	projects: ProjectData[];
 	loading: boolean;
-	projectProperties: (IProjectProperty & { value: IProjectTag[] })[];
 	onClickProject: (room: IRoom) => void;
 	reload?: () => void;
+	error?: Error;
+	onOpenProjectDetail?: (project: IProject) => void;
 };
 
-const ProjectTableView = ({ projects, loading, projectProperties, onClickProject, reload }: ProjectTableViewProps) => {
+const columnHelper = createColumnHelper<ProjectData>();
+
+const ProjectTableView = ({ projects, loading, onClickProject, reload, error, onOpenProjectDetail }: ProjectTableViewProps) => {
 	const { t } = useTranslation();
-	const [showOptionMenu, setShowOptionMenu] = useState();
+	const [sorting, setSorting] = useState<SortingState>([]);
 
-	const isReduceMotionEnabled = usePrefersReducedMotion();
-	const handleMenuEvent = {
-		[isReduceMotionEnabled ? 'onMouseEnter' : 'onTransitionEnd']: setShowOptionMenu,
-	};
+	const columns = useMemo(
+		() => [
+			columnHelper.accessor('name', {
+				id: 'name',
+				header: () => t('Name'),
+				cell: (info) => <Box withTruncatedText>{info.getValue()}</Box>,
+				size: 200,
+			}),
+			columnHelper.accessor('description', {
+				id: 'description',
+				header: () => t('Description'),
+				cell: (info) => <Box withTruncatedText>{info.getValue()}</Box>,
+				size: 250,
+			}),
+			columnHelper.accessor('room.name', {
+				id: 'roomName',
+				header: () => t('Channel'),
+				cell: ({ row }) => {
+					const { room } = row.original;
+					return (
+						<Box display='flex' alignItems='center'>
+							<RoomAvatar size='x28' room={room} />
+							<Box is='span' mi='x8' withTruncatedText>
+								<Icon name='hashtag-lock' size='x15' />
+								{room.name}
+							</Box>
+						</Box>
+					);
+				},
+				enableSorting: true,
+				size: 180,
+			}),
+			columnHelper.accessor('createdBy.username', {
+				id: 'createdByUsername',
+				header: () => t('Created_By'),
+				cell: ({ row }) => {
+					const { createdBy } = row.original;
+					return (
+						<Box display='flex' alignItems='center'>
+							<UserAvatar size='x28' userId={createdBy._id} />
+							<Box is='span' mi='x8' withTruncatedText>
+								{createdBy.username}
+							</Box>
+						</Box>
+					);
+				},
+				size: 150,
+			}),
+			columnHelper.display({
+				id: 'actions',
+				cell: ({ row }) => <TeamsProjectItemMenu project={row.original} reload={reload} onOpenProjectDetail={onOpenProjectDetail} />,
+				enableSorting: false,
+				size: 60,
+			}),
+		],
+		[t, reload],
+	);
 
-	const onClick = usePreventPropagation();
+	const table = useReactTable({
+		data: projects,
+		columns,
+		state: {
+			sorting,
+		},
+		onSortingChange: setSorting,
+		getSortedRowModel: getSortedRowModel(),
+		getCoreRowModel: getCoreRowModel(),
+	});
 
-	const handleProjectClick = (project: any) => {
-		console.log('Project clicked:', project);
-		onClickProject(project.room);
-	};
+	if (loading) {
+		return (
+			<GenericTable>
+				<GenericTableHeader>
+					{columns.map((column) => (
+						<GenericTableHeaderCell key={column.id} />
+					))}
+				</GenericTableHeader>
+				<GenericTableBody>
+					<GenericTableLoadingTable headerCells={columns.length} />
+				</GenericTableBody>
+			</GenericTable>
+		);
+	}
 
-	const hovered = css`
-		&:hover {
-			cursor: pointer;
-		}
+	if (error) {
+		return <GenericNoResults icon='warning' title={t('Something_went_wrong')} buttonTitle={t('Reload_page')} buttonAction={reload} />;
+	}
 
-		&:hover,
-		&:focus {
-			background: ${Palette.surface['surface-hover']};
-		}
-	`;
+	if (projects.length === 0) {
+		return <GenericNoResults icon='stack' title={t('No_projects_in_team')} />;
+	}
 
 	return (
-		<Box display='flex' flexDirection='column' height='100%'>
-			<Box flexGrow={1} overflow='auto'>
-				<Table fixed>
-					<TableHead>
-						<TableRow>
-							<TableCell width='x120'>{t('Name')}</TableCell>
-							<TableCell width='x150'>{t('Description')}</TableCell>
-							<TableCell width='x120'>{t('Channel')}</TableCell>
-							<TableCell width='x120'>{t('Created_By')}</TableCell>
-							<TableCell width='x80'></TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody flexGrow={1} overflow='auto'>
-						{loading && (
-							<TableRow>
-								<TableCell colSpan={4}>
-									<Box display='flex' justifyContent='center' p='x16'>
-										<Throbber />
-									</Box>
-								</TableCell>
-							</TableRow>
-						)}
-						{!loading && projects.length === 0 && (
-							<TableRow>
-								<TableCell colSpan={4}>
-									<ContextualbarEmptyContent title={t('No_projects_in_team')} />
-								</TableCell>
-							</TableRow>
-						)}
-
-						{!loading &&
-							projects?.length > 0 &&
-							projects?.map((project) => (
-								<TableRow key={project._id} onClick={() => handleProjectClick(project)} className={hovered} {...handleMenuEvent}>
-									<TableCell>{project.name}</TableCell>
-									<TableCell withTruncatedText>{project.description}</TableCell>
-									<TableCell>
-										<Box display='flex' alignItems='center'>
-											<Box is='span' cursor='pointer'>
-												<RoomAvatar size='x24' room={project.room} />
-											</Box>
-											<Box is='span' cursor='pointer' withTruncatedText>
-												{project.room.name}
-											</Box>
-										</Box>
-									</TableCell>
-									<TableCell>
-										<Box display='flex' alignItems='center'>
-											<Box is='span' cursor='pointer'>
-												<UserAvatar size='x24' userId={project.createdBy._id} />
-											</Box>
-											<Box is='span' cursor='pointer' withTruncatedText>
-												{project.createdBy.username}
-											</Box>
-										</Box>
-									</TableCell>
-									<TableCell>
-										{/* <OptionMenu onClick={onClick}>
-											{showOptionMenu ? <TeamsProjectItemMenu project={project} reload={reload} /> : <IconButton tiny icon='kebab' />}
-										</OptionMenu> */}
-										<TeamsProjectItemMenu project={project} reload={reload} />
-									</TableCell>
-								</TableRow>
-							))}
-					</TableBody>
-				</Table>
-			</Box>
-		</Box>
+		<GenericTable>
+			<GenericTableHeader>
+				{table.getHeaderGroups()[0].headers.map((header) => (
+					<GenericTableHeaderCell
+						key={header.id}
+						w={header.getSize()}
+						sort={header.column.getCanSort() ? header.column.id : undefined}
+						active={header.column.getIsSorted() !== false}
+						direction={header.column.getIsSorted() === 'asc' ? 'asc' : 'desc'}
+						onClick={header.column.getToggleSortingHandler()}
+					>
+						{flexRender(header.column.columnDef.header, header.getContext())}
+					</GenericTableHeaderCell>
+				))}
+			</GenericTableHeader>
+			<GenericTableBody>
+				{table.getRowModel().rows.map((row) => (
+					<GenericTableRow key={row.id} onClick={() => onOpenProjectDetail(row.original)} action>
+						{row.getVisibleCells().map((cell) => (
+							<TableCell key={cell.id} onClick={cell.column.id === 'actions' ? (e) => e.stopPropagation() : undefined}>
+								{flexRender(cell.column.columnDef.cell, cell.getContext())}
+							</TableCell>
+						))}
+					</GenericTableRow>
+				))}
+			</GenericTableBody>
+		</GenericTable>
 	);
 };
 

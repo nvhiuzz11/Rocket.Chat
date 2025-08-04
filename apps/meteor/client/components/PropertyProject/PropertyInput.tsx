@@ -1,11 +1,10 @@
 import { Select, MultiSelect } from '@rocket.chat/fuselage';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { PROJECT_PROPERTY_TYPES } from '../../../definition/project';
-import type { IProjectProperty } from '../../../server/core-typings/IProjectProperty';
 
 interface IPropertyInputProps {
-	property: IProjectProperty & {
+	property: any & {
 		value?: { _id: string; name: string }[];
 	};
 	value: string | string[];
@@ -13,7 +12,7 @@ interface IPropertyInputProps {
 }
 
 export const PropertyInput = ({ property, value, onChange }: IPropertyInputProps) => {
-	const options = useMemo(() => property.value?.map((tag) => [tag._id, tag.name] as [string, string]) ?? [], [property.value]);
+	const options = useMemo(() => property.value?.map((tag: any) => [tag._id, tag.name] as [string, string]) ?? [], [property.value]);
 
 	if (property.type === PROJECT_PROPERTY_TYPES.SELECT) {
 		return (
@@ -22,6 +21,7 @@ export const PropertyInput = ({ property, value, onChange }: IPropertyInputProps
 				value={value as string}
 				onChange={(selectedValue) => onChange(String(selectedValue))}
 				options={options}
+				required={property.required}
 			/>
 		);
 	}
@@ -33,34 +33,10 @@ export const PropertyInput = ({ property, value, onChange }: IPropertyInputProps
 				value={value as string[]}
 				onChange={(selectedValues) => onChange(selectedValues)}
 				options={options}
+				required={property.required}
 			/>
 		);
 	}
 
 	return null;
 };
-
-// <FieldRow>
-//                         <Select
-//                             disabled={state === AsyncStatePhase.LOADING || agent === ''}
-//                             options={availableExtensions?.extensions?.map((extension) => [extension, extension]) || []}
-//                             value={extension}
-//                             placeholder={t('Select_an_option')}
-//                             onChange={(value) => setExtension(String(value))}
-//                         />
-//                     </FieldRow>
-
-// <FieldRow>
-// 										<Controller
-// 											control={control}
-// 											name='systemMessages'
-// 											render={({ field }) => (
-// 												<MultiSelect
-// 													{...field}
-// 													options={sysMesOptions}
-// 													disabled={!hideSysMes || isFederated}
-// 													placeholder={t('Select_messages_to_hide')}
-// 												/>
-// 											)}
-// 										/>
-// 									</FieldRow>

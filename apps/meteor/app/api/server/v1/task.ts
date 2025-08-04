@@ -1,11 +1,14 @@
+import type { IUser } from '@rocket.chat/core-typings';
 import { Users } from '@rocket.chat/models';
 
 import { db } from '../../../../server/database/utils';
 import { TaskRaw } from '../../../../server/models/Task';
 import { API } from '../api';
 import { getPaginationItems } from '../helpers/getPaginationItems';
+import type { ITaskUpdateData } from './rest-typings/task';
 import { isTaskCreateProps, isTaskUpdateProps } from './rest-typings/task';
 import type { ITask } from '../../../../server/core-typings/ITask';
+import type { ITaskTag } from '../../../../server/core-typings/ITaskTag';
 
 const Tasks = new TaskRaw(db);
 
@@ -14,11 +17,11 @@ API.v1.addRoute(
 	{ authRequired: true, validateParams: isTaskCreateProps },
 	{
 		async post() {
-			const { title, description, assignees, dueDate, projectId } = this.bodyParams;
+			const { title, description, assignees, dueDate, projectId, properties } = this.bodyParams;
 
-			const userId = this.userId;
+			const { userId } = this;
 			const username = this.user?.username;
-			const task = await Tasks.create({ _id: userId, username }, { title, description, assignees, dueDate, projectId });
+			const task = await Tasks.create({ _id: userId, username }, { title, description, assignees, dueDate, projectId, properties });
 
 			return API.v1.success({ task });
 		},
@@ -27,19 +30,47 @@ API.v1.addRoute(
 
 API.v1.addRoute(
 	'tasks.update',
-	{ authRequired: true, validateParams: isTaskUpdateProps },
 	{
-		async put() {
-			const { _id, title, description, assignees, dueDate, projectId } = this.bodyParams;
+		authRequired: true,
+		validateParams: isTaskUpdateProps,
+	},
+	{
+		async post() {
+			const { _id, payload } = this.bodyParams;
+
+			console.log('taskId', _id);
+			console.log('payload', payload);
+
+			if (!payload || typeof payload !== 'object') {
+				return API.v1.failure('Invalid payload.');
+			}
 
 			const task = await Tasks.findOneById(_id);
 			if (!task) {
 				return API.v1.notFound('Task not found.');
 			}
 
-			const updateData = { title, description, assignees, dueDate, projectId };
-			const updatedTask = await Tasks.updateOneById(_id, updateData);
+			const updateData: ITaskUpdateData = {};
 
+			const addField = (fieldName: keyof ITaskUpdateData) => {
+				if (payload[fieldName] !== undefined) {
+					updateData[fieldName] = payload[fieldName];
+				}
+			};
+
+			addField('title');
+			addField('description');
+			addField('assignees');
+			addField('dueDate');
+			addField('properties');
+
+			if (Object.keys(updateData).length === 0) {
+				return API.v1.failure('No fields to update.');
+			}
+
+			await Tasks.updateOne({ _id }, { $set: updateData });
+
+			const updatedTask = await Tasks.findOneById(_id);
 			return API.v1.success({ task: updatedTask });
 		},
 	},
@@ -65,42 +96,9 @@ API.v1.addRoute(
 			}).toArray();
 			const total = await Tasks.col.countDocuments(query);
 
-			const userIds = new Set<string>();
-			tasks.forEach((task) => {
-				userIds.add(task.createdBy._id);
-				task.assignees?.forEach((assignee) => userIds.add(assignee._id));
-			});
-
-			const users = await Users.findByIds(Array.from(userIds), {
-				projection: {
-					_id: 1,
-					name: 1,
-					username: 1,
-					emails: 1,
-					avatarETag: 1,
-				},
-			}).toArray();
-
-			const usersMap = users.reduce((acc: Record<string, any>, user) => {
-				acc[user._id] = {
-					_id: user._id,
-					name: user.name,
-					username: user.username,
-					emails: user.emails,
-					avatarETag: user.avatarETag,
-				};
-				return acc;
-			}, {});
-
-			const enrichedTasks = tasks.map((task) => ({
-				...task,
-				creator: usersMap[task.createdBy._id],
-				assignees: task.assignees?.map((assignee) => usersMap[assignee._id]).filter(Boolean) || [],
-			}));
-
 			return API.v1.success({
-				tasks: enrichedTasks,
-				count: enrichedTasks.length,
+				tasks,
+				count,
 				offset,
 				total,
 			});
@@ -140,34 +138,15 @@ API.v1.addRoute(
 );
 
 API.v1.addRoute(
-	'tasks.update',
-	{
-		authRequired: true,
-		validateParams: isTaskUpdateProps,
-	},
-	{
-		async post() {
-			const { taskId, data } = this.bodyParams;
-			const result = await Tasks.updateOne({ _id: taskId }, { $set: data });
-			if (result.modifiedCount === 0) {
-				return API.v1.failure('Task not found or not updated');
-			}
-			const task = await Tasks.findOneById(taskId);
-			return API.v1.success({ task });
-		},
-	},
-);
-
-API.v1.addRoute(
 	'tasks.delete',
 	{
 		authRequired: true,
 	},
 	{
 		async post() {
-			const { taskId } = this.bodyParams;
+			const { _id } = this.bodyParams;
 			try {
-				await Tasks.deleteOne({ _id: taskId });
+				await Tasks.deleteOne({ _id });
 				return API.v1.success();
 			} catch (error) {
 				return API.v1.failure('Failed to delete project');
@@ -180,17 +159,32 @@ declare module '@rocket.chat/rest-typings' {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Endpoints {
 		'/v1/tasks.create': {
-			POST: (params: { title: string; description: string; assignees: string[]; dueDate: string; projectId: string }) => {
+			POST: (params: {
+				title: string;
+				description?: string;
+				assignees?: Pick<IUser, '_id' | 'username'>[];
+				dueDate?: Date;
+				projectId: string;
+				properties?: Array<{ taskPropertyId: string; value: ITaskTag['_id'][] }>;
+			}) => {
 				task: ITask;
 			};
 		};
+		'/v1/tasks.list': {
+			GET: (params: { projectId: string; offset?: number; count?: number }) => {
+				tasks: ITask[];
+				count?: number;
+				offset?: number;
+				total?: number;
+			};
+		};
 		'/v1/tasks.update': {
-			POST: (params: { taskId: string; data: Partial<ITask> }) => {
+			POST: (params: { _id: string; payload: any }) => {
 				task: ITask;
 			};
 		};
 		'/v1/tasks.delete': {
-			POST: (params: { taskId: string }) => {};
+			POST: (params: { _id: string }) => {};
 		};
 	}
 }

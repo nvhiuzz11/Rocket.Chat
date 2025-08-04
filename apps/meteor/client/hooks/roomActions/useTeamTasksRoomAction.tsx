@@ -1,16 +1,10 @@
-import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
-import { useMemo } from 'react';
+import { lazy, useMemo } from 'react';
 
 import type { RoomToolboxActionConfig } from '../../views/room/contexts/RoomToolboxContext';
-import { useTaskView } from '../../views/teams/contextualBar/tasks/hook/useTaskView';
+
+const RoomTasksWithData = lazy(() => import('../../views/room/contextualBar/Task/RoomTasksWithData'));
 
 export const useTeamTasksRoomAction = () => {
-	const { handleOpenTaskView } = useTaskView();
-
-	const handleOpenTeamTasks = useEffectEvent(async () => {
-		handleOpenTaskView();
-	});
-
 	return useMemo(
 		(): RoomToolboxActionConfig => ({
 			id: 'team-tasks',
@@ -19,8 +13,8 @@ export const useTeamTasksRoomAction = () => {
 			title: 'Team_Tasks',
 			icon: 'list-bullets',
 			order: 1,
-			action: handleOpenTeamTasks,
+			tabComponent: RoomTasksWithData,
 		}),
-		[handleOpenTeamTasks],
+		[],
 	);
 };

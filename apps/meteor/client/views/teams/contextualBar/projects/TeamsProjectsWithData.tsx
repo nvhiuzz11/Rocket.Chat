@@ -11,6 +11,7 @@ import { useRoomToolbox } from '../../../room/contexts/RoomToolboxContext';
 
 const TeamsProjectsWithData = (): JSX.Element => {
 	const room = useRoom();
+	console.log('room', room);
 	const { closeTab } = useRoomToolbox();
 	const projectsOfTeamEndpoint = useEndpoint('GET', '/v1/projects.list.team');
 
@@ -47,8 +48,8 @@ const TeamsProjectsWithData = (): JSX.Element => {
 		roomCoordinator.openRouteLink(room.t, room);
 	});
 
-	const reload = useCallback(() => {
-		fetchProjects();
+	const reload = useCallback(async () => {
+		await fetchProjects();
 	}, []);
 
 	return (

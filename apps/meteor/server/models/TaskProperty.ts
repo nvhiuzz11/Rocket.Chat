@@ -15,7 +15,10 @@ export class TaskPropertyRaw extends BaseRaw<ITaskProperty> {
 
 	async create(data: Omit<ITaskProperty, '_id' | '_updatedAt' | 'order'>): Promise<string> {
 		const lastProperty = await this.findOne({ projectId: data.projectId }, { sort: { order: -1 } });
-		const newOrder = (lastProperty?.order ?? -1) + 1;
+
+		const lastOrder = lastProperty?.order;
+		const newOrder = typeof lastOrder === 'number' ? lastOrder + 1 : 0;
+
 		const result = await this.insertOne({ ...data, order: newOrder });
 		return result.insertedId;
 	}
