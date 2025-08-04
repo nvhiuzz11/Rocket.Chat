@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 import { Page, PageHeader, PageContent } from '../../components/Page';
 import ChannelsTab from './tabs/channels/ChannelsTab';
-import TasksTab from './tabs/tasks/TasksTab';
 import TeamsTab from './tabs/teams/TeamsTab';
 import UsersTab from './tabs/users/UsersTab';
 
@@ -64,7 +63,6 @@ const DirectoryPage = (): ReactElement => {
 				{tab === 'channels' && <ChannelsTab />}
 				{tab === 'users' && <UsersTab />}
 				{tab === 'teams' && <TeamsTab />}
-				{tab === 'tasks' && <TasksTab />}
 				{federationEnabled && tab === 'external' && <UsersTab workspace='external' />}
 			</PageContent>
 		</Page>

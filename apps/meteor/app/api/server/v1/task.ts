@@ -6,7 +6,7 @@ import { TaskRaw } from '../../../../server/models/Task';
 import { API } from '../api';
 import { getPaginationItems } from '../helpers/getPaginationItems';
 import type { ITaskUpdateData } from './rest-typings/task';
-import { isTaskCreateProps, isTaskUpdateProps } from './rest-typings/task';
+import { isTaskCreateProps, isTaskUpdateProps, isTaskUpdateStatusData } from './rest-typings/task';
 import type { ITask } from '../../../../server/core-typings/ITask';
 import type { ITaskTag } from '../../../../server/core-typings/ITaskTag';
 
@@ -69,6 +69,38 @@ API.v1.addRoute(
 			}
 
 			await Tasks.updateOne({ _id }, { $set: updateData });
+
+			const updatedTask = await Tasks.findOneById(_id);
+			return API.v1.success({ task: updatedTask });
+		},
+	},
+);
+
+API.v1.addRoute(
+	'tasks.updateStatus',
+	{
+		authRequired: true,
+		validateParams: isTaskUpdateStatusData,
+	},
+	{
+		async post() {
+			const { _id, statusPropertyId, statusValueId } = this.bodyParams;
+
+			const task = await Tasks.findOneById(_id);
+			if (!task) {
+				return API.v1.notFound('Task not found.');
+			}
+
+			await Tasks.updateOne(
+				{ _id },
+				{
+					$set: {
+						properties: task.properties?.map((prop) =>
+							prop.taskPropertyId === statusPropertyId ? { ...prop, value: statusValueId } : prop,
+						),
+					},
+				},
+			);
 
 			const updatedTask = await Tasks.findOneById(_id);
 			return API.v1.success({ task: updatedTask });
@@ -180,6 +212,11 @@ declare module '@rocket.chat/rest-typings' {
 		};
 		'/v1/tasks.update': {
 			POST: (params: { _id: string; payload: any }) => {
+				task: ITask;
+			};
+		};
+		'/v1/tasks.updateStatus': {
+			POST: (params: { _id: string; statusPropertyId: string; statusValueId: string }) => {
 				task: ITask;
 			};
 		};

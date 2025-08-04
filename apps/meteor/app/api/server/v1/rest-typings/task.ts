@@ -63,3 +63,21 @@ export interface ITaskUpdateData {
 	dueDate?: Date;
 	properties?: any;
 }
+
+export interface ITaskUpdateStatusData {
+	_id: string;
+	statusPropertyId: string;
+	statusValueId: string;
+}
+
+const TaskUpdateStatusDataSchema = {
+	type: 'object',
+	properties: {
+		_id: { type: 'string' },
+		statusPropertyId: { type: 'string' },
+		statusValueId: { type: 'string' },
+	},
+	required: ['_id', 'statusPropertyId', 'statusValueId'],
+};
+
+export const isTaskUpdateStatusData = ajv.compile<ITaskUpdateStatusData>(TaskUpdateStatusDataSchema);

@@ -18,7 +18,7 @@ type KanbanBoardProps = {
 };
 
 const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreate, onOpenTaskDetail }: KanbanBoardProps) => {
-	const updateTaskEndpoint = useEndpoint('POST', '/v1/tasks.update');
+	const updateTaskStatusEndpoint = useEndpoint('POST', '/v1/tasks.updateStatus');
 
 	const statusProperty = taskProperties.find((property) => property.systemKey === 'status');
 	const [statuses, setStatuses] = useState<ITaskTag[]>();
@@ -36,19 +36,11 @@ const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreat
 			return;
 		}
 
-		const payload = {
-			properties: [
-				{
-					taskPropertyId: statusProperty._id,
-					value: [newStatusId],
-				},
-			],
-		};
-
 		try {
-			await updateTaskEndpoint({
+			await updateTaskStatusEndpoint({
 				_id: taskId,
-				payload,
+				statusPropertyId: statusProperty._id,
+				statusValueId: newStatusId,
 			});
 			reload();
 		} catch (error) {
@@ -82,7 +74,7 @@ const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreat
 			>
 				{statuses?.map((status) => {
 					const filteredTasks = tasks.filter((task) =>
-						task.properties?.some((property) => property.taskPropertyId === statusProperty?._id && property.value.includes(status._id)),
+						task.properties?.some((property) => property.taskPropertyId === statusProperty?._id && property.value?.includes(status._id)),
 					);
 					return (
 						<KanbanColumn

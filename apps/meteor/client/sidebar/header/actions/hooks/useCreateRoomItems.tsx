@@ -4,7 +4,6 @@ import { useTranslation, useSetting, useAtLeastOnePermission } from '@rocket.cha
 import CreateDiscussion from '../../../../components/CreateDiscussion';
 import CreateChannelWithData from '../../CreateChannel';
 import CreateDirectMessage from '../../CreateDirectMessage';
-import CreateTask from '../../CreateTask';
 import CreateTeam from '../../CreateTeam';
 import { useCreateRoomModal } from '../../hooks/useCreateRoomModal';
 
@@ -26,7 +25,6 @@ export const useCreateRoomItems = (): GenericMenuItemProps[] => {
 	const createTeam = useCreateRoomModal(CreateTeam);
 	const createDiscussion = useCreateRoomModal(CreateDiscussion);
 	const createDirectMessage = useCreateRoomModal(CreateDirectMessage);
-	const createTask = useCreateRoomModal(CreateTask);
 
 	const createChannelItem: GenericMenuItemProps = {
 		id: 'channel',
@@ -61,20 +59,10 @@ export const useCreateRoomItems = (): GenericMenuItemProps[] => {
 		},
 	};
 
-	const createTaskItem: GenericMenuItemProps = {
-		id: 'task',
-		content: 'Task',
-		icon: 'list',
-		onClick: () => {
-			createTask();
-		},
-	};
-
 	return [
 		...(canCreateDirectMessages ? [createDirectMessageItem] : []),
 		...(canCreateDiscussion && discussionEnabled ? [createDiscussionItem] : []),
 		...(canCreateChannel ? [createChannelItem] : []),
 		...(canCreateTeam ? [createTeamItem] : []),
-		createTaskItem,
 	];
 };
