@@ -1,4 +1,4 @@
-import { TableCell, Box, Icon, Button, Tag } from '@rocket.chat/fuselage';
+import { TableCell, Box, Icon, Button, Tag, Table } from '@rocket.chat/fuselage';
 import { UserAvatar } from '@rocket.chat/ui-avatar';
 import {
 	createColumnHelper,
@@ -17,7 +17,6 @@ import type { ITaskProperty } from '../../../../../../server/core-typings/ITaskP
 import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
 import GenericNoResults from '../../../../../components/GenericNoResults';
 import {
-	GenericTable,
 	GenericTableHeader,
 	GenericTableBody,
 	GenericTableRow,
@@ -65,12 +64,20 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 		const staticColumns = [
 			columnHelper.accessor('title', {
 				header: () => t('Task_Name'),
-				cell: (info) => <Box withTruncatedText>{info.getValue() || 'N/A'}</Box>,
+				cell: (info) => (
+					<Box withTruncatedText minWidth='180px' maxWidth='200px'>
+						{info.getValue() || 'N/A'}
+					</Box>
+				),
 				size: 200,
 			}),
 			columnHelper.accessor('description', {
 				header: () => t('Description'),
-				cell: (info) => <Box withTruncatedText>{info.getValue() || 'N/A'}</Box>,
+				cell: (info) => (
+					<Box withTruncatedText minWidth='200px' maxWidth='250px'>
+						{info.getValue() || 'N/A'}
+					</Box>
+				),
 				size: 250,
 			}),
 		];
@@ -153,21 +160,30 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 
 	if (loading) {
 		return (
-			<GenericTable>
-				<GenericTableHeader>
-					{columns.map((column: any) => (
-						<GenericTableHeaderCell key={column.id} />
-					))}
-				</GenericTableHeader>
-				<GenericTableBody>
-					<GenericTableLoadingTable headerCells={columns.length} />
-				</GenericTableBody>
-			</GenericTable>
+			<Box height='100%' width='100%' overflow='auto' borderRadius='x4'>
+				<Table sticky>
+					<GenericTableHeader>
+						{columns.map((column: any) => (
+							<GenericTableHeaderCell key={column.id} style={{ minWidth: `${column.size || 150}px`, width: `${column.size || 150}px` }} />
+						))}
+					</GenericTableHeader>
+					<GenericTableBody>
+						<GenericTableLoadingTable headerCells={columns.length} />
+					</GenericTableBody>
+				</Table>
+			</Box>
 		);
 	}
 
 	if (error) {
-		return <GenericNoResults icon='warning' title={t('Something_went_wrong')} buttonTitle={t('Reload_page')} buttonAction={reload} />;
+		return (
+			<GenericNoResults
+				icon='warning'
+				title={t('Something_went_wrong')}
+				buttonTitle={t('Reload_page')}
+				buttonAction={reload || (() => {})}
+			/>
+		);
 	}
 
 	if (tasks.length === 0) {
@@ -175,33 +191,39 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 	}
 
 	return (
-		<GenericTable style={{ minWidth: table.getTotalSize() }}>
-			<GenericTableHeader>
-				{table.getHeaderGroups()[0].headers.map((header) => (
-					<GenericTableHeaderCell
-						key={header.id}
-						w={header.getSize()}
-						sort={header.column.getCanSort() ? header.column.id : undefined}
-						active={header.column.getIsSorted() !== false}
-						direction={header.column.getIsSorted() === 'asc' ? 'asc' : 'desc'}
-						onClick={header.column.getToggleSortingHandler()}
-					>
-						{flexRender(header.column.columnDef.header, header.getContext())}
-					</GenericTableHeaderCell>
-				))}
-			</GenericTableHeader>
-			<GenericTableBody>
-				{table.getRowModel().rows.map((row) => (
-					<GenericTableRow key={row.id} action onClick={onOpenTaskDetail ? () => onOpenTaskDetail(row.original) : undefined}>
-						{row.getVisibleCells().map((cell) => (
-							<GenericTableCell key={cell.id} onClick={cell.column.id === 'actions' ? (e) => e.stopPropagation() : undefined}>
-								{flexRender(cell.column.columnDef.cell, cell.getContext())}
-							</GenericTableCell>
-						))}
-					</GenericTableRow>
-				))}
-			</GenericTableBody>
-		</GenericTable>
+		<Box height='100%' width='100%' overflow='auto' borderRadius='x4'>
+			<Table sticky>
+				<GenericTableHeader>
+					{table.getHeaderGroups()[0].headers.map((header) => (
+						<GenericTableHeaderCell
+							key={header.id}
+							style={{ minWidth: `${header.getSize()}px`, width: `${header.getSize()}px` }}
+							sort={header.column.getCanSort() ? header.column.id : undefined}
+							active={header.column.getIsSorted() !== false}
+							direction={header.column.getIsSorted() === 'asc' ? 'asc' : 'desc'}
+							onClick={header.column.getToggleSortingHandler()}
+						>
+							{flexRender(header.column.columnDef.header, header.getContext())}
+						</GenericTableHeaderCell>
+					))}
+				</GenericTableHeader>
+				<GenericTableBody>
+					{table.getRowModel().rows.map((row) => (
+						<GenericTableRow key={row.id} action onClick={onOpenTaskDetail ? () => onOpenTaskDetail(row.original) : undefined}>
+							{row.getVisibleCells().map((cell) => (
+								<GenericTableCell
+									key={cell.id}
+									onClick={cell.column.id === 'actions' ? (e) => e.stopPropagation() : undefined}
+									style={{ minWidth: `${cell.column.getSize()}px`, width: `${cell.column.getSize()}px` }}
+								>
+									{flexRender(cell.column.columnDef.cell, cell.getContext())}
+								</GenericTableCell>
+							))}
+						</GenericTableRow>
+					))}
+				</GenericTableBody>
+			</Table>
+		</Box>
 	);
 };
 

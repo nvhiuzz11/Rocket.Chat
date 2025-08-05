@@ -203,7 +203,7 @@ const TaskDetailModal = ({ onClose, task, taskProperties, reload, roomId }: Task
 					</Field>
 
 					<Field>
-						<FieldLabel>{t('Created_At')}</FieldLabel>
+						<FieldLabel>{t('Created_at')}</FieldLabel>
 						<FieldRow>
 							<TextInput value={new Date(task.createdAt).toLocaleString()} disabled />
 						</FieldRow>

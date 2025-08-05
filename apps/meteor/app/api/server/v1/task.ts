@@ -38,9 +38,6 @@ API.v1.addRoute(
 		async post() {
 			const { _id, payload } = this.bodyParams;
 
-			console.log('taskId', _id);
-			console.log('payload', payload);
-
 			if (!payload || typeof payload !== 'object') {
 				return API.v1.failure('Invalid payload.');
 			}

@@ -1,5 +1,5 @@
 import type { IRoom } from '@rocket.chat/core-typings';
-import { Box, Button, Icon, TextInput } from '@rocket.chat/fuselage';
+import { Box, Button, ContextualbarEmptyContent, Icon, TextInput } from '@rocket.chat/fuselage';
 import { useAutoFocus } from '@rocket.chat/fuselage-hooks';
 import { useEndpoint, useSetModal } from '@rocket.chat/ui-contexts';
 import { type ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -97,33 +97,17 @@ const TeamsProjects = ({
 					<Icon name='plus' size='x16' /> Add Project
 				</Button>
 			</ContextualbarSection>
-			<ContextualbarContent p={12}>
-				{/* {error && (
-					<ContextualbarEmptyContent>
-						<Box fontScale='h4'>{t('Error_loading_projects')}</Box>
-						<Box fontScale='p2' color='danger'>
-							{error.message}
-						</Box>
-					</ContextualbarEmptyContent>
-				)}
-				{!error && loading && (
-					<Box pi={24} pb={12}>
-						<Throbber size='x12' />
-					</Box>
-				)} */}
-
-				<Box w='full' h='full' overflow='hidden' flexGrow={1} display='flex' flexDirection='column'>
-					<Box flexGrow={1} overflow='auto'>
-						<ProjectTableView
-							projectProperties={projectProperties}
-							projects={projects}
-							loading={loading}
-							onClickProject={onClickProject}
-							reload={reload}
-							error={error}
-							onOpenProjectDetail={openProjectDetailModal}
-						/>
-					</Box>
+			<ContextualbarContent p={12} display='flex' flexDirection='column' height='100%'>
+				<Box flexGrow={1} flexShrink={1} height='100%' minHeight={0}>
+					<ProjectTableView
+						projectProperties={projectProperties}
+						projects={projects}
+						loading={loading}
+						onClickProject={onClickProject}
+						reload={reload}
+						error={error}
+						onOpenProjectDetail={openProjectDetailModal}
+					/>
 				</Box>
 			</ContextualbarContent>
 		</ContextualbarDialogResizable>

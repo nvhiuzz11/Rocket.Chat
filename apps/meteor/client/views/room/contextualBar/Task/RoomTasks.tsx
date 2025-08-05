@@ -119,32 +119,35 @@ const RoomTasks = ({
 					</Box>
 				</Box>
 			</ContextualbarSection>
-			<ContextualbarContent display='flex' flexDirection='column' p={12}>
+			<ContextualbarContent display='flex' flexDirection='column' p={12} height='100%'>
 				{!error && loading && (
 					<Box pi={24} pb={12}>
 						<Throbber size='x12' />
 					</Box>
 				)}
-				{currentView === 'kanban' ? (
-					<TaskKanbanBoard
-						tasks={tasks}
-						projectId={projectId}
-						taskProperties={taskProperties}
-						reload={reload}
-						onTaskCreate={handleAddTask}
-						onOpenTaskDetail={openTaskDetailModal}
-						error={error}
-					/>
-				) : (
-					<TaskTableView
-						tasks={tasks}
-						taskProperties={taskProperties}
-						onEditTask={(task) => console.log(task)}
-						onOpenTaskDetail={openTaskDetailModal}
-						error={error}
-						reload={reload}
-					/>
-				)}
+				<Box flexGrow={1} flexShrink={1} height='100%' minHeight={0}>
+					{currentView === 'kanban' ? (
+						<TaskKanbanBoard
+							tasks={tasks}
+							projectId={projectId}
+							taskProperties={taskProperties}
+							reload={reload}
+							onTaskCreate={handleAddTask}
+							onOpenTaskDetail={openTaskDetailModal}
+							error={error}
+						/>
+					) : (
+						<TaskTableView
+							tasks={tasks}
+							taskProperties={taskProperties}
+							onEditTask={(task) => console.log(task)}
+							onOpenTaskDetail={openTaskDetailModal}
+							error={error}
+							reload={reload}
+							loading={loading}
+						/>
+					)}
+				</Box>
 			</ContextualbarContent>
 		</ContextualbarDialogResizable>
 	);

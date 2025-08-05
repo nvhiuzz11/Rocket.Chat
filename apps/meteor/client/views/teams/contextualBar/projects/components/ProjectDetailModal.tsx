@@ -122,7 +122,7 @@ const ProjectDetailModal = ({ onClose, project, teamId, projectProperties, reloa
 						</FieldRow>
 					</Field>
 
-					{projectProperties?.map((property) => (
+					{/* {projectProperties?.map((property) => (
 						<Field key={property._id}>
 							<FieldLabel>
 								{property.name}
@@ -136,7 +136,7 @@ const ProjectDetailModal = ({ onClose, project, teamId, projectProperties, reloa
 								/>
 							</FieldRow>
 						</Field>
-					))}
+					))} */}
 
 					{/* Các trường chỉ đọc (disable) */}
 					<Field>
@@ -193,7 +193,7 @@ const ProjectDetailModal = ({ onClose, project, teamId, projectProperties, reloa
 						</FieldRow>
 					</Field>
 					<Field>
-						<FieldLabel>{t('Created_At')}</FieldLabel>
+						<FieldLabel>{t('Created_at')}</FieldLabel>
 						<FieldRow>
 							<TextInput value={new Date(project.createdAt).toLocaleString()} disabled />
 						</FieldRow>
