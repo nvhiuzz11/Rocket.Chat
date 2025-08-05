@@ -127,10 +127,19 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { teamId } = this.queryParams;
-			const projects = await Project.find({ teamId }).toArray();
+			const { teamId, search } = this.queryParams;
+			const query: any = { teamId };
 
-			// Fetch all rooms in parallel
+			if (search?.trim()) {
+				query.$or = [
+					{ name: { $regex: search.trim(), $options: 'i' } },
+					{ description: { $regex: search.trim(), $options: 'i' } },
+					{ 'createdBy.username': { $regex: search.trim(), $options: 'i' } },
+				];
+			}
+
+			const projects = await Project.find(query).toArray();
+
 			const projectsWithRooms = await Promise.all(
 				projects.map(async (project) => {
 					const room = await Rooms.findOneById(project.roomId);
@@ -312,7 +321,7 @@ declare module '@rocket.chat/rest-typings' {
 			};
 		};
 		'/v1/projects.list.team': {
-			GET: (params: { teamId: string }) => {
+			GET: (params: { teamId: string; search?: string }) => {
 				projects: Array<IProject & { room: IRoom | null }>;
 			};
 		};

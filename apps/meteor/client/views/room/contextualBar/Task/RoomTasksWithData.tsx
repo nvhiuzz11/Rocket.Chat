@@ -1,5 +1,6 @@
+import { useDebouncedValue } from '@rocket.chat/fuselage-hooks';
 import { useEndpoint } from '@rocket.chat/ui-contexts';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 
 import RoomTasks from './RoomTasks';
 import type { IProject } from '../../../../../server/core-typings/IProject';
@@ -12,32 +13,36 @@ import { useRoomToolbox } from '../../contexts/RoomToolboxContext';
 const RoomTasksWithData = (): JSX.Element => {
 	const room = useRoom();
 	const { closeTab } = useRoomToolbox();
+
 	const projectEndpoint = useEndpoint('GET', '/v1/projects.info.byRoom');
 	const tasksEndpoint = useEndpoint('GET', '/v1/tasks.list');
 	const taskPropertiesEndpoint = useEndpoint('GET', '/v1/task-properties.list');
 
-	const { teamId } = room;
+	const { teamId, _id: roomId } = room;
 
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
 	const [tasks, setTasks] = useState<ITask[]>([]);
 	const [taskProperties, setTaskProperties] = useState<ITaskProperty[] & { value: ITaskTag[] }>([]);
 	const [project, setProject] = useState<IProject | null>(null);
+	const [textSearch, setTextSearch] = useState('');
+	const debouncedTextSearch = useDebouncedValue(textSearch, 800);
 
-	// Centralized error handler
+	// Centralized error handler - memoized to prevent recreation
 	const handleError = useCallback((err: unknown, context: string) => {
 		const error = err instanceof Error ? err : new Error(`Failed to ${context}`);
 		console.error(`Error in ${context}:`, error);
 		setError(error);
 	}, []);
 
+	// Memoize project fetching function with stable dependencies
 	const getProject = useCallback(async () => {
 		try {
 			if (!teamId) {
 				throw new Error('Invalid teamId');
 			}
 
-			const { project = null } = await projectEndpoint({ roomId: room._id });
+			const { project = null } = await projectEndpoint({ roomId });
 			console.log('project ', project);
 			setProject(project);
 			return project;
@@ -45,12 +50,13 @@ const RoomTasksWithData = (): JSX.Element => {
 			handleError(err, 'fetch project');
 			return null;
 		}
-	}, [projectEndpoint, teamId, room._id, handleError]);
+	}, [projectEndpoint, teamId, roomId, handleError]);
 
+	// Memoize tasks fetching function
 	const getTasks = useCallback(
-		async (projectId: string) => {
+		async (projectId: string, search?: string) => {
 			try {
-				const { tasks = [] } = await tasksEndpoint({ projectId });
+				const { tasks = [] } = await tasksEndpoint({ projectId, search });
 				console.log('tasks ', tasks);
 				setTasks(tasks);
 				return tasks;
@@ -62,6 +68,7 @@ const RoomTasksWithData = (): JSX.Element => {
 		[tasksEndpoint, handleError],
 	);
 
+	// Memoize task properties fetching function
 	const getTaskProperties = useCallback(
 		async (projectId: string) => {
 			try {
@@ -77,6 +84,7 @@ const RoomTasksWithData = (): JSX.Element => {
 		[taskPropertiesEndpoint, handleError],
 	);
 
+	// Memoize the main data fetching function
 	const fetchAllData = useCallback(async () => {
 		try {
 			setLoading(true);
@@ -90,32 +98,42 @@ const RoomTasksWithData = (): JSX.Element => {
 				return;
 			}
 
-			await Promise.allSettled([getTasks(project._id), getTaskProperties(project._id)]);
+			// Use Promise.allSettled to handle potential failures gracefully
+			await Promise.allSettled([getTasks(project._id, debouncedTextSearch), getTaskProperties(project._id)]);
 		} catch (err) {
 			handleError(err, 'fetch all data');
 		} finally {
 			setLoading(false);
 		}
-	}, [getProject, getTasks, getTaskProperties, handleError]);
+	}, [getProject, getTasks, getTaskProperties, handleError, debouncedTextSearch]);
 
+	// Effect with stable dependencies
 	useEffect(() => {
 		fetchAllData();
 	}, [fetchAllData]);
+
+	// Memoize the reload function to prevent unnecessary re-renders of child components
 	const reload = useCallback(() => {
 		return fetchAllData();
 	}, [fetchAllData]);
 
-	return (
-		<RoomTasks
-			projectId={project?._id || ''}
-			loading={loading}
-			tasks={tasks}
-			onClickClose={closeTab}
-			error={error}
-			taskProperties={taskProperties}
-			reload={reload}
-		/>
+	// Memoize props object to prevent unnecessary re-renders of RoomTasks
+	const roomTasksProps = useMemo(
+		() => ({
+			projectId: project?._id || '',
+			loading,
+			tasks,
+			onClickClose: closeTab,
+			error,
+			textSearch,
+			setTextSearch,
+			taskProperties,
+			reload,
+		}),
+		[project?._id, loading, tasks, closeTab, error, textSearch, taskProperties, reload],
 	);
+
+	return <RoomTasks {...roomTasksProps} />;
 };
 
 export default RoomTasksWithData;

@@ -30,9 +30,9 @@ type TableViewProps = {
 	tasks: ITask[];
 	taskProperties?: (ITaskProperty & { value: ITaskTag[] })[];
 	onEditTask: (task: ITask) => void;
-	loading: boolean; // Thêm prop loading
-	reload?: () => void; // Thêm reload để nhất quán
-	error?: Error; // Thêm error để nhất quán
+	loading: boolean;
+	reload?: () => void;
+	error?: Error;
 	onOpenTaskDetail?: (task: ITask) => void;
 };
 
@@ -45,7 +45,8 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 	const columns = useMemo(() => {
 		const getTaskPropertyValue = (task: ITask, property: ITaskProperty & { value: ITaskTag[] }) => {
 			const taskProp = task.properties?.find((p) => p.taskPropertyId === property._id);
-			if (!taskProp) return 'N/A';
+
+			if (!taskProp?.value) return 'N/A';
 			const tagValues = taskProp.value
 				.map((tagId) => property.value.find((tag) => tag._id === tagId))
 				.filter((tag): tag is ITaskTag => !!tag);

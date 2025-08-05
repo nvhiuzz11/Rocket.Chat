@@ -64,7 +64,7 @@ const ProjectTableView = ({ projects, loading, onClickProject, reload, error, on
 						<Box display='flex' alignItems='center'>
 							<RoomAvatar size='x28' room={room} />
 							<Box is='span' mi='x8' withTruncatedText>
-								<Icon name='hashtag-lock' size='x15' />
+								{room.t === 'c' ? <Icon name='hash' size='x15' /> : <Icon name='hashtag-lock' size='x15' />}
 								{room.name}
 							</Box>
 						</Box>

@@ -96,7 +96,7 @@ API.v1.addRoute(
 				{
 					$set: {
 						properties: task.properties?.map((prop) =>
-							prop.taskPropertyId === statusPropertyId ? { ...prop, value: statusValueId } : prop,
+							prop.taskPropertyId === statusPropertyId ? { ...prop, value: [statusValueId] } : prop,
 						),
 					},
 				},
@@ -113,12 +113,15 @@ API.v1.addRoute(
 	{ authRequired: true },
 	{
 		async get() {
-			const { projectId } = this.queryParams;
+			const { projectId, search } = this.queryParams;
 			const { offset, count } = await getPaginationItems(this.queryParams);
 
 			const query: any = {};
 			if (projectId) {
 				query.projectId = projectId;
+			}
+			if (search?.trim()) {
+				query.$or = [{ title: { $regex: search.trim(), $options: 'i' } }, { description: { $regex: search.trim(), $options: 'i' } }];
 			}
 
 			const tasks = await Tasks.find(query, {
@@ -203,7 +206,7 @@ declare module '@rocket.chat/rest-typings' {
 			};
 		};
 		'/v1/tasks.list': {
-			GET: (params: { projectId: string; offset?: number; count?: number }) => {
+			GET: (params: { projectId: string; offset?: number; count?: number; search?: string }) => {
 				tasks: ITask[];
 				count?: number;
 				offset?: number;

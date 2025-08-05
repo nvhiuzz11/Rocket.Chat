@@ -25,16 +25,27 @@ type TeamsProjectsProps = {
 	loading: boolean;
 	projects: IProject[] & { room: IRoom };
 	teamId: string;
+	textSearch: string;
+	setTextSearch: (text: string) => void;
 	onClickClose: () => void;
 	onClickProject: (room: IRoom) => void;
 	error?: Error | null;
 	reload?: () => void;
 };
 
-const TeamsProjects = ({ loading, projects = [], teamId, onClickClose, onClickProject, error, reload }: TeamsProjectsProps) => {
+const TeamsProjects = ({
+	loading,
+	projects = [],
+	teamId,
+	textSearch,
+	setTextSearch,
+	onClickClose,
+	onClickProject,
+	error,
+	reload,
+}: TeamsProjectsProps) => {
 	const { t } = useTranslation();
 	const [projectProperties, setProjectProperties] = useState<IProjectProperty[] & { value: IProjectTag[] }>();
-	const [textSearch, setTextSearch] = useState('');
 	const inputRef = useAutoFocus<HTMLInputElement>(true);
 	const setModal = useSetModal();
 
@@ -42,8 +53,7 @@ const TeamsProjects = ({ loading, projects = [], teamId, onClickClose, onClickPr
 
 	useEffect(() => {
 		getProjectPropertiesEndpoint({ teamId }).then((data) => {
-			console.log('data ', data);
-			setProjectProperties(data.projectProperties);
+			setProjectProperties(data.projectProperties as IProjectProperty[] & { value: IProjectTag[] });
 		});
 	}, [getProjectPropertiesEndpoint, teamId]);
 

@@ -1,5 +1,5 @@
 import type { IRoom } from '@rocket.chat/core-typings';
-import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
+import { useEffectEvent, useDebouncedValue } from '@rocket.chat/fuselage-hooks';
 import { useEndpoint } from '@rocket.chat/ui-contexts';
 import { useEffect, useState, useCallback } from 'react';
 
@@ -11,7 +11,6 @@ import { useRoomToolbox } from '../../../room/contexts/RoomToolboxContext';
 
 const TeamsProjectsWithData = (): JSX.Element => {
 	const room = useRoom();
-	console.log('room', room);
 	const { closeTab } = useRoomToolbox();
 	const projectsOfTeamEndpoint = useEndpoint('GET', '/v1/projects.list.team');
 
@@ -20,12 +19,11 @@ const TeamsProjectsWithData = (): JSX.Element => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
 	const [projects, setProjects] = useState<IProject[] & { room: IRoom }>([]);
-
-	useEffect(() => {
-		fetchProjects();
-	}, []);
+	const [textSearch, setTextSearch] = useState('');
+	const debouncedTextSearch = useDebouncedValue(textSearch, 800);
 
 	const fetchProjects = useCallback(async () => {
+		console.log('fetchProjects debouncedTextSearch', debouncedTextSearch);
 		try {
 			setLoading(true);
 			setError(null);
@@ -34,15 +32,21 @@ const TeamsProjectsWithData = (): JSX.Element => {
 				throw new Error('Invalid teamId');
 			}
 
-			const { projects = [] } = await projectsOfTeamEndpoint({ teamId });
-			console.log(' fetchProjects projects ', projects);
+			const { projects = [] } = await projectsOfTeamEndpoint({
+				teamId,
+				search: debouncedTextSearch,
+			});
 			setProjects(projects);
 		} catch (err) {
 			setError(err instanceof Error ? err : new Error('Failed to fetch projects'));
 		} finally {
 			setLoading(false);
 		}
-	}, [projectsOfTeamEndpoint, teamId]);
+	}, [projectsOfTeamEndpoint, teamId, debouncedTextSearch]);
+
+	useEffect(() => {
+		fetchProjects();
+	}, [fetchProjects]);
 
 	const goToRoom = useEffectEvent((room: IRoom) => {
 		roomCoordinator.openRouteLink(room.t, room);
@@ -50,11 +54,13 @@ const TeamsProjectsWithData = (): JSX.Element => {
 
 	const reload = useCallback(async () => {
 		await fetchProjects();
-	}, []);
+	}, [fetchProjects]);
 
 	return (
 		<TeamsProjects
 			teamId={teamId}
+			textSearch={textSearch}
+			setTextSearch={setTextSearch}
 			loading={loading}
 			projects={projects}
 			onClickClose={closeTab}

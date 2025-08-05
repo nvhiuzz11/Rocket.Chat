@@ -157,13 +157,14 @@ const ProjectDetailModal = ({ onClose, project, teamId, projectProperties, reloa
 							w='full'
 							p='x8'
 							backgroundColor={Palette.surface['surface-tint']}
-							borderColor='#262931'
+							borderColor='#404754'
 							borderWidth='x1'
 							borderRadius='x4'
 							color={Palette.text['font-hint']}
 						>
 							<RoomAvatar size='x24' room={project.room} />
 							<Box is='span' mi='x8' withTruncatedText>
+								{project.room.t === 'c' ? <Icon name='hash' size='x15' /> : <Icon name='hashtag-lock' size='x15' />}
 								{project.room.name}
 							</Box>
 						</Box>
@@ -172,13 +173,6 @@ const ProjectDetailModal = ({ onClose, project, teamId, projectProperties, reloa
 					<Field>
 						<FieldLabel>{t('Created_By')}</FieldLabel>
 
-						{/* <Box display='flex' alignItems='center' w='full'>
-								<UserAvatar size='x24' userId={project.createdBy._id} />
-								<Box is='span' mi='x8' withTruncatedText>
-									{project.createdBy.username}
-								</Box>
-							</Box> */}
-
 						<FieldRow>
 							<Box
 								display='flex'
@@ -186,7 +180,7 @@ const ProjectDetailModal = ({ onClose, project, teamId, projectProperties, reloa
 								w='full'
 								p='x8'
 								backgroundColor={Palette.surface['surface-tint']}
-								borderColor='#262931'
+								borderColor='#404754'
 								borderWidth='x1'
 								borderRadius='x4'
 								color={Palette.text['font-hint']}

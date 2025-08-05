@@ -2,8 +2,9 @@ import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { css } from '@rocket.chat/css-in-js';
 import { Box, Icon, Tag } from '@rocket.chat/fuselage';
 import { UserAvatar } from '@rocket.chat/ui-avatar';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 
+import TaskItemMenu from './TaskItemMenu';
 import type { ITask } from '../../../../../../server/core-typings/ITask';
 import type { ITaskProperty } from '../../../../../../server/core-typings/ITaskProperty';
 import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
@@ -14,10 +15,12 @@ type TaskCardProps = {
 	status: ITaskTag;
 	taskProperties: (ITaskProperty & { value: ITaskTag[] })[];
 	onTaskClick?: () => void;
+	reload?: () => void;
 };
 
-const TaskCard = ({ task, status, taskProperties, onTaskClick }: TaskCardProps) => {
+const TaskCard = ({ task, status, taskProperties, onTaskClick, reload }: TaskCardProps) => {
 	const ref = useRef<HTMLDivElement>(null);
+	const [isHovered, setIsHovered] = useState(false);
 
 	useEffect(() => {
 		const element = ref.current;
@@ -42,13 +45,14 @@ const TaskCard = ({ task, status, taskProperties, onTaskClick }: TaskCardProps) 
 	const cardStyle = css`
 		background: ${lightenColor(status?.color, 0.1)};
 		border-radius: 8px;
-		padding: 16px;
+		padding: 16px 40px 16px 16px; /* Tăng padding-right từ 16px lên 40px */
 		cursor: grab;
 		transition: all 0.2s ease;
 		border: 0.5px solid rgba(255, 255, 255, 0.07);
 		box-shadow:
 			rgba(0, 0, 0, 0.08) 0px 2px 4px 0px,
 			rgba(255, 255, 255, 0.094) 0px 0px 0px 1px;
+		position: relative;
 		&:hover {
 			transform: translateY(-2px);
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -61,6 +65,19 @@ const TaskCard = ({ task, status, taskProperties, onTaskClick }: TaskCardProps) 
 		}
 	`;
 
+	const menuButtonStyle = css`
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		opacity: ${isHovered ? 1 : 0};
+		transition: opacity 0.2s ease;
+		z-index: 10;
+	`;
+
+	const handleMenuClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+	};
+
 	return (
 		<Box
 			ref={ref}
@@ -70,10 +87,24 @@ const TaskCard = ({ task, status, taskProperties, onTaskClick }: TaskCardProps) 
 			flexDirection='column'
 			style={{ gap: '8px' }}
 			onClick={() => onTaskClick?.()}
+			onMouseEnter={() => setIsHovered(true)}
+			onMouseLeave={() => setIsHovered(false)}
 		>
+			<Box className={menuButtonStyle} onClick={handleMenuClick}>
+				<TaskItemMenu task={task} reload={reload} onOpenTaskDetail={onTaskClick} />
+			</Box>
+
 			<Box display='flex' alignItems='center' style={{ gap: '8px' }}>
 				<Icon name='rocket' size='x20' />
-				<Box fontScale='p2m' style={{ fontWeight: 800, color: 'white' }}>
+				<Box
+					fontScale='p2m'
+					style={{
+						fontWeight: 800,
+						color: 'white',
+						maxWidth: 'calc(100% - 32px)',
+						overflow: 'hidden',
+					}}
+				>
 					{task.title}
 				</Box>
 			</Box>

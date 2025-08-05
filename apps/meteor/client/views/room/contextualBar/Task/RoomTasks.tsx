@@ -28,16 +28,27 @@ type RoomTasksProps = {
 	projectId: string;
 	onClickClose: () => void;
 	error?: Error | null;
+	textSearch: string;
+	setTextSearch: (text: string) => void;
 	taskProperties?: ITaskProperty[] & { value: ITaskTag[] };
 	reload: () => void;
 };
 
 type ViewType = 'kanban' | 'table';
 
-const RoomTasks = ({ loading, tasks = [], projectId, onClickClose, error, taskProperties, reload }: RoomTasksProps) => {
+const RoomTasks = ({
+	loading,
+	tasks = [],
+	projectId,
+	onClickClose,
+	error,
+	textSearch,
+	setTextSearch,
+	taskProperties,
+	reload,
+}: RoomTasksProps) => {
 	const { t } = useTranslation();
 	const [currentView, setCurrentView] = useState<ViewType>('kanban');
-	const [textSearch, setTextSearch] = useState('');
 	const setModal = useSetModal();
 
 	const inputRef = useAutoFocus<HTMLInputElement>(true);
@@ -129,8 +140,6 @@ const RoomTasks = ({ loading, tasks = [], projectId, onClickClose, error, taskPr
 						reload={reload}
 					/>
 				)}
-				{/* </Box>
-				</Box> */}
 			</ContextualbarContent>
 		</ContextualbarDialogResizable>
 	);
