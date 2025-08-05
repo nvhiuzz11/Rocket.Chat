@@ -102,26 +102,6 @@ API.v1.addRoute(
 				sidepanel,
 			});
 
-			for (const property of DEFAULT_PROJECT_PROPERTIES) {
-				// eslint-disable-next-line no-await-in-loop
-				const propertyId = await ProjectProperty.create({
-					name: property.name,
-					type: property.type,
-					teamId: team._id,
-					required: property.required,
-					systemKey: property?.systemKey ?? null,
-				});
-
-				for (const tag of property.data) {
-					// eslint-disable-next-line no-await-in-loop
-					await ProjectTag.create({
-						name: tag.name,
-						color: tag.color,
-						projectPropertyId: propertyId,
-					});
-				}
-			}
-
 			return API.v1.success({ team });
 		},
 	},
