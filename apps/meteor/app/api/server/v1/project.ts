@@ -138,7 +138,7 @@ API.v1.addRoute(
 				];
 			}
 
-			const projects = await Project.find(query).toArray();
+			const projects = await Project.find(query, { sort: { createdAt: -1 } }).toArray();
 
 			const projectsWithRooms = await Promise.all(
 				projects.map(async (project) => {

@@ -129,8 +129,9 @@ const RoomTasksWithData = (): JSX.Element => {
 			setTextSearch,
 			taskProperties,
 			reload,
+			roomId,
 		}),
-		[project?._id, loading, tasks, closeTab, error, textSearch, taskProperties, reload],
+		[project?._id, loading, tasks, closeTab, error, textSearch, taskProperties, reload, roomId],
 	);
 
 	return <RoomTasks {...roomTasksProps} />;

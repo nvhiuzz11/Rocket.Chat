@@ -9,7 +9,7 @@ import { TASK_PROPERTY_TYPES } from '../../../../../../definition/project';
 import type { ITaskProperty } from '../../../../../../server/core-typings/ITaskProperty';
 import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
 import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
-import UserAutoCompleteWithObjects from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteWithObjects';
+import UserAutoCompleteWithObjectsRoom from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteWithObjectsRoom';
 
 type CreateTaskModalProps = {
 	onClose: () => void;
@@ -17,6 +17,7 @@ type CreateTaskModalProps = {
 	projectId: string;
 	reload: () => void;
 	initialStatusProperty?: { taskPropertyId: string; value: ITaskTag['_id'] };
+	roomId: string;
 };
 
 type CreateTaskModalPayload = {
@@ -28,7 +29,14 @@ type CreateTaskModalPayload = {
 	dueDate?: Date;
 };
 
-const CreateTaskModal = ({ onClose, taskProperties, projectId, reload, initialStatusProperty }: CreateTaskModalProps): ReactElement => {
+const CreateTaskModal = ({
+	onClose,
+	taskProperties,
+	projectId,
+	reload,
+	initialStatusProperty,
+	roomId,
+}: CreateTaskModalProps): ReactElement => {
 	const t = useTranslation();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -180,7 +188,13 @@ const CreateTaskModal = ({ onClose, taskProperties, projectId, reload, initialSt
 							name='assignees'
 							defaultValue={[]}
 							render={({ field: { onChange, value } }): ReactElement => (
-								<UserAutoCompleteWithObjects id={addMembersId} value={value} onChange={onChange} placeholder={t('Add_people')} />
+								<UserAutoCompleteWithObjectsRoom
+									id={addMembersId}
+									value={value}
+									onChange={onChange}
+									placeholder={t('Add_people')}
+									roomId={roomId}
+								/>
 							)}
 						/>
 					</Field>

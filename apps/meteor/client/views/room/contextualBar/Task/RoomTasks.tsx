@@ -32,6 +32,7 @@ type RoomTasksProps = {
 	setTextSearch: (text: string) => void;
 	taskProperties?: ITaskProperty[] & { value: ITaskTag[] };
 	reload: () => void;
+	roomId: string;
 };
 
 type ViewType = 'kanban' | 'table';
@@ -46,6 +47,7 @@ const RoomTasks = ({
 	setTextSearch,
 	taskProperties,
 	reload,
+	roomId,
 }: RoomTasksProps) => {
 	const { t } = useTranslation();
 	const [currentView, setCurrentView] = useState<ViewType>('kanban');
@@ -62,6 +64,7 @@ const RoomTasks = ({
 				reload={reload}
 				projectId={projectId}
 				initialStatusProperty={initialStatusProperty}
+				roomId={roomId}
 			/>,
 		);
 	};
@@ -75,7 +78,9 @@ const RoomTasks = ({
 	}, []);
 
 	const openTaskDetailModal = (task: ITask) => {
-		setModal(<TaskDetailModal taskProperties={taskProperties} onClose={() => setModal(null)} reload={reload} task={task} />);
+		setModal(
+			<TaskDetailModal taskProperties={taskProperties} onClose={() => setModal(null)} reload={reload} task={task} roomId={roomId} />,
+		);
 	};
 
 	return (

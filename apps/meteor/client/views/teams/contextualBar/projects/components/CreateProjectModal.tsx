@@ -7,8 +7,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { PROJECT_PROPERTY_TYPES } from '../../../../../../definition/project';
 import type { IProjectProperty } from '../../../../../../server/core-typings/IProjectProperty';
 import type { IProjectTag } from '../../../../../../server/core-typings/IProjectTag';
-import UserAutoCompleteMultipleFederated from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteMultipleFederated';
 import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
+import UserAutoCompleteMultipleFederatedTeam from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteMultipleFederatedTeam';
 
 type CreateProjectModalProps = {
 	onClose: () => void;
@@ -151,7 +151,13 @@ const CreateProjectModal = ({ onClose, teamId, projectProperties, reload }: Crea
 							control={control}
 							name='members'
 							render={({ field: { onChange, value } }): ReactElement => (
-								<UserAutoCompleteMultipleFederated id={addMembersId} value={value} onChange={onChange} placeholder={t('Add_people')} />
+								<UserAutoCompleteMultipleFederatedTeam
+									id={addMembersId}
+									value={value}
+									onChange={onChange}
+									placeholder={t('Add_people')}
+									teamId={teamId}
+								/>
 							)}
 						/>
 					</Field>

@@ -20,23 +20,25 @@ import { Controller, useForm } from 'react-hook-form';
 import { TASK_PROPERTY_TYPES } from '../../../../../../definition/project';
 import type { ITask, ITaskProperty, ITaskTag } from '../../../../../../server/core-typings';
 import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
-import UserAutoCompleteWithObjects from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteWithObjects';
+import UserAutoCompleteWithObjectsRoom from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteWithObjectsRoom';
 
 type TaskDetailModalProps = {
 	onClose: () => void;
 	taskProperties: (ITaskProperty & { value: ITaskTag[] })[];
 	reload: () => void;
 	task: ITask;
+	roomId: string;
 };
 
 type UpdateTaskPayload = {
 	title: string;
 	description: string;
 	assignees: ITask['assignees'];
+	properties: Array<{ taskPropertyId: string; value: string[] }>;
 	dueDate?: string;
 };
 
-const TaskDetailModal = ({ onClose, task, taskProperties, reload }: TaskDetailModalProps): ReactElement => {
+const TaskDetailModal = ({ onClose, task, taskProperties, reload, roomId }: TaskDetailModalProps): ReactElement => {
 	const t = useTranslation();
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatchToastMessage = useToastMessageDispatch();
@@ -149,7 +151,9 @@ const TaskDetailModal = ({ onClose, task, taskProperties, reload }: TaskDetailMo
 							control={control}
 							name='assignees'
 							defaultValue={[]}
-							render={({ field: { onChange, value } }): ReactElement => <UserAutoCompleteWithObjects value={value} onChange={onChange} />}
+							render={({ field: { onChange, value } }): ReactElement => (
+								<UserAutoCompleteWithObjectsRoom value={value} onChange={onChange} roomId={roomId} />
+							)}
 						/>
 					</Field>
 
