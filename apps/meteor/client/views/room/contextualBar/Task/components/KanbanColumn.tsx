@@ -119,7 +119,7 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 						}}
 						mis='x4'
 					>
-						{t(status.name)}
+						{t(status.value)}
 					</Box>
 				</Box>
 				<Box
