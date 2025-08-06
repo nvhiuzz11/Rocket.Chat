@@ -57,7 +57,7 @@ const ProjectTableView = ({ projects, loading, onClickProject, reload, error, on
 				header: () => t('Description'),
 				cell: (info) => (
 					<Box withTruncatedText minWidth='200px' maxWidth='250px'>
-						{info.getValue()}
+						{info.getValue() || <Box color='hint'>—</Box>}
 					</Box>
 				),
 				size: 250,

@@ -1,4 +1,4 @@
-import { TableCell, Box, Icon, Button, Tag, Table } from '@rocket.chat/fuselage';
+import { TableCell, Box, Icon, Button, Tag, Table, Tooltip } from '@rocket.chat/fuselage';
 import { UserAvatar } from '@rocket.chat/ui-avatar';
 import {
 	createColumnHelper,
@@ -45,11 +45,21 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 		const getTaskPropertyValue = (task: ITask, property: ITaskProperty & { value: ITaskTag[] }) => {
 			const taskProp = task.properties?.find((p) => p.taskPropertyId === property._id);
 
-			if (!taskProp?.value) return 'N/A';
+			if (!taskProp?.value)
+				return (
+					<Box color='hint'>
+						—
+					</Box>
+				);
 			const tagValues = taskProp.value
 				.map((tagId) => property.value.find((tag) => tag._id === tagId))
 				.filter((tag): tag is ITaskTag => !!tag);
-			if (tagValues.length === 0) return 'N/A';
+			if (tagValues.length === 0)
+				return (
+					<Box color='hint'>
+						—
+					</Box>
+				);
 			return (
 				<Box display='flex' flexDirection='row' flexWrap='wrap' mi='neg-x4'>
 					{tagValues.map((tag) => (
@@ -66,16 +76,24 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 				header: () => t('Task_Name'),
 				cell: (info) => (
 					<Box withTruncatedText minWidth='180px' maxWidth='200px'>
-						{info.getValue() || 'N/A'}
+						{info.getValue() || (
+							<Box color='hint'>
+								—
+							</Box>
+						)}
 					</Box>
 				),
-				size: 200,
+				size: 250,
 			}),
 			columnHelper.accessor('description', {
 				header: () => t('Description'),
 				cell: (info) => (
 					<Box withTruncatedText minWidth='200px' maxWidth='250px'>
-						{info.getValue() || 'N/A'}
+						{info.getValue() || (
+							<Box color='hint'>
+								—
+							</Box>
+						)}
 					</Box>
 				),
 				size: 250,
@@ -97,45 +115,53 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 			columnHelper.accessor('dueDate', {
 				header: () => t('Due_Date'),
 				cell: (info) =>
-					info.getValue()
-						? new Date(info.getValue() as Date).toLocaleDateString(undefined, {
-								day: '2-digit',
-								month: '2-digit',
-								year: 'numeric',
-							})
-						: 'N/A',
+					info.getValue() ? (
+						new Date(info.getValue() as Date).toLocaleDateString(undefined, {
+							day: '2-digit',
+							month: '2-digit',
+							year: 'numeric',
+						})
+					) : (
+						<Box color='hint'>
+							—
+						</Box>
+					),
 				size: 120,
 			}),
-			// columnHelper.accessor('assignees', {
-			// 	header: () => t('Assignees'),
-			// 	cell: ({ getValue }) => {
-			// 		const assignees = getValue();
-			// 		if (!assignees || assignees.length === 0) {
-			// 			return 'N/A';
-			// 		}
+			columnHelper.accessor('assignees', {
+				header: () => t('Assignees'),
+				cell: ({ getValue }) => {
+					const assignees = getValue();
+					if (!assignees || assignees.length === 0) {
+						return (
+							<Box color='hint'>
+								—
+							</Box>
+						);
+					}
 
-			// 		return (
-			// 			<Box display='flex' alignItems='center' overflow='hidden'>
-			// 				{assignees.map((assignee, index) => (
-			// 					<Box
-			// 						key={assignee._id}
-			// 						display='flex'
-			// 						alignItems='center'
-			// 						flexShrink={0}
-			// 						marginInlineEnd={index < assignees.length - 1 ? 'x16' : undefined}
-			// 					>
-			// 						<UserAvatar size='x16' userId={assignee._id} />
-			// 						<Box is='span' mi='x6' withTruncatedText>
-			// 							{assignee.username}
-			// 						</Box>
-			// 					</Box>
-			// 				))}
-			// 			</Box>
-			// 		);
-			// 	},
-			// 	enableSorting: false,
-			// 	size: 220,
-			// }),
+					return (
+						<Box display='flex' alignItems='center' overflow='hidden'>
+							{assignees.map((assignee, index) => (
+								<Box
+									key={assignee._id}
+									display='flex'
+									alignItems='center'
+									flexShrink={0}
+									marginInlineEnd={index < assignees.length - 1 ? 'x16' : undefined}
+								>
+									<UserAvatar size='x16' userId={assignee._id} />
+									<Box is='span' mi='x6' withTruncatedText>
+										{assignee.username}
+									</Box>
+								</Box>
+							))}
+						</Box>
+					);
+				},
+				enableSorting: false,
+				size: 220,
+			}),
 			columnHelper.display({
 				id: 'actions',
 				cell: ({ row }) => <TaskItemMenu task={row.original} reload={reload} onOpenTaskDetail={onOpenTaskDetail} />,
@@ -145,7 +171,7 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 		];
 
 		return [...staticColumns, ...dynamicColumns, ...finalColumns];
-	}, [t, taskProperties, onEditTask]);
+	}, [t, taskProperties, onEditTask, reload, onOpenTaskDetail]);
 
 	const table = useReactTable({
 		data: tasks,
@@ -181,7 +207,7 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 				icon='warning'
 				title={t('Something_went_wrong')}
 				buttonTitle={t('Reload_page')}
-				buttonAction={reload || (() => {})}
+				buttonAction={reload || (() => undefined)}
 			/>
 		);
 	}
