@@ -64,7 +64,7 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 				<Box display='flex' flexDirection='row' flexWrap='wrap' mi='neg-x4'>
 					{tagValues.map((tag) => (
 						<Box key={tag._id} mi='x4' mb='x4'>
-							<Tag style={{ backgroundColor: tag.color }}>{tag.name}</Tag>
+							<Tag style={{ backgroundColor: tag.color }}>{tag.value}</Tag>
 						</Box>
 					))}
 				</Box>

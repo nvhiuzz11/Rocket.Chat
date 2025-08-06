@@ -140,7 +140,7 @@ const TaskCard = ({ task, status, taskProperties, onTaskClick, reload }: TaskCar
 					<Box key={mainProperty._id} display='flex' alignItems='center' flexWrap='wrap' mi='neg-x4'>
 						{selectedTags.map((tag) => (
 							<Box key={tag._id} mi='x4' mb='x4'>
-								<Tag style={{ backgroundColor: tag.color, color: 'white' }}>{tag.name}</Tag>
+								<Tag style={{ backgroundColor: tag.color, color: 'white' }}>{tag.value}</Tag>
 							</Box>
 						))}
 					</Box>

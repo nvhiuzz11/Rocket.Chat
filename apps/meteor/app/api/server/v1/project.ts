@@ -43,7 +43,7 @@ API.v1.addRoute(
 				for (const tag of property.data) {
 					// eslint-disable-next-line no-await-in-loop
 					await TaskTag.create({
-						name: tag.name,
+						value: tag.value,
 						color: tag.color,
 						taskPropertyId: propertyId,
 					});

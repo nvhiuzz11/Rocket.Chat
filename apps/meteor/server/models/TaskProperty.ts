@@ -35,7 +35,7 @@ export class TaskPropertyRaw extends BaseRaw<ITaskProperty> {
 		await this.updateOne({ _id: id }, { $set: data });
 	}
 
-	async updateValueById(id: string, value: Pick<ITaskTag, '_id' | 'name'>[]): Promise<void> {
+	async updateValueById(id: string, value: Pick<ITaskTag, '_id' | 'value'>[]): Promise<void> {
 		await this.updateOne({ _id: id }, { $set: { value } });
 	}
 

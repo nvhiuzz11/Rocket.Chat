@@ -31,17 +31,17 @@ export const DEFAULT_PROJECT_PROPERTIES = [
 
 export const DEFAULT_TASK_STATUS_TAGS = [
 	{
-		name: 'Not Started',
+		value: 'Not Started',
 		color: '#2C2C2C',
 		order: 1,
 	},
 	{
-		name: 'In Progress',
+		value: 'In Progress',
 		color: '#153E5C',
 		order: 2,
 	},
 	{
-		name: 'Done',
+		value: 'Done',
 		color: '#1A4733',
 		order: 3,
 	},
@@ -49,17 +49,17 @@ export const DEFAULT_TASK_STATUS_TAGS = [
 
 export const DEFAULT_TASK_PRIORITY_TAGS = [
 	{
-		name: 'Low',
+		value: 'Low',
 		color: '#4ADE80',
 		order: 1,
 	},
 	{
-		name: 'Medium',
+		value: 'Medium',
 		color: '#FBBF24',
 		order: 2,
 	},
 	{
-		name: 'High',
+		value: 'High',
 		color: '#F87171',
 		order: 3,
 	},

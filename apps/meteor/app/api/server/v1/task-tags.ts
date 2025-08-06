@@ -14,9 +14,9 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, color, taskPropertyId } = this.bodyParams;
+			const { value, color, taskPropertyId } = this.bodyParams;
 			const taskTag = await TaskTag.create({
-				name,
+				value,
 				color,
 				taskPropertyId,
 			});

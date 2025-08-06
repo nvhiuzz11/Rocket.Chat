@@ -1,7 +1,7 @@
 import { ajv } from '../Ajv';
 
 type TaskTagCreateProps = {
-	name: string;
+	value: string;
 	color: string;
 	taskPropertyId: string;
 };
@@ -9,11 +9,11 @@ type TaskTagCreateProps = {
 const TaskTagCreatePropsSchema = {
 	type: 'object',
 	properties: {
-		name: { type: 'string' },
+		value: { type: 'string' },
 		color: { type: 'string' },
 		taskPropertyId: { type: 'string' },
 	},
-	required: ['name', 'color', 'taskPropertyId'],
+	required: ['value', 'color', 'taskPropertyId'],
 };
 
 export const isTaskTagCreateProps = ajv.compile<TaskTagCreateProps>(TaskTagCreatePropsSchema);

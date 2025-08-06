@@ -5,14 +5,14 @@ import { PROJECT_PROPERTY_TYPES } from '../../../definition/project';
 
 interface IPropertyInputProps {
 	property: any & {
-		value?: { _id: string; name: string }[];
+		value?: { _id: string; value: string }[];
 	};
 	value: string | string[];
 	onChange: (value: string | string[]) => void;
 }
 
 export const PropertyInput = ({ property, value, onChange }: IPropertyInputProps) => {
-	const options = useMemo(() => property.value?.map((tag: any) => [tag._id, tag.name] as [string, string]) ?? [], [property.value]);
+	const options = useMemo(() => property.value?.map((tag: any) => [tag._id, tag.value] as [string, string]) ?? [], [property.value]);
 
 	if (property.type === PROJECT_PROPERTY_TYPES.SELECT) {
 		return (
