@@ -1,4 +1,4 @@
-import { TableCell, Box, Icon, Button, Tag, Table, Tooltip } from '@rocket.chat/fuselage';
+import { TableCell, Box, Icon, Button, Tag, Table } from '@rocket.chat/fuselage';
 import { UserAvatar } from '@rocket.chat/ui-avatar';
 import {
 	createColumnHelper,
@@ -132,6 +132,7 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 				header: () => t('Assignees'),
 				cell: ({ getValue }) => {
 					const assignees = getValue();
+					
 					if (!assignees || assignees.length === 0) {
 						return (
 							<Box color='hint'>
@@ -140,15 +141,22 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 						);
 					}
 
+					const displayedAssignees = assignees.slice(0, 2);
+					const remainingAssignees = assignees.slice(2);
+					const remainingCount = remainingAssignees.length;
+
 					return (
 						<Box display='flex' alignItems='center' overflow='hidden'>
-							{assignees.map((assignee, index) => (
+							{displayedAssignees.map((assignee) => (
 								<Box
 									key={assignee._id}
 									display='flex'
 									alignItems='center'
 									flexShrink={0}
-									marginInlineEnd={index < assignees.length - 1 ? 'x16' : undefined}
+									marginInlineEnd='x8'
+									backgroundColor='surface-light'
+									borderRadius='x4'
+									padding='x4'
 								>
 									<UserAvatar size='x16' userId={assignee._id} />
 									<Box is='span' mi='x6' withTruncatedText>
@@ -156,6 +164,18 @@ const TaskTableView = ({ tasks, taskProperties, onEditTask, loading, reload, err
 									</Box>
 								</Box>
 							))}
+							{remainingCount > 0 && (
+								<Box 
+									display='flex' 
+									alignItems='center' 
+									backgroundColor='surface-light'
+									borderRadius='x4'
+									padding='x4'
+									color='hint'
+								>
+									+{remainingCount}
+								</Box>
+							)}
 						</Box>
 					);
 				},

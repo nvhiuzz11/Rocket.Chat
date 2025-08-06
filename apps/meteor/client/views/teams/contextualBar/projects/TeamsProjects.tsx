@@ -103,7 +103,6 @@ const TeamsProjects = ({
 						projectProperties={projectProperties}
 						projects={projects}
 						loading={loading}
-						onClickProject={onClickProject}
 						reload={reload}
 						error={error}
 						onOpenProjectDetail={openProjectDetailModal}

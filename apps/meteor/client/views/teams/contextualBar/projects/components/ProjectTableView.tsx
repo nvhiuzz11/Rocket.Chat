@@ -23,12 +23,15 @@ import {
 	GenericTableLoadingTable,
 } from '../../../../../components/GenericTable';
 
-type ProjectData = IProject & { room: IRoom; createdBy: Pick<IUser, '_id' | 'username'> };
+type ProjectData = IProject & {
+	room: IRoom;
+	createdBy: Pick<IUser, '_id' | 'username'>;
+	members?: Array<{ _id: string; username: string; name?: string; avatarETag?: string }>;
+};
 
 type ProjectTableViewProps = {
 	projects: ProjectData[];
 	loading: boolean;
-	onClickProject: (room: IRoom) => void;
 	reload?: () => void;
 	error?: Error;
 	onOpenProjectDetail?: (project: IProject) => void;
@@ -36,7 +39,7 @@ type ProjectTableViewProps = {
 
 const columnHelper = createColumnHelper<ProjectData>();
 
-const ProjectTableView = ({ projects, loading, onClickProject, reload, error, onOpenProjectDetail }: ProjectTableViewProps) => {
+const ProjectTableView = ({ projects, loading, reload, error, onOpenProjectDetail }: ProjectTableViewProps) => {
 	const { t } = useTranslation();
 	const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -96,6 +99,49 @@ const ProjectTableView = ({ projects, loading, onClickProject, reload, error, on
 				},
 				size: 150,
 			}),
+			columnHelper.accessor('members', {
+				id: 'members',
+				header: () => t('Members'),
+				cell: ({ row }) => {
+					const { members } = row.original;
+					if (!members || members.length === 0) {
+						return <Box color='hint'>—</Box>;
+					}
+
+					const displayedMembers = members.slice(0, 2);
+					const remainingMembers = members.slice(2);
+					const remainingCount = remainingMembers.length;
+
+					return (
+						<Box display='flex' alignItems='center' overflow='hidden' minWidth='180px' maxWidth='220px'>
+							{displayedMembers.map((member) => (
+								<Box
+									key={member._id}
+									display='flex'
+									alignItems='center'
+									flexShrink={0}
+									marginInlineEnd='x8'
+									backgroundColor='surface-light'
+									borderRadius='x4'
+									padding='x4'
+								>
+									<UserAvatar size='x16' userId={member._id} />
+									<Box is='span' mi='x6' withTruncatedText>
+										{member.username}
+									</Box>
+								</Box>
+							))}
+							{remainingCount > 0 && (
+								<Box display='flex' alignItems='center' backgroundColor='surface-light' borderRadius='x4' padding='x4' color='hint'>
+									+{remainingCount}
+								</Box>
+							)}
+						</Box>
+					);
+				},
+				enableSorting: false,
+				size: 220,
+			}),
 			columnHelper.display({
 				id: 'actions',
 				cell: ({ row }) => <TeamsProjectItemMenu project={row.original} reload={reload} onOpenProjectDetail={onOpenProjectDetail} />,
@@ -103,7 +149,7 @@ const ProjectTableView = ({ projects, loading, onClickProject, reload, error, on
 				size: 60,
 			}),
 		],
-		[t, reload],
+		[t, reload, onOpenProjectDetail],
 	);
 
 	const table = useReactTable({
@@ -140,7 +186,7 @@ const ProjectTableView = ({ projects, loading, onClickProject, reload, error, on
 				icon='warning'
 				title={t('Something_went_wrong')}
 				buttonTitle={t('Reload_page')}
-				buttonAction={reload || (() => {})}
+				buttonAction={reload || (() => undefined)}
 			/>
 		);
 	}

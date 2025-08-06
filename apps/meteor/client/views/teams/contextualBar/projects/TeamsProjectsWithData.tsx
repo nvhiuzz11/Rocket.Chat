@@ -23,7 +23,6 @@ const TeamsProjectsWithData = (): JSX.Element => {
 	const debouncedTextSearch = useDebouncedValue(textSearch, 800);
 
 	const fetchProjects = useCallback(async () => {
-		console.log('fetchProjects debouncedTextSearch', debouncedTextSearch);
 		try {
 			setLoading(true);
 			setError(null);

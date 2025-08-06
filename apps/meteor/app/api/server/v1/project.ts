@@ -1,5 +1,5 @@
 import type { IRoom } from '@rocket.chat/core-typings';
-import { Rooms, Users } from '@rocket.chat/models';
+import { Rooms, Users, Subscriptions } from '@rocket.chat/models';
 
 import { isProjectCreateProps, isProjectUpdateProps } from './rest-typings/project';
 import type { IProject } from '../../../../server/core-typings/IProject';
@@ -143,10 +143,28 @@ API.v1.addRoute(
 			const projectsWithRooms = await Promise.all(
 				projects.map(async (project) => {
 					const room = await Rooms.findOneById(project.roomId);
+					let members: Array<{ _id: string; username: string; name?: string; avatarETag?: string }> = [];
+					
+					if (room) {
+						// Get room members from Subscriptions
+						const subscriptions = await Subscriptions.findByRoomId(room._id, {
+							projection: { 'u._id': 1, 'u.username': 1, 'u.name': 1 },
+						}).toArray();
+						
+						members = subscriptions
+							.filter(sub => sub.u && sub.u._id)
+							.map(sub => ({
+								_id: sub.u._id,
+								username: sub.u.username || '',
+								name: sub.u.name,
+							}));
+					}
+					
 					return {
 						...project,
 						room,
-					} as IProject & { room: IRoom | null };
+						members,
+					} as IProject & { room: IRoom | null; members: Array<{ _id: string; username: string; name?: string }> };
 				}),
 			);
 
@@ -178,11 +196,12 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { projectId } = this.queryParams;
-			const project = await Project.findOneById(projectId);
+			const { _id } = this.queryParams;
+			const project = await Project.findOneById(_id);
 			if (!project) {
 				return API.v1.failure('Project not found');
 			}
+			
 			const creator = await Users.findOneById(project.createdBy._id, {
 				projection: {
 					_id: 1,
@@ -192,9 +211,30 @@ API.v1.addRoute(
 					avatarETag: 1,
 				},
 			});
+			
+			// Get room and members
+			const room = await Rooms.findOneById(project.roomId);
+			let members: Array<{ _id: string; username: string; name?: string }> = [];
+			
+			if (room) {
+				// Get room members from Subscriptions
+				const subscriptions = await Subscriptions.findByRoomId(room._id, {
+					projection: { 'u._id': 1, 'u.username': 1, 'u.name': 1 },
+				}).toArray();
+				
+				members = subscriptions
+					.filter(sub => sub.u && sub.u._id)
+					.map(sub => ({
+						_id: sub.u._id,
+						username: sub.u.username || '',
+						name: sub.u.name,
+					}));
+			}
+			
 			const enrichedProject = {
 				...project,
 				createdBy: creator,
+				members,
 			};
 
 			return API.v1.success({ project: enrichedProject });

@@ -84,7 +84,6 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 		padding: 16px;
 		cursor: grab;
 		transition: all 0.2s ease;
-		color: ${darkenColor(status.color, 0.2)};
 		box-shadow:
 			rgba(0, 0, 0, 0.08) 0px 2px 4px 0px,
 			rgba(255, 255, 255, 0.094) 0px 0px 0px 1px;
@@ -118,6 +117,7 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 						style={{
 							fontWeight: 600,
 						}}
+						mis='x4'
 					>
 						{t(status.name)}
 					</Box>
@@ -153,8 +153,8 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 					backgroundColor={darkenColor(status.color, 0.05)}
 					onClick={() => onTaskCreate?.()}
 				>
-					<Icon name='plus' size='x16' color={darkenColor(status.color, 0.2)} />
-					<Box fontScale='p2m' marginInlineStart='x8' color={darkenColor(status.color, 0.2)}>
+					<Icon name='plus' size='x16' />
+					<Box fontScale='p2m' marginInlineStart='x8'>
 						{t('New_Task')}
 					</Box>
 				</Box>

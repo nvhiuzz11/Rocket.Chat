@@ -1,4 +1,4 @@
-import type { IRoom, ITeam } from '@rocket.chat/core-typings';
+import type { IRoom } from '@rocket.chat/core-typings';
 import { GenericMenu } from '@rocket.chat/ui-client';
 import type { GenericMenuItemProps } from '@rocket.chat/ui-client';
 import { useTranslation } from 'react-i18next';
@@ -9,12 +9,10 @@ import { useRemoveProject } from '../hook/useRemoveProject';
 
 const TeamsProjectItemMenu = ({
 	project,
-	team,
 	reload,
 	onOpenProjectDetail,
 }: {
 	project: IProject & { room: IRoom };
-	team: ITeam;
 	reload?: () => void;
 	onOpenProjectDetail?: (project: IProject) => void;
 }) => {

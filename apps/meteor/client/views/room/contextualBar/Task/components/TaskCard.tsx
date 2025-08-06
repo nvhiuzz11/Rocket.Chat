@@ -94,7 +94,7 @@ const TaskCard = ({ task, status, taskProperties, onTaskClick, reload }: TaskCar
 				<TaskItemMenu task={task} reload={reload} onOpenTaskDetail={onTaskClick} />
 			</Box>
 
-			<Box display='flex' alignItems='center' style={{ gap: '8px' }}>
+			<Box display='flex' alignItems='flex-start' style={{ gap: '8px' }}>
 				<Icon name='rocket' size='x20' />
 				<Box
 					fontScale='p2m'
