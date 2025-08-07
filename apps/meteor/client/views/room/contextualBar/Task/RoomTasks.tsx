@@ -59,12 +59,12 @@ const RoomTasks = ({
 		if (!projectId) return;
 		setModal(
 			<CreateTaskModal
-				taskProperties={taskProperties}
 				onClose={() => setModal(null)}
 				reload={reload}
 				projectId={projectId}
 				initialStatusProperty={initialStatusProperty}
 				roomId={roomId}
+				originalTaskProperties={taskProperties}
 			/>,
 		);
 	};
@@ -79,7 +79,13 @@ const RoomTasks = ({
 
 	const openTaskDetailModal = (task: ITask) => {
 		setModal(
-			<TaskDetailModal taskProperties={taskProperties} onClose={() => setModal(null)} reload={reload} task={task} roomId={roomId} />,
+			<TaskDetailModal
+				originalTaskProperties={taskProperties}
+				onClose={() => setModal(null)}
+				reload={reload}
+				task={task}
+				roomId={roomId}
+			/>,
 		);
 	};
 

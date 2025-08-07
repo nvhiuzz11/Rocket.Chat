@@ -16,14 +16,16 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, type, projectId, required = false, systemKey } = this.bodyParams;
-			const taskProperty = await TaskProperty.create({
+			const { name, type, projectId, required = false, systemKey = undefined } = this.bodyParams;
+			const taskPropertyId = await TaskProperty.create({
 				name,
 				type,
 				projectId,
 				required,
 				systemKey,
 			});
+
+			const taskProperty = await TaskProperty.findById(taskPropertyId);
 			return API.v1.success({ taskProperty });
 		},
 	},
@@ -77,10 +79,17 @@ API.v1.addRoute(
 		authRequired: true,
 	},
 	{
-		async delete() {
+		async post() {
 			const { _id } = this.bodyParams;
-			const result = await TaskProperty.deleteById(_id);
-			return API.v1.success({ taskProperty: result });
+
+			if (!_id) {
+				return API.v1.failure('Property ID is required');
+			}
+
+			await TaskTag.deleteByPropertyId(_id);
+
+			await TaskProperty.deleteById(_id);
+			return API.v1.success({ success: true });
 		},
 	},
 );
@@ -105,7 +114,7 @@ declare module '@rocket.chat/rest-typings' {
 		};
 		'/v1/task-properties.delete': {
 			POST: (params: { _id: string }) => {
-				taskProperty: ITaskProperty;
+				success: boolean;
 			};
 		};
 	}

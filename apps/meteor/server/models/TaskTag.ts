@@ -34,4 +34,8 @@ export class TaskTagRaw extends BaseRaw<ITaskTag> {
 	async deleteById(id: string): Promise<void> {
 		await this.deleteOne({ _id: id });
 	}
+
+	async deleteByPropertyId(taskPropertyId: string): Promise<void> {
+		await this.deleteMany({ taskPropertyId });
+	}
 }

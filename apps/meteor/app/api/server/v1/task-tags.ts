@@ -15,11 +15,12 @@ API.v1.addRoute(
 	{
 		async post() {
 			const { value, color, taskPropertyId } = this.bodyParams;
-			const taskTag = await TaskTag.create({
+			const taskTagId = await TaskTag.create({
 				value,
 				color,
 				taskPropertyId,
 			});
+			const taskTag = await TaskTag.findById(taskTagId);
 			return API.v1.success({ taskTag });
 		},
 	},
@@ -79,11 +80,35 @@ API.v1.addRoute(
 	},
 );
 
+API.v1.addRoute(
+	'task-tags.updateOrder',
+	{
+		authRequired: true,
+	},
+	{
+		async post() {
+			const { tags } = this.bodyParams;
+			if (!tags || !Array.isArray(tags)) {
+				return API.v1.failure('Tags array is required');
+			}
+			try {
+				for (const tag of tags) {
+					// eslint-disable-next-line no-await-in-loop
+					await TaskTag.updateOne({ _id: tag._id }, { $set: { order: tag.order } });
+				}
+				return API.v1.success();
+			} catch (error) {
+				return API.v1.failure('Failed to update tag orders');
+			}
+		},
+	},
+);
+
 declare module '@rocket.chat/rest-typings' {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Endpoints {
 		'/v1/task-tags.create': {
-			POST: (params: { name: string; color: string; taskPropertyId: string }) => {
+			POST: (params: { value: string; color: string; taskPropertyId: string }) => {
 				taskTag: ITaskTag;
 			};
 		};
@@ -98,7 +123,10 @@ declare module '@rocket.chat/rest-typings' {
 			};
 		};
 		'/v1/task-tags.delete': {
-			POST: (params: { _id: string }) => {};
+			POST: (params: { _id: string }) => Record<string, never>;
+		};
+		'/v1/task-tags.updateOrder': {
+			POST: (params: { tags: { _id: string; order: number }[] }) => Record<string, never>;
 		};
 	}
 }

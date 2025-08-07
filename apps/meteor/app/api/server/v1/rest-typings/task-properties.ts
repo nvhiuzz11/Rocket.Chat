@@ -4,8 +4,8 @@ type TaskPropertyCreateProps = {
 	name: string;
 	type: string;
 	projectId: string;
-	order: number;
-	required: boolean;
+	order?: number;
+	required?: boolean;
 	systemKey?: string;
 };
 
@@ -19,7 +19,7 @@ const TaskPropertyCreatePropsSchema = {
 		required: { type: 'boolean' },
 		systemKey: { type: 'string' },
 	},
-	required: ['name', 'type', 'projectId', 'order'],
+	required: ['name', 'type', 'projectId'],
 };
 
 export const isTaskPropertyCreateProps = ajv.compile<TaskPropertyCreateProps>(TaskPropertyCreatePropsSchema);
