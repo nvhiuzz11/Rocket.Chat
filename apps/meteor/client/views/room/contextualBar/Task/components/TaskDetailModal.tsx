@@ -14,15 +14,17 @@ import {
 } from '@rocket.chat/fuselage';
 import { UserAvatar } from '@rocket.chat/ui-avatar';
 import { useEndpoint, useToastMessageDispatch, useTranslation } from '@rocket.chat/ui-contexts';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
 import { TASK_PROPERTY_TYPES } from '../../../../../../definition/project';
 import type { ITask, ITaskProperty, ITaskTag } from '../../../../../../server/core-typings';
+import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
 import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
 import PropertySettingsPanel from '../../../../../components/PropertyProject/PropertySettingsPanel';
 import UserAutoCompleteWithObjectsRoom from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteWithObjectsRoom';
+import SubtaskPanel from './SubtaskPanel';
 
 type TaskDetailModalProps = {
 	onClose: () => void;
@@ -48,8 +50,12 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 	const taskPropertiesEndpoint = useEndpoint('GET', '/v1/task-properties.list');
 	const [isPropertySettingsOpen, setIsPropertySettingsOpen] = useState(false);
 	const [isNewProperty, setIsNewProperty] = useState(false);
+	const [isSubtaskPanelOpen, setIsSubtaskPanelOpen] = useState(false);
+	const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
+	const [isLoadingSubtasks, setIsLoadingSubtasks] = useState(false);
 	const dispatchToastMessage = useToastMessageDispatch();
 	const updateTaskEndpoint = useEndpoint('POST', '/v1/tasks.update');
+	const getSubtasksEndpoint = useEndpoint('GET', '/v1/subtasks.getByTask');
 
 	const reloadTaskProperties = async () => {
 		const { taskProperties = [] } = await taskPropertiesEndpoint({ projectId: task.projectId });
@@ -65,6 +71,27 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 
 		reload();
 	};
+
+	const loadSubtasks = async () => {
+		try {
+			setIsLoadingSubtasks(true);
+			const { subtasks: fetchedSubtasks } = await getSubtasksEndpoint({ taskId: task._id });
+			const parsedSubtasks = fetchedSubtasks.map((s: any) => ({
+				...s,
+				createdAt: new Date(s.createdAt),
+				_updatedAt: new Date(s._updatedAt),
+			}));
+			setSubtasks(parsedSubtasks);
+		} catch (error) {
+			console.error('Failed to load subtasks:', error);
+		} finally {
+			setIsLoadingSubtasks(false);
+		}
+	};
+
+	useEffect(() => {
+		loadSubtasks();
+	}, [task._id]);
 
 	const [taskPropertySelected, setTaskPropertySelected] = useState<Array<{ taskPropertyId: string; value: string[] }>>(
 		() => task.properties || [],
@@ -127,6 +154,7 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 		setSelectedProperty(property);
 		setIsNewProperty(false);
 		setIsPropertySettingsOpen(true);
+		setIsSubtaskPanelOpen(false); // Close subtask panel if open
 	};
 
 	const handleAddNewProperty = () => {
@@ -141,12 +169,24 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 		} as ITaskProperty & { value: ITaskTag[] });
 		setIsNewProperty(true);
 		setIsPropertySettingsOpen(true);
+		setIsSubtaskPanelOpen(false); // Close subtask panel if open
 	};
 
 	const handleClosePropertySettings = () => {
 		setIsPropertySettingsOpen(false);
 		setSelectedProperty(null);
 		setIsNewProperty(false);
+	};
+
+	const handleOpenSubtaskPanel = () => {
+		setIsSubtaskPanelOpen(true);
+		setIsPropertySettingsOpen(false);
+		setSelectedProperty(null); // Clear property selection
+		setIsNewProperty(false);
+	};
+
+	const handleCloseSubtaskPanel = () => {
+		setIsSubtaskPanelOpen(false);
 	};
 
 	const handleUpdateTask = async (data: UpdateTaskPayload) => {
@@ -171,12 +211,12 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 	};
 
 	return (
-		<Modal {...(isPropertySettingsOpen ? { width: 'x1200', maxWidth: '90vw' } : {})}>
+		<Modal {...(isPropertySettingsOpen || isSubtaskPanelOpen ? { width: 'x1200', maxWidth: '90vw' } : {})}>
 			<Modal.Header>
 				<Modal.Title>Task Details</Modal.Title>
 				<Modal.Close onClick={onClose} />
 			</Modal.Header>
-			{isPropertySettingsOpen ? (
+			{isPropertySettingsOpen || isSubtaskPanelOpen ? (
 				<Box display='flex' height='600px'>
 					<Modal.Content width='39rem' overflow='auto'>
 						<FieldGroup>
@@ -246,6 +286,18 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 							</Button>
 
 							<Field>
+								<Box display='flex' alignItems='center' justifyContent='space-between' mb='x4'>
+									<FieldLabel>Subtasks</FieldLabel>
+									<Button square small onClick={handleOpenSubtaskPanel} title='Manage Subtasks'>
+										<Icon name='list' size='x16' />
+									</Button>
+								</Box>
+								<Box color='hint' fontSize='x12'>
+									{subtasks.length} subtasks ({subtasks.filter((s) => s.completed).length} completed)
+								</Box>
+							</Field>
+
+							<Field>
 								<FieldLabel>Created By</FieldLabel>
 								<FieldRow>
 									<Box
@@ -276,7 +328,7 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 						</FieldGroup>
 					</Modal.Content>
 
-					{selectedProperty && (
+					{selectedProperty && !isSubtaskPanelOpen && (
 						<Box flexGrow={1} flexShrink={0} borderInlineStart='x1' borderColor='stroke-extra-light' overflow='auto' mi='x16'>
 							<PropertySettingsPanel
 								onClose={handleClosePropertySettings}
@@ -286,6 +338,18 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 								isNewProperty={isNewProperty}
 							/>
 						</Box>
+					)}
+					{isSubtaskPanelOpen && !selectedProperty && (
+						<SubtaskPanel
+							taskId={task._id}
+							subtasks={subtasks}
+							isLoading={isLoadingSubtasks}
+							onClose={handleCloseSubtaskPanel}
+							onReload={() => {
+								loadSubtasks();
+								reload();
+							}}
+						/>
 					)}
 				</Box>
 			) : (
@@ -355,6 +419,21 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 							<Icon name='plus' size='x16' mie='x4' />
 							Add Property
 						</Button>
+
+						<Field>
+							<Box display='flex' alignItems='center' justifyContent='space-between' mb='x4'>
+								<FieldLabel>Subtasks</FieldLabel>
+								<Button square small onClick={handleOpenSubtaskPanel} title='Manage Subtasks'>
+									<Icon name='list' size='x16' />
+								</Button>
+							</Box>
+							<Box color='hint' fontSize='x12'>
+								{subtasks.length} subtasks{' '}
+								{subtasks.length > 0 && subtasks.filter((s: ISubtask) => s.completed).length > 0
+									? `(${subtasks.filter((s: ISubtask) => s.completed).length} completed)`
+									: '(0 completed)'}
+							</Box>
+						</Field>
 
 						<Field>
 							<FieldLabel>Created By</FieldLabel>

@@ -91,6 +91,7 @@ const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreat
 									status={status}
 									taskProperties={taskProperties}
 									onTaskClick={() => onOpenTaskDetail?.(task)}
+									reload={reload}
 								/>
 							))}
 						</KanbanColumn>
