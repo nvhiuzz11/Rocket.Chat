@@ -19,9 +19,11 @@ type KanbanBoardProps = {
 
 const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreate, onOpenTaskDetail }: KanbanBoardProps) => {
 	const updateTaskStatusEndpoint = useEndpoint('POST', '/v1/tasks.updateStatus');
+	const updateTagOrderEndpoint = useEndpoint('POST', '/v1/task-tags.updateOrder');
 
 	const statusProperty = taskProperties.find((property) => property.systemKey === 'status');
 	const [statuses, setStatuses] = useState<ITaskTag[]>();
+	const [draggingColumnId, setDraggingColumnId] = useState<string | null>(null);
 	const dispatchToastMessage = useToastMessageDispatch();
 
 	useEffect(() => {
@@ -54,6 +56,39 @@ const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreat
 		console.log('handleTaskReorder', taskId, newIndex);
 	};
 
+	const handleColumnReorder = async (statusId: string, newIndex: number) => {
+		if (!statuses) return;
+
+		const currentIndex = statuses.findIndex(status => status._id === statusId);
+		if (currentIndex === -1 || currentIndex === newIndex) return;
+
+		// Reorder statuses locally
+		const reorderedStatuses = [...statuses];
+		const [draggedStatus] = reorderedStatuses.splice(currentIndex, 1);
+		reorderedStatuses.splice(newIndex, 0, draggedStatus);
+
+		// Update order numbers
+		const updatedStatuses = reorderedStatuses.map((status, index) => ({
+			...status,
+			order: index,
+		}));
+
+		setStatuses(updatedStatuses);
+		setDraggingColumnId(null);
+
+		try {
+			// Update order in backend
+			await updateTagOrderEndpoint({
+				tags: updatedStatuses.map((status, index) => ({ _id: status._id, order: index })),
+			});
+			reload();
+		} catch (error) {
+			// Revert on error
+			setStatuses(statuses);
+			dispatchToastMessage({ type: 'error', message: 'Failed to reorder columns' });
+		}
+	};
+
 	return (
 		<Box display='flex' flexDirection='column' width='100%' height='100%'>
 			<Box
@@ -72,7 +107,7 @@ const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreat
 					} as React.CSSProperties
 				}
 			>
-				{statuses?.map((status) => {
+				{statuses?.map((status, index) => {
 					const filteredTasks = tasks.filter((task) =>
 						task.properties?.some((property) => property.taskPropertyId === statusProperty?._id && property.value?.includes(status._id)),
 					);
@@ -83,6 +118,9 @@ const TaskKanbanBoard = ({ tasks, projectId, taskProperties, reload, onTaskCreat
 							onTaskDrop={handleTaskDrop}
 							onTaskReorder={handleTaskReorder}
 							onTaskCreate={() => onTaskCreate?.({ taskPropertyId: statusProperty?._id, value: status._id })}
+							onColumnReorder={handleColumnReorder}
+							isDragging={draggingColumnId === status._id}
+							columnIndex={index}
 						>
 							{filteredTasks.map((task) => (
 								<TaskCard

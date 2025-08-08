@@ -1,7 +1,7 @@
-import { dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { dropTargetForElements, draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { css } from '@rocket.chat/css-in-js';
 import { Box, Icon } from '@rocket.chat/fuselage';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
@@ -13,50 +13,76 @@ interface IKanbanColumnProps {
 	onTaskDrop?: (taskId: string, newStatus: string) => void;
 	onTaskReorder?: (taskId: string, newIndex: number) => void;
 	onTaskCreate?: () => void;
+	onColumnReorder?: (statusId: string, newIndex: number) => void;
+	isDragging?: boolean;
+	columnIndex: number;
 }
 
-const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreate }: IKanbanColumnProps) => {
+const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreate, onColumnReorder, isDragging, columnIndex }: IKanbanColumnProps) => {
 	const { t } = useTranslation();
 	const ref = useRef<HTMLDivElement>(null);
+	const [isColumnDragging, setIsColumnDragging] = useState(false);
 
 	useEffect(() => {
 		const element = ref.current;
 		if (!element) return;
 
-		return dropTargetForElements({
+		const cleanupDragable = draggable({
 			element,
-			getData: () => ({ status: status._id }),
+			getInitialData: () => ({ type: 'column', statusId: status._id, columnIndex }),
+			onDragStart: () => setIsColumnDragging(true),
+			onDrop: () => setIsColumnDragging(false),
+		});
+
+		const cleanupDropTarget = dropTargetForElements({
+			element,
+			getData: () => ({ status: status._id, type: 'column-drop-target', columnIndex }),
 			onDrop: ({ source, location }) => {
 				const { data } = source;
-				if (data && typeof data === 'object' && 'id' in data) {
-					if (data.status === status._id && onTaskReorder) {
-						// Calculate new index based on drop position relative to card heights
-						const dropY = location.current.input.clientY;
-						const cardsContainer = element.querySelector('[role="list"]');
-						const cards = cardsContainer?.querySelectorAll('[role="listitem"]');
-
-						if (!cards || cards.length === 0) {
-							onTaskReorder(data.id as string, 0);
-							return;
+				if (data && typeof data === 'object') {
+					// Handle column reordering
+					if ('type' in data && data.type === 'column' && onColumnReorder) {
+						const sourceIndex = data.columnIndex as number;
+						if (sourceIndex !== columnIndex) {
+							onColumnReorder(data.statusId as string, columnIndex);
 						}
+					}
+					// Handle task drops
+					else if ('id' in data) {
+						if (data.status === status._id && onTaskReorder) {
+							// Calculate new index based on drop position relative to card heights
+							const dropY = location.current.input.clientY;
+							const cardsContainer = element.querySelector('[role="list"]');
+							const cards = cardsContainer?.querySelectorAll('[role="listitem"]');
 
-						// Find which card we're dropping between
-						let targetIndex = 0;
-						for (let i = 0; i < cards.length; i++) {
-							const cardRect = cards[i].getBoundingClientRect();
-							if (dropY > cardRect.top + cardRect.height / 2) {
-								targetIndex = i + 1;
+							if (!cards || cards.length === 0) {
+								onTaskReorder(data.id as string, 0);
+								return;
 							}
-						}
 
-						onTaskReorder(data.id as string, targetIndex);
-					} else if (onTaskDrop) {
-						onTaskDrop(data.id as string, status._id);
+							// Find which card we're dropping between
+							let targetIndex = 0;
+							for (let i = 0; i < cards.length; i++) {
+								const cardRect = cards[i].getBoundingClientRect();
+								if (dropY > cardRect.top + cardRect.height / 2) {
+									targetIndex = i + 1;
+								}
+							}
+
+							onTaskReorder(data.id as string, targetIndex);
+						} else if (onTaskDrop) {
+							onTaskDrop(data.id as string, status._id);
+						}
 					}
 				}
 			},
 		});
-	}, [status._id, onTaskDrop, onTaskReorder]);
+
+		return () => {
+			cleanupDragable();
+			cleanupDropTarget();
+		};
+	}, [status._id, onTaskDrop, onTaskReorder, onColumnReorder, columnIndex]);
 
 	const taskCount = Array.isArray(children) ? children.length : 0;
 
@@ -70,6 +96,9 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 		border: 0.5px solid ${darkenColor(status?.color, 0.1)};
 		overflow: hidden;
+		cursor: ${isColumnDragging ? 'grabbing' : 'grab'};
+		opacity: ${isColumnDragging || isDragging ? 0.8 : 1};
+		transform: ${isColumnDragging ? 'rotate(5deg) scale(1.02)' : 'none'};
 
 		&:hover {
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -101,25 +130,35 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 	return (
 		<Box ref={ref} className={columnStyle}>
 			<Box p='x16' display='flex' alignItems='center' justifyContent='space-between'>
-				<Box
-					display='flex'
-					alignItems='center'
-					style={{
-						gap: 'x8',
-						backgroundColor: darkenColor(status.color, 0.2),
-						borderRadius: '12px',
-						padding: '2px 8px',
-					}}
-				>
-					<Icon name='circle' size='x16' color={darkenColor(status.color, 0.5)} />
+				<Box display='flex' alignItems='center' flexGrow={1}>
+					<Icon 
+						name='menu' 
+						size='x12' 
+						color={darkenColor(status.color, 0.4)} 
+						marginInlineEnd='x8'
+						style={{ opacity: 0.6, cursor: 'grab' }}
+						title='Drag to reorder column'
+					/>
 					<Box
-						fontScale='p2m'
+						display='flex'
+						alignItems='center'
 						style={{
-							fontWeight: 600,
+							gap: 'x8',
+							backgroundColor: darkenColor(status.color, 0.2),
+							borderRadius: '12px',
+							padding: '2px 8px',
 						}}
-						mis='x4'
 					>
-						{t(status.value)}
+						<Icon name='circle' size='x16' color={darkenColor(status.color, 0.5)} />
+						<Box
+							fontScale='p2m'
+							style={{
+								fontWeight: 600,
+							}}
+							mis='x4'
+						>
+							{t(status.value)}
+						</Box>
 					</Box>
 				</Box>
 				<Box
