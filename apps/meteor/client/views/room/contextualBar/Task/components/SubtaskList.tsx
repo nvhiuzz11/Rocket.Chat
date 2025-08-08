@@ -19,6 +19,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 	const [isLoading, setIsLoading] = useState(false);
 	const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 	const [draggedTag, setDraggedTag] = useState<string | null>(null);
+	const [hoveredTag, setHoveredTag] = useState<string | null>(null);
 
 	const dispatchToastMessage = useToastMessageDispatch();
 	const createSubtaskEndpoint = useEndpoint('POST', '/v1/subtasks.create');
@@ -143,6 +144,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 
 		setSubtasks(reorderedSubtasks);
 		setDraggedTag(null);
+		setHoveredTag(null);
 
 		try {
 			await reorderSubtasksEndpoint({
@@ -223,9 +225,24 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 						onDragStart={(e) => handleDragStart(e, index)}
 						onDragOver={handleDragOver}
 						onDrop={(e) => handleDrop(e, index)}
+						onMouseEnter={() => setHoveredTag(subtask._id)}
+						onMouseLeave={() => setHoveredTag(null)}
 						style={{
-							cursor: draggedTag === subtask._id ? 'move' : 'pointer',
-							opacity: draggedTag === subtask._id ? 0.5 : 1,
+							cursor: draggedTag === subtask._id ? 'grabbing' : 'grab',
+							opacity: draggedTag === subtask._id ? 0.6 : 1,
+							transform:
+								draggedTag === subtask._id
+									? 'rotate(0.5deg) scale(1.05)'
+									: hoveredTag === subtask._id
+										? 'rotate(0.2deg) scale(1.01)'
+										: 'none',
+							transition: 'all 0.2s ease',
+							boxShadow:
+								draggedTag === subtask._id
+									? '0 4px 12px rgba(0, 0, 0, 0.15)'
+									: hoveredTag === subtask._id
+										? '0 2px 6px rgba(0, 0, 0, 0.08)'
+										: 'none',
 						}}
 					>
 						{/* Drag handle */}

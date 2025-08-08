@@ -58,6 +58,7 @@ const PropertySettingsPanel = ({
 	const [showColorPicker, setShowColorPicker] = useState<string | null>(null);
 	const [tempColors, setTempColors] = useState<{ [tagId: string]: string }>({});
 	const [draggedTag, setDraggedTag] = useState<string | null>(null);
+	const [hoveredTag, setHoveredTag] = useState<string | null>(null);
 	const [deleteConfirmation, setDeleteConfirmation] = useState<{ tagId: string; tagValue: string } | null>(null);
 	const [deletePropertyConfirmation, setDeletePropertyConfirmation] = useState<{ propertyId: string; propertyName: string } | null>(null);
 	const colorPickerRef = useRef<HTMLDivElement>(null);
@@ -324,6 +325,7 @@ const PropertySettingsPanel = ({
 
 	const handleDragEnd = () => {
 		setDraggedTag(null);
+		setHoveredTag(null);
 	};
 
 	const handleDrop = async (e: React.DragEvent, targetTagId: string) => {
@@ -361,8 +363,6 @@ const PropertySettingsPanel = ({
 			dispatchToastMessage({ type: 'error', message: 'Failed to update tag order' });
 		}
 	};
-
-	console.log('PropertySettingsPanel render - property.name:', property.name, 'property._id:', property._id);
 
 	return (
 		<>
@@ -477,8 +477,27 @@ const PropertySettingsPanel = ({
 														onDragOver={handleDragOver}
 														onDragEnd={handleDragEnd}
 														onDrop={(e) => handleDrop(e, tag._id)}
-														cursor={draggedTag ? 'move' : 'pointer'}
-														opacity={draggedTag === tag._id ? 0.5 : 1}
+														onMouseEnter={() => setHoveredTag(tag._id)}
+														onMouseLeave={() => setHoveredTag(null)}
+														style={{
+															cursor: draggedTag === tag._id ? 'grabbing' : 'grab',
+															opacity: draggedTag === tag._id ? 0.6 : 1,
+															transform:
+																draggedTag === tag._id
+																	? 'rotate(0.5deg) scale(1.05)'
+																	: hoveredTag === tag._id
+																		? 'rotate(0.2deg) scale(1.01)'
+																		: 'none',
+															transition: 'all 0.2s ease',
+															boxShadow:
+																draggedTag === tag._id
+																	? '0 4px 12px rgba(0, 0, 0, 0.15)'
+																	: hoveredTag === tag._id
+																		? '0 2px 6px rgba(0, 0, 0, 0.08)'
+																		: 'none',
+														}}
+														border={draggedTag === tag._id ? '2px solid' : '1px solid'}
+														borderColor={draggedTag === tag._id ? 'stroke-medium' : 'stroke-extra-light'}
 													>
 														{editingTag === tag._id ? (
 															<>
@@ -502,14 +521,15 @@ const PropertySettingsPanel = ({
 																				ref={showColorPicker === tag._id ? colorPickerRef : undefined}
 																				position='absolute'
 																				zIndex={1000}
-																				top='x24'
-																				left='0'
-																				bg='surface-light'
-																				border='1px solid'
-																				borderColor='stroke-light'
-																				borderRadius='x4'
-																				p='x8'
-																				boxShadow='0 4px 12px rgba(0,0,0,0.15)'
+																				style={{
+																					top: '24px',
+																					left: '0',
+																					background: 'var(--rcx-color-surface-light)',
+																					border: '1px solid var(--rcx-color-stroke-light)',
+																					borderRadius: '4px',
+																					padding: '8px',
+																					boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+																				}}
 																			>
 																				<HexColorPicker
 																					color={editingTagData.color}
@@ -569,7 +589,18 @@ const PropertySettingsPanel = ({
 															</>
 														) : (
 															<>
-																<Icon name='menu' size='x12' color='font-hint' cursor='move' marginInlineEnd='x8' />
+																<Icon
+																	name='menu'
+																	size='x12'
+																	color='font-hint'
+																	marginInlineEnd='x8'
+																	style={{
+																		cursor: 'grab',
+																		opacity: 0.7,
+																		transition: 'opacity 0.2s ease',
+																	}}
+																	title='Drag to reorder'
+																/>
 																<Box display='flex' alignItems='center' flexGrow={1}>
 																	<Box position='relative'>
 																		<Box
@@ -589,13 +620,15 @@ const PropertySettingsPanel = ({
 																				ref={showColorPicker === `view-${tag._id}` ? colorPickerRef : undefined}
 																				position='absolute'
 																				zIndex={1000}
-																				style={{ top: '24px', left: '0' }}
-																				bg='surface-light'
-																				border='1px solid'
-																				borderColor='stroke-light'
-																				borderRadius='x4'
-																				p='x8'
-																				boxShadow='0 4px 12px rgba(0,0,0,0.15)'
+																				style={{
+																					top: '24px',
+																					left: '0',
+																					background: 'var(--rcx-color-surface-light)',
+																					border: '1px solid var(--rcx-color-stroke-light)',
+																					borderRadius: '4px',
+																					padding: '8px',
+																					boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+																				}}
 																			>
 																				<HexColorPicker
 																					color={tempColors[tag._id] || tag.color}
@@ -680,13 +713,15 @@ const PropertySettingsPanel = ({
 														ref={showColorPicker === 'newTag' ? colorPickerRef : undefined}
 														position='absolute'
 														zIndex={1000}
-														style={{ top: '24px', left: '0' }}
-														bg='surface-light'
-														border='1px solid'
-														borderColor='stroke-light'
-														borderRadius='x4'
-														p='x8'
-														boxShadow='0 4px 12px rgba(0,0,0,0.15)'
+														style={{
+															top: '24px',
+															left: '0',
+															background: 'var(--rcx-color-surface-light)',
+															border: '1px solid var(--rcx-color-stroke-light)',
+															borderRadius: '4px',
+															padding: '8px',
+															boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+														}}
 													>
 														<HexColorPicker color={newTag.color} onChange={(color) => setNewTag({ ...newTag, color })} />
 														<TextInput
