@@ -18,13 +18,15 @@ import { useState, useMemo, useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
+import SubtaskPanel from './SubtaskPanel';
 import { TASK_PROPERTY_TYPES } from '../../../../../../definition/project';
-import type { ITask, ITaskProperty, ITaskTag } from '../../../../../../server/core-typings';
 import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
+import type { ITask } from '../../../../../../server/core-typings/ITask';
+import type { ITaskProperty } from '../../../../../../server/core-typings/ITaskProperty';
+import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
 import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
 import PropertySettingsPanel from '../../../../../components/PropertyProject/PropertySettingsPanel';
 import UserAutoCompleteWithObjectsRoom from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteWithObjectsRoom';
-import SubtaskPanel from './SubtaskPanel';
 
 type TaskDetailModalProps = {
 	onClose: () => void;
@@ -449,7 +451,7 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 									borderRadius='x4'
 									color={Palette.text['font-hint']}
 								>
-									<UserAvatar size='x24' username={task.createdBy.username} />
+									<UserAvatar size='x24' userId={task.createdBy._id} />
 									<Box is='span' mi='x8' withTruncatedText>
 										{task.createdBy.username}
 									</Box>

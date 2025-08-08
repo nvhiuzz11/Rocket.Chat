@@ -1,8 +1,8 @@
 import { Box, Divider, Button, Icon, Throbber } from '@rocket.chat/fuselage';
 import type { ReactElement } from 'react';
 
-import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
 import SubtaskList from './SubtaskList';
+import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
 
 type SubtaskPanelProps = {
 	taskId: string;

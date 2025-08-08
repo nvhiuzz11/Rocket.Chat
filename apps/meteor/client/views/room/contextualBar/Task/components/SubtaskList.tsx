@@ -1,4 +1,4 @@
-import { Box, CheckBox, Icon, IconButton, Button, TextInput } from '@rocket.chat/fuselage';
+import { Box, CheckBox, Icon, Button, TextInput } from '@rocket.chat/fuselage';
 import { useEndpoint, useToastMessageDispatch } from '@rocket.chat/ui-contexts';
 import { useState, useEffect, useCallback } from 'react';
 import type { ReactElement } from 'react';
