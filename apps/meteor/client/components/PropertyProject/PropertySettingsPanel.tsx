@@ -457,7 +457,7 @@ const PropertySettingsPanel = ({
 									</Box>
 
 									{tags.length > 0 && (
-										<Box marginBlockEnd='x12' p='x12' bg='surface-tint' borderRadius='x4'>
+										<Box p='x12' bg='surface-tint' borderRadius='x4' marginBlockStart='x2'>
 											<Box fontSize='c2' fontWeight='600' color='font-secondary-info' marginBlockEnd='x8' textTransform='uppercase'>
 												Existing Tags
 											</Box>
@@ -657,7 +657,7 @@ const PropertySettingsPanel = ({
 										</Box>
 									)}
 
-									<Box p='x12' bg='surface-tint' borderRadius='x4'>
+									<Box p='x12' bg='surface-tint' borderRadius='x4' marginBlockStart='x2'>
 										<Box fontSize='c2' fontWeight='600' color='font-secondary-info' marginBlockEnd='x8' textTransform='uppercase'>
 											Add New Tag
 										</Box>
@@ -794,7 +794,8 @@ const PropertySettingsPanel = ({
 
 						{/* Content */}
 						<Box marginBlockEnd='x20' color='font-default' lineHeight='1.5'>
-							Are you sure you want to delete property "<strong>{deletePropertyConfirmation.propertyName}</strong>"? This action cannot be undone and will remove all associated data.
+							Are you sure you want to delete property "<strong>{deletePropertyConfirmation.propertyName}</strong>"? This action cannot be
+							undone and will remove all associated data.
 						</Box>
 
 						{/* Footer */}

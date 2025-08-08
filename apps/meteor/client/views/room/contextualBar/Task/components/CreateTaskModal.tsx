@@ -279,14 +279,10 @@ const CreateTaskModal = ({
 								</Field>
 							))}
 
-							<Field>
-								<FieldRow>
-									<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
-										<Icon name='plus' size='x16' />
-										<Box mis='x4'>Add Property</Box>
-									</Button>
-								</FieldRow>
-							</Field>
+							<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
+								<Icon name='plus' size='x16' mie='x4' />
+								Add Property
+							</Button>
 						</FieldGroup>
 					</Modal.Content>
 
@@ -375,14 +371,10 @@ const CreateTaskModal = ({
 							</Field>
 						))}
 
-						{/* <Field> */}
-						{/* <FieldRow> */}
 						<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
 							<Icon name='plus' size='x16' mie='x4' />
 							Add Property
 						</Button>
-						{/* </FieldRow> */}
-						{/* </Field> */}
 					</FieldGroup>
 				</Modal.Content>
 			)}

@@ -240,14 +240,10 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 								</Field>
 							))}
 
-							<Field>
-								<FieldRow>
-									<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
-										<Icon name='plus' size='x16' />
-										<Box mis='x4'>Add Property</Box>
-									</Button>
-								</FieldRow>
-							</Field>
+							<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
+								<Icon name='plus' size='x16' mie='x4' />
+								Add Property
+							</Button>
 
 							<Field>
 								<FieldLabel>Created By</FieldLabel>
@@ -355,12 +351,10 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 							</Field>
 						))}
 
-						<Field>
-							<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
-								<Icon name='plus' size='x16' mie='x4' />
-								Add Property
-							</Button>
-						</Field>
+						<Button onClick={handleAddNewProperty} display='flex' alignItems='center'>
+							<Icon name='plus' size='x16' mie='x4' />
+							Add Property
+						</Button>
 
 						<Field>
 							<FieldLabel>Created By</FieldLabel>
