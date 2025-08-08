@@ -18,10 +18,20 @@ interface IKanbanColumnProps {
 	columnIndex: number;
 }
 
-const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreate, onColumnReorder, isDragging, columnIndex }: IKanbanColumnProps) => {
+const KanbanColumn = ({
+	status,
+	children,
+	onTaskDrop,
+	onTaskReorder,
+	onTaskCreate,
+	onColumnReorder,
+	isDragging,
+	columnIndex,
+}: IKanbanColumnProps) => {
 	const { t } = useTranslation();
 	const ref = useRef<HTMLDivElement>(null);
 	const [isColumnDragging, setIsColumnDragging] = useState(false);
+	const [isColumnHovered, setIsColumnHovered] = useState(false);
 
 	useEffect(() => {
 		const element = ref.current;
@@ -31,7 +41,10 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 			element,
 			getInitialData: () => ({ type: 'column', statusId: status._id, columnIndex }),
 			onDragStart: () => setIsColumnDragging(true),
-			onDrop: () => setIsColumnDragging(false),
+			onDrop: () => {
+				setIsColumnDragging(false);
+				setIsColumnHovered(false);
+			},
 		});
 
 		const cleanupDropTarget = dropTargetForElements({
@@ -98,10 +111,10 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 		overflow: hidden;
 		cursor: ${isColumnDragging ? 'grabbing' : 'grab'};
 		opacity: ${isColumnDragging || isDragging ? 0.8 : 1};
-		transform: ${isColumnDragging ? 'rotate(5deg) scale(1.02)' : 'none'};
+		transform: ${isColumnDragging ? 'rotate(0.5deg) scale(1.02)' : isColumnHovered ? 'rotate(0.1deg) scale(1.01)' : 'none'};
 
 		&:hover {
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+			box-shadow: ${isColumnDragging ? '0 6px 20px rgba(0, 0, 0, 0.15)' : '0 4px 12px rgba(0, 0, 0, 0.08)'};
 		}
 
 		transition: all 0.2s ease;
@@ -128,13 +141,13 @@ const KanbanColumn = ({ status, children, onTaskDrop, onTaskReorder, onTaskCreat
 	`;
 
 	return (
-		<Box ref={ref} className={columnStyle}>
+		<Box ref={ref} className={columnStyle} onMouseEnter={() => setIsColumnHovered(true)} onMouseLeave={() => setIsColumnHovered(false)}>
 			<Box p='x16' display='flex' alignItems='center' justifyContent='space-between'>
 				<Box display='flex' alignItems='center' flexGrow={1}>
-					<Icon 
-						name='menu' 
-						size='x12' 
-						color={darkenColor(status.color, 0.4)} 
+					<Icon
+						name='menu'
+						size='x12'
+						color={darkenColor(status.color, 0.4)}
 						marginInlineEnd='x8'
 						style={{ opacity: 0.6, cursor: 'grab' }}
 						title='Drag to reorder column'
