@@ -1,16 +1,18 @@
 import type { IUser } from '@rocket.chat/core-typings';
 import { Users } from '@rocket.chat/models';
 
+import type { ITask } from '../../../../server/core-typings/ITask';
+import type { ITaskTag } from '../../../../server/core-typings/ITaskTag';
 import { db } from '../../../../server/database/utils';
+import { SubtaskRaw } from '../../../../server/models/Subtask';
 import { TaskRaw } from '../../../../server/models/Task';
 import { API } from '../api';
 import { getPaginationItems } from '../helpers/getPaginationItems';
 import type { ITaskUpdateData } from './rest-typings/task';
 import { isTaskCreateProps, isTaskUpdateProps, isTaskUpdateStatusData } from './rest-typings/task';
-import type { ITask } from '../../../../server/core-typings/ITask';
-import type { ITaskTag } from '../../../../server/core-typings/ITaskTag';
 
 const Tasks = new TaskRaw(db);
+const Subtasks = new SubtaskRaw(db);
 
 API.v1.addRoute(
 	'tasks.create',
@@ -20,7 +22,7 @@ API.v1.addRoute(
 			const { title, description, assignees, dueDate, projectId, properties } = this.bodyParams;
 
 			const { userId } = this;
-			const username = this.user?.username;
+			const username = this.user?.username || '';
 			const task = await Tasks.create({ _id: userId, username }, { title, description, assignees, dueDate, projectId, properties });
 
 			return API.v1.success({ task });
@@ -145,7 +147,7 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { taskId } = this.queryParams;
+			const { taskId } = this.queryParams as { taskId: string };
 			const task = await Tasks.findOneById(taskId);
 			if (!task) {
 				return API.v1.failure('Task not found');
@@ -159,9 +161,13 @@ API.v1.addRoute(
 					avatarETag: 1,
 				},
 			});
+			// Get subtasks if any
+			const subtasks = task.subtasks ? await Subtasks.find({ taskId }, { sort: { order: 1 } }).toArray() : [];
+
 			const enrichedTask = {
 				...task,
 				creator,
+				subtasks,
 			};
 
 			return API.v1.success({ task: enrichedTask });
@@ -178,10 +184,14 @@ API.v1.addRoute(
 		async post() {
 			const { _id } = this.bodyParams;
 			try {
+				// Delete all subtasks first
+				await Subtasks.deleteMany({ taskId: _id });
+
+				// Then delete the task
 				await Tasks.deleteOne({ _id });
 				return API.v1.success();
 			} catch (error) {
-				return API.v1.failure('Failed to delete project');
+				return API.v1.failure('Failed to delete task');
 			}
 		},
 	},
@@ -221,7 +231,7 @@ declare module '@rocket.chat/rest-typings' {
 			};
 		};
 		'/v1/tasks.delete': {
-			POST: (params: { _id: string }) => {};
+			POST: (params: { _id: string }) => void;
 		};
 	}
 }

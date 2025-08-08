@@ -1,5 +1,6 @@
 import type { IRocketChatRecord, IUser } from '@rocket.chat/core-typings';
 
+import type { ISubtask } from './ISubtask';
 import type { ITaskTag } from './ITaskTag';
 
 export interface ITask extends IRocketChatRecord {
@@ -11,4 +12,7 @@ export interface ITask extends IRocketChatRecord {
 	dueDate?: Date;
 	createdAt: Date;
 	properties?: Array<{ taskPropertyId: string; value: ITaskTag['_id'][] }>;
+	subtasks?: ISubtask['_id'][];
+	subtaskCount?: number;
+	completedSubtaskCount?: number;
 }

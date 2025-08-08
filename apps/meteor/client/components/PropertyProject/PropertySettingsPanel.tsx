@@ -15,8 +15,8 @@ import {
 import { useEndpoint, useToastMessageDispatch, useTranslation } from '@rocket.chat/ui-contexts';
 import { useState, useEffect, useRef } from 'react';
 import type { ReactElement } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { HexColorPicker } from 'react-colorful';
+import { useForm, Controller } from 'react-hook-form';
 
 import { TASK_PROPERTY_TYPES } from '../../../definition/project';
 import type { ITaskProperty } from '../../../server/core-typings/ITaskProperty';
