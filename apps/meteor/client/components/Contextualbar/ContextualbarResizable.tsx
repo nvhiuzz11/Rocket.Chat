@@ -1,5 +1,5 @@
 import { css } from '@rocket.chat/css-in-js';
-import { Palette, Box } from '@rocket.chat/fuselage';
+import {  Box } from '@rocket.chat/fuselage';
 import { useLocalStorage } from '@rocket.chat/fuselage-hooks';
 import { Resizable } from 're-resizable';
 import type { ComponentProps } from 'react';
@@ -15,9 +15,6 @@ const ContextualbarResizable = ({ defaultWidth, maxWidth = '50%', children, ...p
 
 	const handleStyle = css`
 		height: 100%;
-		&:hover {
-			background-color: ${Palette.stroke['stroke-highlight']};
-		}
 	`;
 
 	return (
