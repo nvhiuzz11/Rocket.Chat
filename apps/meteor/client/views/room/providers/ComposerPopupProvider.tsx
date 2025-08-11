@@ -16,10 +16,14 @@ import { cannedResponsesQueryKeys } from '../../../lib/queryKeys';
 import ComposerBoxPopupCannedResponse from '../composer/ComposerBoxPopupCannedResponse';
 import type { ComposerBoxPopupEmojiProps } from '../composer/ComposerBoxPopupEmoji';
 import ComposerBoxPopupEmoji from '../composer/ComposerBoxPopupEmoji';
+import type { ComposerBoxPopupProjectProps } from '../composer/ComposerBoxPopupProject';
+import ComposerBoxPopupProject from '../composer/ComposerBoxPopupProject';
 import ComposerBoxPopupRoom from '../composer/ComposerBoxPopupRoom';
 import type { ComposerBoxPopupRoomProps } from '../composer/ComposerBoxPopupRoom';
 import type { ComposerBoxPopupSlashCommandProps } from '../composer/ComposerBoxPopupSlashCommand';
 import ComposerBoxPopupSlashCommand from '../composer/ComposerBoxPopupSlashCommand';
+import ComposerBoxPopupTask from '../composer/ComposerBoxPopupTask';
+import type { ComposerBoxPopupTaskProps } from '../composer/ComposerBoxPopupTask';
 import ComposerBoxPopupUser from '../composer/ComposerBoxPopupUser';
 import type { ComposerBoxPopupUserProps } from '../composer/ComposerBoxPopupUser';
 import type { ComposerPopupContextValue } from '../contexts/ComposerPopupContext';
@@ -61,7 +65,8 @@ const getLastRecentUsers = (rid: string, uid: string) => {
 	return Array.from(uniqueUsers.values());
 };
 const ComposerPopupProvider = ({ children, room }: ComposerPopupProviderProps) => {
-	const { _id: rid, encrypted: isRoomEncrypted } = room;
+	const { _id: rid, encrypted: isRoomEncrypted, teamMain, teamId } = room;
+	console.log('ComposerPopupProvider', rid, isRoomEncrypted, teamMain, teamId);
 
 	// TODO: this is awful because we are just triggering the query to get the data
 	// and we are not using the data itself, we should find a better way to do this
@@ -70,6 +75,8 @@ const ComposerPopupProvider = ({ children, room }: ComposerPopupProviderProps) =
 	const userSpotlight = useMethod('spotlight');
 	const suggestionsCount = useSetting('Number_of_users_autocomplete_suggestions', 5);
 	const cannedResponseEnabled = useSetting('Canned_Responses_Enable', true);
+	const getProjects = useMethod('projects.list');
+	const getTasks = useMethod('tasks.list');
 	const [recentEmojis] = useLocalStorage('emoji.recent', []);
 	const [previewTitle, setPreviewTitle] = useState('');
 	const isOmnichannel = isOmnichannelRoom(room);
@@ -83,7 +90,7 @@ const ComposerPopupProvider = ({ children, room }: ComposerPopupProviderProps) =
 	const call = useMethod('getSlashCommandPreviews');
 
 	const value: ComposerPopupContextValue = useMemo(() => {
-		return [
+		const configs = [
 			createMessageBoxPopupConfig({
 				trigger: '@',
 				title: t('People'),
@@ -372,6 +379,73 @@ const ComposerPopupProvider = ({ children, room }: ComposerPopupProviderProps) =
 					getItemsFromServer: async () => [],
 					getValue: (item) => item.text,
 				}),
+			// Only show project trigger ($) in team main rooms
+			(teamMain || teamId) &&
+				createMessageBoxPopupConfig<ComposerBoxPopupProjectProps>({
+					trigger: '\\$',
+					title: t('Projects'),
+					triggerAnywhere: true,
+					getItemsFromLocal: async () => [],
+					getItemsFromServer: async (filter: string) => {
+						try {
+							const response = await getProjects({
+								rid,
+								filter,
+								limit: suggestionsCount ?? 5,
+							});
+							return (
+								response?.projects?.map((project: any) => ({
+									_id: project._id,
+									name: project.name,
+									description: project.description,
+									status: project.status,
+									startDate: project.startDate,
+									endDate: project.endDate,
+								})) || []
+							);
+						} catch (error) {
+							console.error('Error fetching projects:', error);
+							return [];
+						}
+					},
+					getValue: (item) => item.name,
+					renderItem: ({ item }) => <ComposerBoxPopupProject {...item} />,
+				}),
+			// Show task trigger (^) in both team main rooms and project channels
+			teamId &&
+				!teamMain &&
+				createMessageBoxPopupConfig<ComposerBoxPopupTaskProps>({
+					trigger: '\\^',
+					title: t('Tasks'),
+					triggerAnywhere: true,
+					getItemsFromLocal: async () => [],
+					getItemsFromServer: async (filter: string) => {
+						try {
+							const response = await getTasks({
+								rid,
+								filter,
+								limit: suggestionsCount ?? 5,
+							});
+							return (
+								response?.tasks?.map((task: any) => ({
+									_id: task._id,
+									title: task.title,
+									description: task.description,
+									status: task.status,
+									priority: task.priority,
+									assignedTo: task.assignedTo,
+									projectId: task.projectId,
+									projectName: task.projectName,
+								})) || []
+							);
+						} catch (error) {
+							console.error('Error fetching tasks:', error);
+							return [];
+						}
+					},
+					getValue: (item) => item.title,
+					renderItem: ({ item }) => <ComposerBoxPopupTask {...item} />,
+				}),
 			createMessageBoxPopupConfig({
 				title: previewTitle,
 				matchSelectorRegex: /(?:^)(\/[\w\d\S]+ )[^]*$/,
@@ -391,10 +465,13 @@ const ComposerPopupProvider = ({ children, room }: ComposerPopupProviderProps) =
 				},
 			}),
 		].filter(Boolean);
+		return configs;
 	}, [
 		call,
 		cannedResponseEnabled,
 		encrypted,
+		getProjects,
+		getTasks,
 		i18n,
 		isOmnichannel,
 		previewTitle,
@@ -403,6 +480,8 @@ const ComposerPopupProvider = ({ children, room }: ComposerPopupProviderProps) =
 		rid,
 		suggestionsCount,
 		t,
+		teamId,
+		teamMain,
 		uid,
 		useEmoji,
 		userSpotlight,
