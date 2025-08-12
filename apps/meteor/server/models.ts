@@ -84,6 +84,8 @@ import type { Collection } from 'mongodb';
 
 import { trashCollection } from './database/trash';
 import { db } from './database/utils';
+import { DocumentRaw } from './models/Document';
+import { ModuleRaw } from './models/Module';
 import { ProjectRaw } from './models/Project';
 import { ProjectPropertyRaw } from './models/ProjectProperty';
 import { ProjectTagRaw } from './models/ProjectTag';
@@ -177,6 +179,8 @@ registerModel('IWebdavAccountsModel', new WebdavAccountsRaw(db));
 registerModel('IWorkspaceCredentialsModel', new WorkspaceCredentialsRaw(db));
 
 // Register the Tasks model after raw models are registered
+registerModel('IDocumentModel', new DocumentRaw(db));
+registerModel('IModuleModel', new ModuleRaw(db));
 registerModel('IProjectModel', new ProjectRaw(db));
 registerModel('IProjectPropertyModel', new ProjectPropertyRaw(db));
 registerModel('IProjectTagModel', new ProjectTagRaw(db));

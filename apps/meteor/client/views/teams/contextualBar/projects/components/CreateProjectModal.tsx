@@ -7,7 +7,6 @@ import { Controller, useForm } from 'react-hook-form';
 import { PROJECT_PROPERTY_TYPES } from '../../../../../../definition/project';
 import type { IProjectProperty } from '../../../../../../server/core-typings/IProjectProperty';
 import type { IProjectTag } from '../../../../../../server/core-typings/IProjectTag';
-import { PropertyInput } from '../../../../../components/PropertyProject/PropertyInput';
 import UserAutoCompleteMultipleFederatedTeam from '../../../../../components/UserAutoCompleteMultiple/UserAutoCompleteMultipleFederatedTeam';
 
 type CreateProjectModalProps = {

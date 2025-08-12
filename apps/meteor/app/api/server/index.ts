@@ -48,6 +48,8 @@ import './v1/voip/omnichannel';
 import './v1/voip';
 import './v1/federation';
 import './v1/moderation';
+import './v1/documents';
+import './v1/modules';
 import './v1/project';
 import './v1/project-properties';
 import './v1/project-tags';
