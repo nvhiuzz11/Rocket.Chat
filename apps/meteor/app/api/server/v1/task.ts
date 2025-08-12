@@ -4,7 +4,6 @@ import { Users } from '@rocket.chat/models';
 import type { ITask } from '../../../../server/core-typings/ITask';
 import type { ITaskTag } from '../../../../server/core-typings/ITaskTag';
 import { db } from '../../../../server/database/utils';
-import { SubtaskRaw } from '../../../../server/models/Subtask';
 import { TaskRaw } from '../../../../server/models/Task';
 import { API } from '../api';
 import { getPaginationItems } from '../helpers/getPaginationItems';
@@ -12,7 +11,6 @@ import type { ITaskUpdateData } from './rest-typings/task';
 import { isTaskCreateProps, isTaskUpdateProps, isTaskUpdateStatusData } from './rest-typings/task';
 
 const Tasks = new TaskRaw(db);
-const Subtasks = new SubtaskRaw(db);
 
 API.v1.addRoute(
 	'tasks.create',
@@ -115,12 +113,16 @@ API.v1.addRoute(
 			const { projectId, search } = this.queryParams;
 			const { offset, count } = await getPaginationItems(this.queryParams);
 
-			const query: any = {};
+			const query: any = {
+				$or: [{ parentTaskId: { $exists: false } }, { parentTaskId: null }],
+			};
 			if (projectId) {
 				query.projectId = projectId;
 			}
 			if (search?.trim()) {
-				query.$or = [{ title: { $regex: search.trim(), $options: 'i' } }, { description: { $regex: search.trim(), $options: 'i' } }];
+				query.$and = [
+					{ $or: [{ title: { $regex: search.trim(), $options: 'i' } }, { description: { $regex: search.trim(), $options: 'i' } }] },
+				];
 			}
 
 			const tasks = await Tasks.find(query, {
@@ -161,8 +163,8 @@ API.v1.addRoute(
 					avatarETag: 1,
 				},
 			});
-			// Get subtasks if any
-			const subtasks = task.subtasks ? await Subtasks.find({ taskId }, { sort: { order: 1 } }).toArray() : [];
+			// Get subtasks (child tasks) if any
+			const subtasks = await Tasks.findSubtasksByParentId(taskId);
 
 			const enrichedTask = {
 				...task,
@@ -183,12 +185,13 @@ API.v1.addRoute(
 	{
 		async post() {
 			const { _id } = this.bodyParams;
-			try {
-				// Delete all subtasks first
-				await Subtasks.deleteMany({ taskId: _id });
 
-				// Then delete the task
-				await Tasks.deleteOne({ _id });
+			if (!_id) {
+				return API.v1.failure('Task ID is required');
+			}
+
+			try {
+				await Tasks.delete(_id as string);
 				return API.v1.success();
 			} catch (error) {
 				return API.v1.failure('Failed to delete task');

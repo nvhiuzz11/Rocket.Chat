@@ -20,7 +20,6 @@ import { Controller, useForm } from 'react-hook-form';
 
 import SubtaskPanel from './SubtaskPanel';
 import { TASK_PROPERTY_TYPES } from '../../../../../../definition/project';
-import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
 import type { ITask } from '../../../../../../server/core-typings/ITask';
 import type { ITaskProperty } from '../../../../../../server/core-typings/ITaskProperty';
 import type { ITaskTag } from '../../../../../../server/core-typings/ITaskTag';
@@ -53,7 +52,7 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 	const [isPropertySettingsOpen, setIsPropertySettingsOpen] = useState(false);
 	const [isNewProperty, setIsNewProperty] = useState(false);
 	const [isSubtaskPanelOpen, setIsSubtaskPanelOpen] = useState(false);
-	const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
+	const [subtasks, setSubtasks] = useState<ITask[]>([]);
 	const [isLoadingSubtasks, setIsLoadingSubtasks] = useState(false);
 	const dispatchToastMessage = useToastMessageDispatch();
 	const updateTaskEndpoint = useEndpoint('POST', '/v1/tasks.update');
@@ -295,7 +294,7 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 									</Button>
 								</Box>
 								<Box color='hint' fontSize='x12'>
-									{subtasks.length} subtasks ({subtasks.filter((s) => s.completed).length} completed)
+									{subtasks.length} subtasks ({subtasks.filter((s) => s.isComplete).length} completed)
 								</Box>
 							</Field>
 
@@ -313,7 +312,7 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 										borderRadius='x4'
 										color={Palette.text['font-hint']}
 									>
-										<UserAvatar size='x24' username={task.createdBy.username} />
+										<UserAvatar size='x24' userId={task.createdBy._id} />
 										<Box is='span' mi='x8' withTruncatedText>
 											{task.createdBy.username}
 										</Box>
@@ -431,8 +430,8 @@ const TaskDetailModal = ({ onClose, task, originalTaskProperties, reload, roomId
 							</Box>
 							<Box color='hint' fontSize='x12'>
 								{subtasks.length} subtasks{' '}
-								{subtasks.length > 0 && subtasks.filter((s: ISubtask) => s.completed).length > 0
-									? `(${subtasks.filter((s: ISubtask) => s.completed).length} completed)`
+								{subtasks.length > 0 && subtasks.filter((s: ITask) => s.isComplete).length > 0
+									? `(${subtasks.filter((s: ITask) => s.isComplete).length} completed)`
 									: '(0 completed)'}
 							</Box>
 						</Field>

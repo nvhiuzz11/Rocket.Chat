@@ -2,11 +2,11 @@ import { Box, Divider, Button, Icon, Throbber } from '@rocket.chat/fuselage';
 import type { ReactElement } from 'react';
 
 import SubtaskList from './SubtaskList';
-import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
+import type { ITask } from '../../../../../../server/core-typings/ITask';
 
 type SubtaskPanelProps = {
 	taskId: string;
-	subtasks?: ISubtask[];
+	subtasks?: ITask[];
 	isLoading?: boolean;
 	onClose: () => void;
 	onReload?: () => void;

@@ -1,13 +1,10 @@
-import type { ISubtask } from '../../../../server/core-typings/ISubtask';
+import type { ITask } from '../../../../server/core-typings/ITask';
 import { db } from '../../../../server/database/utils';
-import { SubtaskRaw } from '../../../../server/models/Subtask';
 import { TaskRaw } from '../../../../server/models/Task';
 import { API } from '../api';
 
-const Subtasks = new SubtaskRaw(db);
 const Tasks = new TaskRaw(db);
 
-// 1. Create subtask
 API.v1.addRoute(
 	'subtasks.create',
 	{ authRequired: true },
@@ -19,30 +16,18 @@ API.v1.addRoute(
 				return API.v1.failure('Missing required fields.');
 			}
 
-			// Validate parent task exists
-			const task = await Tasks.findOneById(taskId);
-			if (!task) {
-				return API.v1.notFound('Task not found.');
+			const parentTask = await Tasks.findOneById(taskId);
+			if (!parentTask) {
+				return API.v1.notFound('Parent task not found.');
 			}
 
-			// Get next order number
-			const lastSubtask = await Subtasks.findOne({ taskId }, { sort: { order: -1 } });
-			const order = (lastSubtask?.order || 0) + 1;
-
-			const subtask = await Subtasks.create({
-				title: title as string,
-				taskId: taskId as string,
-				completed: false,
-				order,
-				createdAt: new Date(),
-			});
-
-			// Update task subtask count
-			await Tasks.updateOne(
-				{ _id: taskId },
+			const subtask = await Tasks.create(
+				{ _id: this.userId!, username: this.user.username! },
 				{
-					$addToSet: { subtasks: subtask._id },
-					$inc: { subtaskCount: 1 },
+					title: title as string,
+					projectId: parentTask.projectId,
+					parentTaskId: taskId as string,
+					isComplete: false,
 				},
 			);
 
@@ -51,7 +36,6 @@ API.v1.addRoute(
 	},
 );
 
-// 2. Update completed status
 API.v1.addRoute(
 	'subtasks.updateCompleted',
 	{ authRequired: true },
@@ -63,28 +47,24 @@ API.v1.addRoute(
 				return API.v1.failure('Missing required fields.');
 			}
 
-			const subtask = await Subtasks.findOneById(_id);
-			if (!subtask) {
-				return API.v1.notFound('Subtask not found.');
+			const task = await Tasks.findOneById(_id);
+			if (!task) {
+				return API.v1.notFound('Task not found.');
 			}
 
-			// Only update count if status actually changed
-			if (subtask.completed !== completed) {
-				await Subtasks.updateOne({ _id }, { $set: { completed } });
-				
-				// Update parent task completed count
-				await Tasks.updateOne(
-					{ _id: subtask.taskId }, 
-					{ $inc: { completedSubtaskCount: completed ? 1 : -1 } }
-				);
+			if (!task.parentTaskId) {
+				return API.v1.failure('This is not a subtask.');
 			}
+
+			await Tasks.updateOneById(_id, {
+				isComplete: completed,
+			});
 
 			return API.v1.success();
 		},
 	},
 );
 
-// 3. Update title
 API.v1.addRoute(
 	'subtasks.updateTitle',
 	{ authRequired: true },
@@ -96,19 +76,23 @@ API.v1.addRoute(
 				return API.v1.failure('Missing required fields.');
 			}
 
-			const subtask = await Subtasks.findOneById(_id);
-			if (!subtask) {
-				return API.v1.notFound('Subtask not found.');
+			const task = await Tasks.findOneById(_id);
+			if (!task) {
+				return API.v1.notFound('Task not found.');
 			}
 
-			await Subtasks.updateOne({ _id }, { $set: { title } });
+			// Ensure this is a subtask
+			if (!task.parentTaskId) {
+				return API.v1.failure('This is not a subtask.');
+			}
+
+			await Tasks.updateOneById(_id, { title });
 
 			return API.v1.success();
 		},
 	},
 );
 
-// 4. Delete subtask
 API.v1.addRoute(
 	'subtasks.delete',
 	{ authRequired: true },
@@ -120,31 +104,23 @@ API.v1.addRoute(
 				return API.v1.failure('Missing subtask ID.');
 			}
 
-			const subtask = await Subtasks.findOneById(_id);
-			if (!subtask) {
-				return API.v1.notFound('Subtask not found.');
+			const task = await Tasks.findOneById(_id);
+			if (!task) {
+				return API.v1.notFound('Task not found.');
 			}
 
-			// Update parent task
-			const updateQuery: any = {
-				$pull: { subtasks: _id },
-				$inc: { subtaskCount: -1 },
-			};
-
-			if (subtask.completed) {
-				updateQuery.$inc.completedSubtaskCount = -1;
+			// Ensure this is a subtask
+			if (!task.parentTaskId) {
+				return API.v1.failure('This is not a subtask.');
 			}
 
-			await Tasks.updateOne({ _id: subtask.taskId }, updateQuery);
-
-			await Subtasks.deleteOne({ _id });
+			await Tasks.delete(_id);
 
 			return API.v1.success();
 		},
 	},
 );
 
-// 5. Get subtasks by task
 API.v1.addRoute(
 	'subtasks.getByTask',
 	{ authRequired: true },
@@ -152,29 +128,30 @@ API.v1.addRoute(
 		async get() {
 			const { taskId } = this.queryParams;
 
-			const subtasks = await Subtasks.find({ taskId }, { sort: { order: 1 } }).toArray();
+			const subtasks = await Tasks.findSubtasksByParentId(taskId as string);
 
 			return API.v1.success({ subtasks });
 		},
 	},
 );
 
-// 6. Reorder subtasks
 API.v1.addRoute(
-	'subtasks.reorder',
+	'subtasks.move',
 	{ authRequired: true },
 	{
 		async post() {
-			const { subtaskIds } = this.bodyParams;
+			const { taskId, newParentTaskId } = this.bodyParams;
 
-			if (!subtaskIds || !Array.isArray(subtaskIds)) {
-				return API.v1.failure('Invalid subtask IDs.');
+			if (!taskId) {
+				return API.v1.failure('Missing task ID.');
 			}
 
-			// Update order for each subtask
-			const updates = subtaskIds.map((id, index) => Subtasks.updateOne({ _id: id }, { $set: { order: index + 1 } }));
+			const task = await Tasks.findOneById(taskId);
+			if (!task) {
+				return API.v1.notFound('Task not found.');
+			}
 
-			await Promise.all(updates);
+			await Tasks.moveTask(taskId, newParentTaskId);
 
 			return API.v1.success();
 		},
@@ -186,7 +163,7 @@ declare module '@rocket.chat/rest-typings' {
 	interface Endpoints {
 		'/v1/subtasks.create': {
 			POST: (params: { taskId: string; title: string }) => {
-				subtask: ISubtask;
+				subtask: ITask;
 			};
 		};
 		'/v1/subtasks.updateCompleted': {
@@ -200,11 +177,11 @@ declare module '@rocket.chat/rest-typings' {
 		};
 		'/v1/subtasks.getByTask': {
 			GET: (params: { taskId: string }) => {
-				subtasks: ISubtask[];
+				subtasks: ITask[];
 			};
 		};
-		'/v1/subtasks.reorder': {
-			POST: (params: { subtaskIds: string[] }) => void;
+		'/v1/subtasks.move': {
+			POST: (params: { taskId: string; newParentTaskId?: string }) => void;
 		};
 	}
 }

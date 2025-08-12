@@ -3,16 +3,16 @@ import { useEndpoint, useToastMessageDispatch } from '@rocket.chat/ui-contexts';
 import { useState, useEffect, useCallback } from 'react';
 import type { ReactElement } from 'react';
 
-import type { ISubtask } from '../../../../../../server/core-typings/ISubtask';
+import type { ITask } from '../../../../../../server/core-typings/ITask';
 
 type SubtaskListProps = {
 	taskId: string;
-	subtasks?: ISubtask[];
+	subtasks?: ITask[];
 	onReload?: () => void;
 };
 
 const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: SubtaskListProps): ReactElement => {
-	const [subtasks, setSubtasks] = useState<ISubtask[]>(initialSubtasks);
+	const [subtasks, setSubtasks] = useState<ITask[]>(initialSubtasks);
 	const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [editingTitle, setEditingTitle] = useState('');
@@ -27,7 +27,6 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 	const updateTitleEndpoint = useEndpoint('POST', '/v1/subtasks.updateTitle');
 	const deleteSubtaskEndpoint = useEndpoint('POST', '/v1/subtasks.delete');
 	const getSubtasksEndpoint = useEndpoint('GET', '/v1/subtasks.getByTask');
-	const reorderSubtasksEndpoint = useEndpoint('POST', '/v1/subtasks.reorder');
 
 	useEffect(() => {
 		setSubtasks(initialSubtasks);
@@ -40,7 +39,8 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 				...s,
 				createdAt: new Date(s.createdAt),
 				_updatedAt: new Date(s._updatedAt),
-			}));
+				dueDate: s.dueDate ? new Date(s.dueDate) : undefined,
+			})) as ITask[];
 			setSubtasks(parsedSubtasks);
 		} catch (error) {
 			console.error('Failed to load subtasks:', error);
@@ -57,7 +57,8 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 				...subtask,
 				createdAt: new Date(subtask.createdAt),
 				_updatedAt: new Date(subtask._updatedAt),
-			};
+				dueDate: subtask.dueDate ? new Date(subtask.dueDate) : undefined,
+			} as ITask;
 			setSubtasks([...subtasks, parsedSubtask]);
 			setNewSubtaskTitle('');
 			onReload?.();
@@ -68,11 +69,12 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 		}
 	};
 
-	const handleToggleComplete = async (subtask: ISubtask) => {
+	const handleToggleComplete = async (subtask: ITask) => {
 		setLoadingStates({ ...loadingStates, [subtask._id]: true });
 		try {
-			await updateCompletedEndpoint({ _id: subtask._id, completed: !subtask.completed });
-			setSubtasks(subtasks.map((s) => (s._id === subtask._id ? { ...s, completed: !s.completed } : s)));
+			const isCompleted = subtask.isComplete || false;
+			await updateCompletedEndpoint({ _id: subtask._id, completed: !isCompleted });
+			setSubtasks(subtasks.map((s) => (s._id === subtask._id ? { ...s, isComplete: !isCompleted } : s)));
 			onReload?.();
 		} catch (error) {
 			dispatchToastMessage({ type: 'error', message: 'Failed to update subtask' });
@@ -81,7 +83,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 		}
 	};
 
-	const handleStartEdit = (subtask: ISubtask) => {
+	const handleStartEdit = (subtask: ITask) => {
 		setEditingId(subtask._id);
 		setEditingTitle(subtask.title);
 	};
@@ -145,19 +147,9 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 		setSubtasks(reorderedSubtasks);
 		setDraggedTag(null);
 		setHoveredTag(null);
-
-		try {
-			await reorderSubtasksEndpoint({
-				subtaskIds: reorderedSubtasks.map((s) => s._id),
-			});
-		} catch (error) {
-			dispatchToastMessage({ type: 'error', message: 'Failed to reorder subtasks' });
-			// Reload original order on error
-			loadSubtasks();
-		}
 	};
 
-	const completedCount = subtasks.filter((s) => s.completed).length;
+	const completedCount = subtasks.filter((s) => s.isComplete).length;
 	const totalCount = subtasks.length;
 
 	return (
@@ -168,7 +160,15 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 					Subtasks
 				</Box>
 				{totalCount > 0 && (
-					<Box fontSize='c2' color='font-secondary-info' bg='surface-neutral' borderRadius='x2' px='x6' py='x2' fontWeight='500'>
+					<Box
+						fontSize='c2'
+						color='font-secondary-info'
+						bg='surface-neutral'
+						borderRadius='x2'
+						paddingInline='x6'
+						paddingBlock='x2'
+						fontWeight='500'
+					>
 						{completedCount}/{totalCount}
 					</Box>
 				)}
@@ -192,7 +192,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 				<Box width='x4' />
 				<TextInput
 					value={newSubtaskTitle}
-					onChange={(e) => setNewSubtaskTitle(e.currentTarget.value)}
+					onChange={(e) => setNewSubtaskTitle((e.target as HTMLInputElement).value)}
 					placeholder='Add a subtask and press Enter...'
 					onKeyDown={(e) => {
 						if (e.key === 'Enter') handleCreateSubtask();
@@ -220,7 +220,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 						p='x8'
 						mb='x4'
 						borderRadius='x2'
-						bg={subtask.completed ? 'surface-light' : 'surface-light'}
+						bg={subtask.isComplete ? 'surface-light' : 'surface-light'}
 						draggable
 						onDragStart={(e) => handleDragStart(e, index)}
 						onDragOver={handleDragOver}
@@ -252,7 +252,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 						<Box display='flex' alignItems='center' flexGrow={1}>
 							{/* Checkbox */}
 							<CheckBox
-								checked={subtask.completed}
+								checked={subtask.isComplete || false}
 								onChange={() => handleToggleComplete(subtask)}
 								disabled={loadingStates[subtask._id]}
 								marginInlineEnd='x8'
@@ -263,7 +263,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 								<Box display='flex' alignItems='center' flexGrow={1} marginInlineStart='x8'>
 									<TextInput
 										value={editingTitle}
-										onChange={(e) => setEditingTitle(e.currentTarget.value)}
+										onChange={(e) => setEditingTitle((e.target as HTMLInputElement).value)}
 										onKeyDown={(e) => {
 											if (e.key === 'Enter') handleSaveEdit();
 											if (e.key === 'Escape') handleCancelEdit();
@@ -280,8 +280,8 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 									maxWidth='300px'
 									width='100%'
 									style={{
-										textDecoration: subtask.completed ? 'line-through' : 'none',
-										opacity: subtask.completed ? 0.6 : 1,
+										textDecoration: subtask.isComplete ? 'line-through' : 'none',
+										opacity: subtask.isComplete ? 0.6 : 1,
 										cursor: 'text',
 										wordBreak: 'break-word',
 										whiteSpace: 'pre-wrap',
@@ -326,7 +326,7 @@ const SubtaskList = ({ taskId, subtasks: initialSubtasks = [], onReload }: Subta
 
 			{/* Empty state */}
 			{subtasks.length === 0 && (
-				<Box display='flex' flexDirection='column' alignItems='center' py='x32' color='font-secondary-info' textAlign='center'>
+				<Box display='flex' flexDirection='column' alignItems='center' paddingBlock='x32' color='font-secondary-info' textAlign='center'>
 					<Icon name='list' size='x32' color='font-secondary-info' mb='x8' />
 					<Box fontSize='p2' fontWeight='500' mb='x4'>
 						No subtasks yet
