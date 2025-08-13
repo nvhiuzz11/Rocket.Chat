@@ -14,16 +14,16 @@ API.v1.addRoute(
 	{ authRequired: true },
 	{
 		async post() {
-			const { workspaceId, title, description, customFields = [] } = this.bodyParams;
+			const { moduleId, title, description, customFields = [] } = this.bodyParams;
 
-			if (!workspaceId || !title) {
-				return API.v1.failure('Missing required fields: workspaceId and title are required');
+			if (!moduleId || !title) {
+				return API.v1.failure('Missing required fields: moduleId and title are required');
 			}
 
-			// Verify workspace exists
-			const workspace = await Modules.findOneById(workspaceId);
+			// Verify module exists
+			const workspace = await Modules.findOneById(moduleId);
 			if (!workspace) {
-				return API.v1.notFound('Workspace/Module not found');
+				return API.v1.notFound('Module not found');
 			}
 
 			// Validate custom fields against module field definitions
@@ -54,7 +54,7 @@ API.v1.addRoute(
 			}
 
 			const document = await Documents.create({
-				workspaceId,
+				moduleId,
 				title,
 				description,
 				customFields: validatedFields,
@@ -65,17 +65,17 @@ API.v1.addRoute(
 	},
 );
 
-// Get documents by workspace
+// Get documents by module
 API.v1.addRoute(
-	'documents.getByWorkspace',
+	'documents.getByModule',
 	{ authRequired: true },
 	{
 		async get() {
-			const { workspaceId, sort } = this.queryParams;
+			const { moduleId, sort } = this.queryParams;
 			const { offset, count } = await getPaginationItems(this.queryParams);
 
-			if (!workspaceId) {
-				return API.v1.failure('workspaceId is required');
+			if (!moduleId) {
+				return API.v1.failure('moduleId is required');
 			}
 
 			// Parse sort parameter
@@ -88,7 +88,7 @@ API.v1.addRoute(
 				}
 			}
 
-			const result = await Documents.findByWorkspaceIdPaginated(workspaceId as string, offset, count, sortObj);
+			const result = await Documents.findByModuleIdPaginated(moduleId as string, offset, count, sortObj);
 
 			return API.v1.success({
 				documents: result.documents,
@@ -167,10 +167,10 @@ API.v1.addRoute(
 				return API.v1.notFound('Document not found');
 			}
 
-			// Verify workspace and validate fields
-			const workspace = await Modules.findOneById(document.workspaceId);
+			// Verify module and validate fields
+			const workspace = await Modules.findOneById(document.moduleId);
 			if (!workspace) {
-				return API.v1.notFound('Workspace/Module not found');
+				return API.v1.notFound('Module not found');
 			}
 
 			const validatedFields: ICustomFieldValue[] = [];
@@ -199,14 +199,14 @@ API.v1.addRoute(
 	{ authRequired: true },
 	{
 		async get() {
-			const { workspaceId, query } = this.queryParams;
+			const { moduleId, query } = this.queryParams;
 			const { offset, count } = await getPaginationItems(this.queryParams);
 
-			if (!workspaceId || !query) {
-				return API.v1.failure('workspaceId and query are required');
+			if (!moduleId || !query) {
+				return API.v1.failure('moduleId and query are required');
 			}
 
-			const documents = await Documents.searchDocuments(workspaceId as string, query as string, {
+			const documents = await Documents.searchDocuments(moduleId as string, query as string, {
 				skip: offset,
 				limit: count,
 			});
@@ -222,14 +222,14 @@ API.v1.addRoute(
 	{ authRequired: true },
 	{
 		async post() {
-			const { workspaceId, filters } = this.bodyParams;
+			const { moduleId, filters } = this.bodyParams;
 			const { offset, count } = await getPaginationItems(this.queryParams);
 
-			if (!workspaceId || !filters || !Array.isArray(filters)) {
-				return API.v1.failure('workspaceId and filters array are required');
+			if (!moduleId || !filters || !Array.isArray(filters)) {
+				return API.v1.failure('moduleId and filters array are required');
 			}
 
-			const documents = await Documents.findByMultipleCustomFields(workspaceId, filters);
+			const documents = await Documents.findByMultipleCustomFields(moduleId, filters);
 
 			// Apply pagination manually
 			const paginatedDocs = documents.slice(offset, offset + count);
@@ -261,7 +261,7 @@ API.v1.addRoute(
 				return API.v1.notFound('Document not found');
 			}
 
-			await Documents.reorderDocuments(document.workspaceId, documentId, newOrder);
+			await Documents.reorderDocuments(document.moduleId, documentId, newOrder);
 
 			return API.v1.success();
 		},
@@ -298,13 +298,13 @@ API.v1.addRoute(
 	{ authRequired: true },
 	{
 		async get() {
-			const { workspaceId, fieldId } = this.queryParams;
+			const { moduleId, fieldId } = this.queryParams;
 
-			if (!workspaceId || !fieldId) {
-				return API.v1.failure('workspaceId and fieldId are required');
+			if (!moduleId || !fieldId) {
+				return API.v1.failure('moduleId and fieldId are required');
 			}
 
-			const distribution = await Documents.getFieldValueDistribution(workspaceId as string, fieldId as string);
+			const distribution = await Documents.getFieldValueDistribution(moduleId as string, fieldId as string);
 
 			return API.v1.success({ distribution });
 		},
@@ -317,16 +317,16 @@ API.v1.addRoute(
 	{ authRequired: true },
 	{
 		async post() {
-			const { workspaceId, documents } = this.bodyParams;
+			const { moduleId, documents } = this.bodyParams;
 
-			if (!workspaceId || !documents || !Array.isArray(documents)) {
-				return API.v1.failure('workspaceId and documents array are required');
+			if (!moduleId || !documents || !Array.isArray(documents)) {
+				return API.v1.failure('moduleId and documents array are required');
 			}
 
-			// Verify workspace exists
-			const workspace = await Modules.findOneById(workspaceId);
+			// Verify module exists
+			const workspace = await Modules.findOneById(moduleId);
 			if (!workspace) {
-				return API.v1.notFound('Workspace/Module not found');
+				return API.v1.notFound('Module not found');
 			}
 
 			const createdDocuments: IDocument[] = [];
@@ -342,7 +342,7 @@ API.v1.addRoute(
 
 					// eslint-disable-next-line no-await-in-loop
 					const document = await Documents.create({
-						workspaceId,
+						moduleId,
 						title: doc.title,
 						description: doc.description,
 						customFields: doc.customFields || [],
@@ -368,12 +368,12 @@ declare module '@rocket.chat/rest-typings' {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Endpoints {
 		'/v1/documents.create': {
-			POST: (params: { workspaceId: string; title: string; description?: string; customFields?: ICustomFieldValue[]; order?: number }) => {
+			POST: (params: { moduleId: string; title: string; description?: string; customFields?: ICustomFieldValue[]; order?: number }) => {
 				document: IDocument;
 			};
 		};
-		'/v1/documents.getByWorkspace': {
-			GET: (params: { workspaceId: string; offset?: number; count?: number; sort?: string }) => {
+		'/v1/documents.getByModule': {
+			GET: (params: { moduleId: string; offset?: number; count?: number; sort?: string }) => {
 				documents: IDocument[];
 				count: number;
 				offset: number;
@@ -392,13 +392,13 @@ declare module '@rocket.chat/rest-typings' {
 			POST: (params: { documentId: string; fields: ICustomFieldValue[] }) => void;
 		};
 		'/v1/documents.search': {
-			GET: (params: { workspaceId: string; query: string; offset?: number; count?: number }) => {
+			GET: (params: { moduleId: string; query: string; offset?: number; count?: number }) => {
 				documents: IDocument[];
 			};
 		};
 		'/v1/documents.filterByFields': {
 			POST: (params: {
-				workspaceId: string;
+				moduleId: string;
 				filters: Array<{
 					fieldId: string;
 					value: any;
@@ -418,13 +418,13 @@ declare module '@rocket.chat/rest-typings' {
 			POST: (params: { documentId: string }) => void;
 		};
 		'/v1/documents.getFieldDistribution': {
-			GET: (params: { workspaceId: string; fieldId: string }) => {
+			GET: (params: { moduleId: string; fieldId: string }) => {
 				distribution: Array<{ value: any; count: number }>;
 			};
 		};
 		'/v1/documents.bulkCreate': {
 			POST: (params: {
-				workspaceId: string;
+				moduleId: string;
 				documents: Array<{
 					title: string;
 					description?: string;

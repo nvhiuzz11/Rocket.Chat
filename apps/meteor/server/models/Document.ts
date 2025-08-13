@@ -11,20 +11,20 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 
 	protected modelIndexes(): IndexDescription[] {
 		return [
-			{ key: { workspaceId: 1 } },
-			{ key: { workspaceId: 1, order: 1 } },
+			{ key: { moduleId: 1 } },
+			{ key: { moduleId: 1, order: 1 } },
 			{ key: { title: 'text', description: 'text' } },
 			{ key: { createdAt: -1 } },
 			{ key: { 'customFields.fieldId': 1 } },
-			{ key: { 'workspaceId': 1, 'customFields.fieldId': 1, 'customFields.value': 1 } },
+			{ key: { 'moduleId': 1, 'customFields.fieldId': 1, 'customFields.value': 1 } },
 		];
 	}
 
 	async create(documentData: Omit<IDocument, '_id' | 'createdAt' | '_updatedAt' | 'order'>): Promise<IDocument> {
 		const now = new Date();
 
-		// Get the next order number for this workspace
-		const lastDoc = await this.findOne({ workspaceId: documentData.workspaceId }, { sort: { order: -1 } });
+		// Get the next order number for this module
+		const lastDoc = await this.findOne({ moduleId: documentData.moduleId }, { sort: { order: -1 } });
 		const nextOrder = lastDoc ? lastDoc.order + 1 : 1;
 
 		const { insertedId } = await this.insertOne({
@@ -41,18 +41,18 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 		return document;
 	}
 
-	async findByWorkspaceId(workspaceId: string, options?: FindOptions<IDocument>): Promise<IDocument[]> {
-		return this.find({ workspaceId }, options).toArray();
+	async findByModuleId(moduleId: string, options?: FindOptions<IDocument>): Promise<IDocument[]> {
+		return this.find({ moduleId }, options).toArray();
 	}
 
-	async findByWorkspaceIdPaginated(
-		workspaceId: string,
+	async findByModuleIdPaginated(
+		moduleId: string,
 		offset: number,
 		limit: number,
 		sort?: Record<string, 1 | -1>,
 	): Promise<{ documents: IDocument[]; total: number }> {
 		const documents = await this.find(
-			{ workspaceId },
+			{ moduleId },
 			{
 				skip: offset,
 				limit,
@@ -60,25 +60,25 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 			},
 		).toArray();
 
-		const total = await this.col.countDocuments({ workspaceId });
+		const total = await this.col.countDocuments({ moduleId });
 
 		return { documents, total };
 	}
 
-	async searchDocuments(workspaceId: string, searchText: string, options?: FindOptions<IDocument>): Promise<IDocument[]> {
+	async searchDocuments(moduleId: string, searchText: string, options?: FindOptions<IDocument>): Promise<IDocument[]> {
 		return this.find(
 			{
-				workspaceId,
+				moduleId,
 				$text: { $search: searchText },
 			},
 			options,
 		).toArray();
 	}
 
-	async findByCustomField(workspaceId: string, fieldId: string, value: any, options?: FindOptions<IDocument>): Promise<IDocument[]> {
+	async findByCustomField(moduleId: string, fieldId: string, value: any, options?: FindOptions<IDocument>): Promise<IDocument[]> {
 		return this.find(
 			{
-				workspaceId,
+				moduleId,
 				customFields: {
 					$elemMatch: {
 						fieldId,
@@ -91,10 +91,10 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 	}
 
 	async findByMultipleCustomFields(
-		workspaceId: string,
+		moduleId: string,
 		filters: Array<{ fieldId: string; value: any; operator?: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' }>,
 	): Promise<IDocument[]> {
-		const query: Filter<IDocument> = { workspaceId };
+		const query: Filter<IDocument> = { moduleId };
 		const andConditions: any[] = [];
 
 		for (const filter of filters) {
@@ -137,7 +137,7 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 		return this.find(query).toArray();
 	}
 
-	async updateDocument(documentId: string, updates: Partial<Omit<IDocument, '_id' | 'createdAt' | 'workspaceId'>>): Promise<void> {
+	async updateDocument(documentId: string, updates: Partial<Omit<IDocument, '_id' | 'createdAt' | 'moduleId'>>): Promise<void> {
 		await this.updateOne(
 			{ _id: documentId },
 			{
@@ -203,9 +203,9 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 		);
 	}
 
-	async reorderDocuments(workspaceId: string, documentId: string, newOrder: number): Promise<void> {
+	async reorderDocuments(moduleId: string, documentId: string, newOrder: number): Promise<void> {
 		const document = await this.findOne({ _id: documentId });
-		if (!document || document.workspaceId !== workspaceId) {
+		if (!document || document.moduleId !== moduleId) {
 			throw new Meteor.Error('error-document-not-found', 'Document not found');
 		}
 
@@ -220,7 +220,7 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 			// Moving down
 			await this.updateMany(
 				{
-					workspaceId,
+					moduleId,
 					order: { $gt: oldOrder, $lte: newOrder },
 				},
 				{
@@ -231,7 +231,7 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 			// Moving up
 			await this.updateMany(
 				{
-					workspaceId,
+					moduleId,
 					order: { $gte: newOrder, $lt: oldOrder },
 				},
 				{
@@ -261,7 +261,7 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 		// Update orders for documents after the deleted one
 		await this.updateMany(
 			{
-				workspaceId: document.workspaceId,
+				moduleId: document.moduleId,
 				order: { $gt: document.order },
 			},
 			{
@@ -272,18 +272,18 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 		await this.deleteOne({ _id: documentId });
 	}
 
-	async deleteDocumentsByWorkspace(workspaceId: string): Promise<void> {
-		await this.deleteMany({ workspaceId });
+	async deleteDocumentsByModule(moduleId: string): Promise<void> {
+		await this.deleteMany({ moduleId });
 	}
 
-	async countDocumentsByWorkspace(workspaceId: string): Promise<number> {
-		return this.col.countDocuments({ workspaceId });
+	async countDocumentsByModule(moduleId: string): Promise<number> {
+		return this.col.countDocuments({ moduleId });
 	}
 
-	async getFieldValueDistribution(workspaceId: string, fieldId: string): Promise<Array<{ value: any; count: number }>> {
+	async getFieldValueDistribution(moduleId: string, fieldId: string): Promise<Array<{ value: any; count: number }>> {
 		const result = await this.col
 			.aggregate([
-				{ $match: { workspaceId } },
+				{ $match: { moduleId } },
 				{ $unwind: '$customFields' },
 				{ $match: { 'customFields.fieldId': fieldId } },
 				{ $group: { _id: '$customFields.value', count: { $sum: 1 } } },

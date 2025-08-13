@@ -3,7 +3,7 @@ import type { IRocketChatRecord } from '@rocket.chat/core-typings';
 import type { IModule, IFieldDefinition } from './IModule';
 
 export interface IDocument extends IRocketChatRecord {
-	workspaceId: IModule['_id'];
+	moduleId: IModule['_id'];
 	title: string;
 	description?: string;
 	order: number;
