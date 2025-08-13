@@ -1,9 +1,8 @@
-import type { IUser } from '@rocket.chat/core-typings';
 import { BaseRaw } from '@rocket.chat/models';
 import { Meteor } from 'meteor/meteor';
-import type { Db, IndexDescription, FindOptions } from 'mongodb';
+import type { Db, IndexDescription } from 'mongodb';
 
-import type { IModule, IFieldDefinition, ModuleType } from '../core-typings/IModule';
+import type { IModule, IFieldDefinition } from '../core-typings/IModule';
 
 export class ModuleRaw extends BaseRaw<IModule> {
 	constructor(db: Db) {
@@ -11,18 +10,16 @@ export class ModuleRaw extends BaseRaw<IModule> {
 	}
 
 	protected modelIndexes(): IndexDescription[] {
-		return [
-			{ key: { roomId: 1 } },
-			{ key: { type: 1 } },
-			{ key: { teamId: 1 } },
-			{ key: { 'createdBy._id': 1 } },
-			{ key: { roomId: 1, type: 1 } },
-		];
+		return [{ key: { name: 1 } }, { key: { createdAt: -1 } }, { key: { 'createdBy._id': 1 } }];
 	}
 
 	async create(
-		creator: Pick<IUser, '_id' | 'username' | 'name'>,
-		moduleData: Omit<IModule, '_id' | 'createdAt' | '_updatedAt' | 'createdBy'>,
+		creator: { _id: string; username: string; name?: string },
+		moduleData: {
+			name: string;
+			description?: string;
+			fieldDefinitions: IFieldDefinition[];
+		},
 	): Promise<IModule> {
 		const now = new Date();
 
@@ -30,7 +27,6 @@ export class ModuleRaw extends BaseRaw<IModule> {
 			...moduleData,
 			createdAt: now,
 			createdBy: creator,
-			_updatedAt: now,
 		});
 
 		const module = await this.findOne({ _id: insertedId });
@@ -40,89 +36,47 @@ export class ModuleRaw extends BaseRaw<IModule> {
 		return module;
 	}
 
-	async findByRoomId(roomId: string, options?: FindOptions<IModule>): Promise<IModule[]> {
-		return this.find({ roomId }, options).toArray();
+	async findById(moduleId: string): Promise<IModule | null> {
+		return this.findOne({ _id: moduleId });
 	}
 
-	async findByType(type: ModuleType, options?: FindOptions<IModule>): Promise<IModule[]> {
-		return this.find({ type }, options).toArray();
+	async findByName(name: string): Promise<IModule | null> {
+		return this.findOne({ name });
 	}
 
-	async findByRoomIdAndType(roomId: string, type: ModuleType): Promise<IModule | null> {
-		return this.findOne({ roomId, type });
+	async findAll(options?: { skip?: number; limit?: number }): Promise<IModule[]> {
+		const cursor = this.find(
+			{},
+			{
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: { createdAt: -1 },
+			},
+		);
+		return cursor.toArray();
+	}
+
+	async updateById(moduleId: string, updateData: Partial<Omit<IModule, '_id' | 'createdAt' | 'createdBy'>>): Promise<void> {
+		await this.updateOne({ _id: moduleId }, { $set: updateData });
 	}
 
 	async updateFieldDefinitions(moduleId: string, fieldDefinitions: IFieldDefinition[]): Promise<void> {
-		await this.updateOne(
-			{ _id: moduleId },
-			{
-				$set: {
-					fieldDefinitions,
-					_updatedAt: new Date(),
-				},
-			},
-		);
+		await this.updateOne({ _id: moduleId }, { $set: { fieldDefinitions } });
 	}
 
-	async addFieldDefinition(moduleId: string, field: IFieldDefinition): Promise<void> {
-		await this.updateOne(
-			{ _id: moduleId },
-			{
-				$push: { fieldDefinitions: field },
-				$set: { _updatedAt: new Date() },
-			},
-		);
-	}
-
-	async updateFieldDefinition(moduleId: string, fieldId: string, updates: Partial<IFieldDefinition>): Promise<void> {
-		await this.updateOne(
-			{ '_id': moduleId, 'fieldDefinitions._id': fieldId },
-			{
-				$set: {
-					...Object.entries(updates).reduce(
-						(acc, [key, value]) => {
-							acc[`fieldDefinitions.$.${key}`] = value;
-							return acc;
-						},
-						{} as Record<string, any>,
-					),
-					_updatedAt: new Date(),
-				},
-			},
-		);
+	async addFieldDefinition(moduleId: string, fieldDefinition: IFieldDefinition): Promise<void> {
+		await this.updateOne({ _id: moduleId }, { $push: { fieldDefinitions: fieldDefinition } });
 	}
 
 	async removeFieldDefinition(moduleId: string, fieldId: string): Promise<void> {
-		await this.updateOne(
-			{ _id: moduleId },
-			{
-				$pull: { fieldDefinitions: { _id: fieldId } },
-				$set: { _updatedAt: new Date() },
-			},
-		);
+		await this.updateOne({ _id: moduleId }, { $pull: { fieldDefinitions: { _id: fieldId } } });
 	}
 
-	async updateModule(moduleId: string, updates: Partial<Omit<IModule, '_id' | 'createdAt' | 'createdBy'>>): Promise<void> {
-		await this.updateOne(
-			{ _id: moduleId },
-			{
-				$set: {
-					...updates,
-					_updatedAt: new Date(),
-				},
-			},
-		);
-	}
-
-	async deleteModule(moduleId: string): Promise<void> {
+	async deleteById(moduleId: string): Promise<void> {
 		await this.deleteOne({ _id: moduleId });
 	}
 
-	async countModulesByRoom(roomId: string): Promise<number> {
-		return this.col.countDocuments({ roomId });
-	}
-
-	async findModulesByTeam(teamId: string): Promise<IModule[]> {
-		return this.find({ teamId }).toArray();
+	async countByCreator(creatorId: string): Promise<number> {
+		return this.countDocuments({ 'createdBy._id': creatorId });
 	}
 }

@@ -1,6 +1,6 @@
 import { BaseRaw } from '@rocket.chat/models';
 import { Meteor } from 'meteor/meteor';
-import type { Db, IndexDescription, FindOptions, Filter } from 'mongodb';
+import type { Db, IndexDescription } from 'mongodb';
 
 import type { IDocument, ICustomFieldValue } from '../core-typings/IDocument';
 
@@ -12,26 +12,41 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 	protected modelIndexes(): IndexDescription[] {
 		return [
 			{ key: { moduleId: 1 } },
-			{ key: { moduleId: 1, order: 1 } },
-			{ key: { title: 'text', description: 'text' } },
+			{ key: { stageId: 1 } },
+			{ key: { moduleId: 1, stageId: 1 } },
+			{ key: { parentId: 1 } },
 			{ key: { createdAt: -1 } },
-			{ key: { 'customFields.fieldId': 1 } },
-			{ key: { 'moduleId': 1, 'customFields.fieldId': 1, 'customFields.value': 1 } },
+			{ key: { 'createdBy._id': 1 } },
+			{ key: { name: 'text' } },
+			{ key: { moduleId: 1, stageId: 1, order: 1 } },
 		];
 	}
 
-	async create(documentData: Omit<IDocument, '_id' | 'createdAt' | '_updatedAt' | 'order'>): Promise<IDocument> {
+	async create(
+		creator: { _id: string; username: string; name?: string },
+		documentData: {
+			name: string;
+			description?: string;
+			moduleId: string;
+			stageId: string;
+			parentId?: string;
+			customFields: ICustomFieldValue[];
+			order?: number;
+		},
+	): Promise<IDocument> {
 		const now = new Date();
 
-		// Get the next order number for this module
-		const lastDoc = await this.findOne({ moduleId: documentData.moduleId }, { sort: { order: -1 } });
-		const nextOrder = lastDoc ? lastDoc.order + 1 : 1;
+		const existingDocCount = await this.countDocuments({
+			moduleId: documentData.moduleId,
+			stageId: documentData.stageId,
+		});
+		const order = documentData.order ?? existingDocCount;
 
 		const { insertedId } = await this.insertOne({
 			...documentData,
-			order: nextOrder,
+			order,
 			createdAt: now,
-			_updatedAt: now,
+			createdBy: creator,
 		});
 
 		const document = await this.findOne({ _id: insertedId });
@@ -41,42 +56,169 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 		return document;
 	}
 
-	async findByModuleId(moduleId: string, options?: FindOptions<IDocument>): Promise<IDocument[]> {
-		return this.find({ moduleId }, options).toArray();
+	async findById(documentId: string): Promise<IDocument | null> {
+		return this.findOne({ _id: documentId });
 	}
 
-	async findByModuleIdPaginated(
-		moduleId: string,
-		offset: number,
-		limit: number,
-		sort?: Record<string, 1 | -1>,
-	): Promise<{ documents: IDocument[]; total: number }> {
-		const documents = await this.find(
+	async findByModuleId(moduleId: string, options?: { skip?: number; limit?: number; sort?: any }): Promise<IDocument[]> {
+		const cursor = this.find(
 			{ moduleId },
 			{
-				skip: offset,
-				limit,
-				sort: sort || { order: 1 },
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: options?.sort || { createdAt: -1 },
 			},
-		).toArray();
-
-		const total = await this.col.countDocuments({ moduleId });
-
-		return { documents, total };
+		);
+		return cursor.toArray();
 	}
 
-	async searchDocuments(moduleId: string, searchText: string, options?: FindOptions<IDocument>): Promise<IDocument[]> {
-		return this.find(
+	async findByStageId(stageId: string, options?: { skip?: number; limit?: number }): Promise<IDocument[]> {
+		const cursor = this.find(
+			{ stageId },
+			{
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: { order: 1 },
+			},
+		);
+		return cursor.toArray();
+	}
+
+	async findByModuleAndStage(moduleId: string, stageId: string, options?: { skip?: number; limit?: number }): Promise<IDocument[]> {
+		const cursor = this.find(
+			{ moduleId, stageId },
+			{
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: { order: 1 },
+			},
+		);
+		return cursor.toArray();
+	}
+
+	async findByParentId(parentId: string): Promise<IDocument[]> {
+		const cursor = this.find({ parentId }, { sort: { order: 1 } });
+		return cursor.toArray();
+	}
+
+	async searchByName(moduleId: string, searchTerm: string, options?: { skip?: number; limit?: number }): Promise<IDocument[]> {
+		const cursor = this.find(
 			{
 				moduleId,
-				$text: { $search: searchText },
+				$text: { $search: searchTerm },
 			},
-			options,
-		).toArray();
+			{
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: { score: { $meta: 'textScore' } },
+			},
+		);
+		return cursor.toArray();
 	}
 
-	async findByCustomField(moduleId: string, fieldId: string, value: any, options?: FindOptions<IDocument>): Promise<IDocument[]> {
-		return this.find(
+	async updateById(documentId: string, updateData: Partial<Omit<IDocument, '_id' | 'createdAt' | 'createdBy'>>): Promise<void> {
+		await this.updateOne({ _id: documentId }, { $set: updateData });
+	}
+
+	async updateCustomFields(documentId: string, customFields: ICustomFieldValue[]): Promise<void> {
+		await this.updateOne({ _id: documentId }, { $set: { customFields } });
+	}
+
+	async updateCustomField(documentId: string, fieldId: string, value: any): Promise<void> {
+		await this.updateOne(
+			{ _id: documentId },
+			{
+				$set: {
+					'customFields.$[field].value': value,
+				},
+			},
+			{
+				arrayFilters: [{ 'field.fieldId': fieldId }],
+			},
+		);
+	}
+
+	async moveToStage(documentId: string, newStageId: string): Promise<void> {
+		const document = await this.findById(documentId);
+		if (!document) {
+			throw new Meteor.Error('error-document-not-found', 'Document not found');
+		}
+
+		const oldStageId = document.stageId;
+		const moduleId = document.moduleId;
+
+		await this.updateMany({ moduleId, stageId: oldStageId, order: { $gt: document.order } }, { $inc: { order: -1 } });
+
+		const newOrder = await this.countDocuments({ moduleId, stageId: newStageId });
+
+		await this.updateOne({ _id: documentId }, { $set: { stageId: newStageId, order: newOrder } });
+	}
+
+	async updateOrder(documentId: string, newOrder: number): Promise<void> {
+		const document = await this.findById(documentId);
+		if (!document) {
+			throw new Meteor.Error('error-document-not-found', 'Document not found');
+		}
+
+		const oldOrder = document.order;
+		const { moduleId, stageId } = document;
+
+		if (oldOrder === newOrder) {
+			return;
+		}
+
+		if (oldOrder < newOrder) {
+			await this.updateMany({ moduleId, stageId, order: { $gt: oldOrder, $lte: newOrder } }, { $inc: { order: -1 } });
+		} else {
+			await this.updateMany({ moduleId, stageId, order: { $gte: newOrder, $lt: oldOrder } }, { $inc: { order: 1 } });
+		}
+
+		await this.updateOne({ _id: documentId }, { $set: { order: newOrder } });
+	}
+
+	async deleteById(documentId: string): Promise<void> {
+		const document = await this.findById(documentId);
+		if (!document) {
+			return;
+		}
+
+		await this.deleteOne({ _id: documentId });
+
+		await this.updateMany(
+			{ moduleId: document.moduleId, stageId: document.stageId, order: { $gt: document.order } },
+			{ $inc: { order: -1 } },
+		);
+
+		await this.deleteMany({ parentId: documentId });
+	}
+
+	async deleteByModuleId(moduleId: string): Promise<void> {
+		await this.deleteMany({ moduleId });
+	}
+
+	async deleteByStageId(stageId: string): Promise<void> {
+		await this.deleteMany({ stageId });
+	}
+
+	async countByModuleId(moduleId: string): Promise<number> {
+		return this.countDocuments({ moduleId });
+	}
+
+	async countByStageId(stageId: string): Promise<number> {
+		return this.countDocuments({ stageId });
+	}
+
+	async countByCreator(creatorId: string): Promise<number> {
+		return this.countDocuments({ 'createdBy._id': creatorId });
+	}
+
+	async findByCustomFieldValue(
+		moduleId: string,
+		fieldId: string,
+		value: any,
+		options?: { skip?: number; limit?: number },
+	): Promise<IDocument[]> {
+		const cursor = this.find(
 			{
 				moduleId,
 				customFields: {
@@ -86,211 +228,12 @@ export class DocumentRaw extends BaseRaw<IDocument> {
 					},
 				},
 			},
-			options,
-		).toArray();
-	}
-
-	async findByMultipleCustomFields(
-		moduleId: string,
-		filters: Array<{ fieldId: string; value: any; operator?: 'eq' | 'ne' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'nin' }>,
-	): Promise<IDocument[]> {
-		const query: Filter<IDocument> = { moduleId };
-		const andConditions: any[] = [];
-
-		for (const filter of filters) {
-			const condition: any = { 'customFields.fieldId': filter.fieldId };
-
-			switch (filter.operator || 'eq') {
-				case 'eq':
-					condition['customFields.value'] = filter.value;
-					break;
-				case 'ne':
-					condition['customFields.value'] = { $ne: filter.value };
-					break;
-				case 'gt':
-					condition['customFields.value'] = { $gt: filter.value };
-					break;
-				case 'gte':
-					condition['customFields.value'] = { $gte: filter.value };
-					break;
-				case 'lt':
-					condition['customFields.value'] = { $lt: filter.value };
-					break;
-				case 'lte':
-					condition['customFields.value'] = { $lte: filter.value };
-					break;
-				case 'in':
-					condition['customFields.value'] = { $in: filter.value };
-					break;
-				case 'nin':
-					condition['customFields.value'] = { $nin: filter.value };
-					break;
-			}
-
-			andConditions.push({ customFields: { $elemMatch: condition } });
-		}
-
-		if (andConditions.length > 0) {
-			query.$and = andConditions;
-		}
-
-		return this.find(query).toArray();
-	}
-
-	async updateDocument(documentId: string, updates: Partial<Omit<IDocument, '_id' | 'createdAt' | 'moduleId'>>): Promise<void> {
-		await this.updateOne(
-			{ _id: documentId },
 			{
-				$set: {
-					...updates,
-					_updatedAt: new Date(),
-				},
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: { createdAt: -1 },
 			},
 		);
-	}
-
-	async updateCustomField(documentId: string, fieldId: string, value: any): Promise<void> {
-		const document = await this.findOne({ _id: documentId });
-		if (!document) {
-			throw new Meteor.Error('error-document-not-found', 'Document not found');
-		}
-
-		const customFields = document.customFields || [];
-		const fieldIndex = customFields.findIndex((f) => f.fieldId === fieldId);
-
-		if (fieldIndex >= 0) {
-			customFields[fieldIndex].value = value;
-		} else {
-			customFields.push({ fieldId, value });
-		}
-
-		await this.updateOne(
-			{ _id: documentId },
-			{
-				$set: {
-					customFields,
-					_updatedAt: new Date(),
-				},
-			},
-		);
-	}
-
-	async updateMultipleCustomFields(documentId: string, fields: ICustomFieldValue[]): Promise<void> {
-		const document = await this.findOne({ _id: documentId });
-		if (!document) {
-			throw new Meteor.Error('error-document-not-found', 'Document not found');
-		}
-
-		const customFields = document.customFields || [];
-
-		for (const field of fields) {
-			const fieldIndex = customFields.findIndex((f) => f.fieldId === field.fieldId);
-			if (fieldIndex >= 0) {
-				customFields[fieldIndex].value = field.value;
-			} else {
-				customFields.push(field);
-			}
-		}
-
-		await this.updateOne(
-			{ _id: documentId },
-			{
-				$set: {
-					customFields,
-					_updatedAt: new Date(),
-				},
-			},
-		);
-	}
-
-	async reorderDocuments(moduleId: string, documentId: string, newOrder: number): Promise<void> {
-		const document = await this.findOne({ _id: documentId });
-		if (!document || document.moduleId !== moduleId) {
-			throw new Meteor.Error('error-document-not-found', 'Document not found');
-		}
-
-		const oldOrder = document.order;
-
-		if (oldOrder === newOrder) {
-			return;
-		}
-
-		// Update orders for affected documents
-		if (oldOrder < newOrder) {
-			// Moving down
-			await this.updateMany(
-				{
-					moduleId,
-					order: { $gt: oldOrder, $lte: newOrder },
-				},
-				{
-					$inc: { order: -1 },
-				},
-			);
-		} else {
-			// Moving up
-			await this.updateMany(
-				{
-					moduleId,
-					order: { $gte: newOrder, $lt: oldOrder },
-				},
-				{
-					$inc: { order: 1 },
-				},
-			);
-		}
-
-		// Update the document's order
-		await this.updateOne(
-			{ _id: documentId },
-			{
-				$set: {
-					order: newOrder,
-					_updatedAt: new Date(),
-				},
-			},
-		);
-	}
-
-	async deleteDocument(documentId: string): Promise<void> {
-		const document = await this.findOne({ _id: documentId });
-		if (!document) {
-			throw new Meteor.Error('error-document-not-found', 'Document not found');
-		}
-
-		// Update orders for documents after the deleted one
-		await this.updateMany(
-			{
-				moduleId: document.moduleId,
-				order: { $gt: document.order },
-			},
-			{
-				$inc: { order: -1 },
-			},
-		);
-
-		await this.deleteOne({ _id: documentId });
-	}
-
-	async deleteDocumentsByModule(moduleId: string): Promise<void> {
-		await this.deleteMany({ moduleId });
-	}
-
-	async countDocumentsByModule(moduleId: string): Promise<number> {
-		return this.col.countDocuments({ moduleId });
-	}
-
-	async getFieldValueDistribution(moduleId: string, fieldId: string): Promise<Array<{ value: any; count: number }>> {
-		const result = await this.col
-			.aggregate([
-				{ $match: { moduleId } },
-				{ $unwind: '$customFields' },
-				{ $match: { 'customFields.fieldId': fieldId } },
-				{ $group: { _id: '$customFields.value', count: { $sum: 1 } } },
-				{ $sort: { count: -1 } },
-			])
-			.toArray();
-
-		return result.map((r) => ({ value: r._id, count: r.count }));
+		return cursor.toArray();
 	}
 }
