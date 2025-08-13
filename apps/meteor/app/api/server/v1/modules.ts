@@ -1,9 +1,7 @@
-import { Meteor } from 'meteor/meteor';
 import { Random } from '@rocket.chat/random';
+import { Meteor } from 'meteor/meteor';
 
 import type { IModule, IFieldDefinition } from '../../../../server/core-typings/IModule';
-import type { IStage } from '../../../../server/core-typings/IStage';
-import type { IDocument } from '../../../../server/core-typings/IDocument';
 import { db } from '../../../../server/database/utils';
 import { DocumentRaw } from '../../../../server/models/Document';
 import { ModuleRaw } from '../../../../server/models/Module';
@@ -22,10 +20,14 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { name, description, fieldDefinitions } = this.bodyParams;
+			const { name, roomId, description, fieldDefinitions } = this.bodyParams;
 
 			if (!name || typeof name !== 'string') {
 				throw new Meteor.Error('error-invalid-params', 'Module name is required');
+			}
+
+			if (!roomId || typeof roomId !== 'string') {
+				throw new Meteor.Error('error-invalid-params', 'Room ID is required');
 			}
 
 			if (!fieldDefinitions || !Array.isArray(fieldDefinitions)) {
@@ -53,6 +55,7 @@ API.v1.addRoute(
 				},
 				{
 					name,
+					roomId,
 					description,
 					fieldDefinitions: processedFields,
 				},
@@ -96,24 +99,62 @@ API.v1.addRoute(
 	},
 	{
 		async get() {
-			const { moduleId } = this.queryParams;
+			const { moduleId, roomId } = this.queryParams;
 
-			if (!moduleId || typeof moduleId !== 'string') {
-				throw new Meteor.Error('error-invalid-params', 'Module ID is required');
+			let module;
+			if (moduleId && typeof moduleId === 'string') {
+				module = await Module.findById(moduleId);
+			} else if (roomId && typeof roomId === 'string') {
+				module = await Module.findByRoomId(roomId);
+			} else {
+				throw new Meteor.Error('error-invalid-params', 'Module ID or Room ID is required');
 			}
 
-			const module = await Module.findById(moduleId);
 			if (!module) {
 				throw new Meteor.Error('error-module-not-found', 'Module not found');
 			}
 
-			const stages = await Stage.findByModuleId(moduleId);
-			const documentCount = await Document.countByModuleId(moduleId);
+			const stages = await Stage.findByModuleId(module._id);
+			const documentCount = await Document.countByModuleId(module._id);
 
 			return API.v1.success({
 				module,
 				stages,
 				documentCount,
+			});
+		},
+	},
+);
+
+API.v1.addRoute(
+	'modules.getByRoomId',
+	{
+		authRequired: true,
+	},
+	{
+		async get() {
+			const { roomId } = this.queryParams;
+
+			if (!roomId || typeof roomId !== 'string') {
+				throw new Meteor.Error('error-invalid-params', 'Room ID is required');
+			}
+
+			const module = await Module.findByRoomId(roomId);
+			if (!module) {
+				return API.v1.success({
+					module: null,
+					exists: false,
+				});
+			}
+
+			const stages = await Stage.findByModuleId(module._id);
+			const documentCount = await Document.countByModuleId(module._id);
+
+			return API.v1.success({
+				module,
+				stages,
+				documentCount,
+				exists: true,
 			});
 		},
 	},
@@ -126,7 +167,7 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { moduleId, name, description, fieldDefinitions } = this.bodyParams;
+			const { moduleId, name, roomId, description, fieldDefinitions } = this.bodyParams;
 
 			if (!moduleId || typeof moduleId !== 'string') {
 				throw new Meteor.Error('error-invalid-params', 'Module ID is required');
@@ -145,6 +186,10 @@ API.v1.addRoute(
 					throw new Meteor.Error('error-module-name-exists', 'Module with this name already exists');
 				}
 				updateData.name = name;
+			}
+
+			if (roomId && typeof roomId === 'string') {
+				updateData.roomId = roomId;
 			}
 
 			if (description !== undefined) {

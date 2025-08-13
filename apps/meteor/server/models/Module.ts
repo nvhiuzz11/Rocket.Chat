@@ -10,13 +10,14 @@ export class ModuleRaw extends BaseRaw<IModule> {
 	}
 
 	protected modelIndexes(): IndexDescription[] {
-		return [{ key: { name: 1 } }, { key: { createdAt: -1 } }, { key: { 'createdBy._id': 1 } }];
+		return [{ key: { name: 1 } }, { key: { roomId: 1 } }, { key: { createdAt: -1 } }, { key: { 'createdBy._id': 1 } }];
 	}
 
 	async create(
 		creator: { _id: string; username: string; name?: string },
 		moduleData: {
 			name: string;
+			roomId: string;
 			description?: string;
 			fieldDefinitions: IFieldDefinition[];
 		},
@@ -42,6 +43,10 @@ export class ModuleRaw extends BaseRaw<IModule> {
 
 	async findByName(name: string): Promise<IModule | null> {
 		return this.findOne({ name });
+	}
+
+	async findByRoomId(roomId: string): Promise<IModule | null> {
+		return this.findOne({ roomId });
 	}
 
 	async findAll(options?: { skip?: number; limit?: number }): Promise<IModule[]> {

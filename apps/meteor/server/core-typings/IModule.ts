@@ -1,4 +1,4 @@
-import type { IRocketChatRecord, IUser } from '@rocket.chat/core-typings';
+import type { IRocketChatRecord, IUser, IRoom } from '@rocket.chat/core-typings';
 
 import type { MODULE_FIELD_TYPES } from '../../definition/IModuleConfig';
 
@@ -14,6 +14,7 @@ export interface IFieldDefinition {
 
 export interface IModule extends IRocketChatRecord {
 	name: string;
+	roomId: IRoom['_id'];
 	description?: string;
 	fieldDefinitions: IFieldDefinition[];
 	createdAt: Date;
