@@ -158,6 +158,68 @@ API.v1.addRoute(
 );
 
 API.v1.addRoute(
+	'documents.listByModuleId',
+	{
+		authRequired: true,
+	},
+	{
+		async get() {
+			const { moduleId } = this.queryParams;
+
+			if (!moduleId || typeof moduleId !== 'string') {
+				throw new Meteor.Error('error-invalid-params', 'Module ID is required');
+			}
+
+			const module = await Module.findById(moduleId);
+			if (!module) {
+				throw new Meteor.Error('error-module-not-found', 'Module not found');
+			}
+
+			const documents = await Document.findByModuleId(moduleId);
+
+			return API.v1.success({
+				documents,
+			});
+		},
+	},
+);
+
+API.v1.addRoute(
+	'documents.listByStageId',
+	{
+		authRequired: true,
+	},
+	{
+		async get() {
+			const { stageId } = this.queryParams;
+			const { offset, count } = await getPaginationItems(this.queryParams);
+
+			if (!stageId || typeof stageId !== 'string') {
+				throw new Meteor.Error('error-invalid-params', 'Stage ID is required');
+			}
+
+			const stage = await Stage.findById(stageId);
+			if (!stage) {
+				throw new Meteor.Error('error-stage-not-found', 'Stage not found');
+			}
+
+			const documents = await Document.findByStageId(stageId, {
+				skip: offset,
+				limit: count,
+			});
+			const total = await Document.countByStageId(stageId);
+
+			return API.v1.success({
+				documents,
+				count: documents.length,
+				offset,
+				total,
+			});
+		},
+	},
+);
+
+API.v1.addRoute(
 	'documents.info',
 	{
 		authRequired: true,
@@ -433,3 +495,87 @@ API.v1.addRoute(
 		},
 	},
 );
+
+
+declare module '@rocket.chat/rest-typings' {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
+	interface Endpoints {
+		'/v1/documents.create': {
+			POST: (params: { 
+				name: string; 
+				description?: string; 
+				moduleId: string; 
+				stageId: string; 
+				parentId?: string; 
+				customFields?: ICustomFieldValue[] 
+			}) => {
+				document: IDocument;
+			};
+		};
+		'/v1/documents.list': {
+			GET: (params: { moduleId: string; offset?: number; count?: number }) => {
+				documents: IDocument[];
+				count: number;
+				offset: number;
+			};
+		};
+		'/v1/documents.listByModuleId': {
+			GET: (params: { moduleId: string; search?: string }) => {
+				documents: IDocument[];
+			};
+		};
+		'/v1/documents.listByStageId': {
+			GET: (params: { stageId: string; offset?: number; count?: number }) => {
+				documents: IDocument[];
+				count: number;
+				offset: number;
+			};
+		};
+		'/v1/documents.info': {
+			GET: (params: { documentId: string }) => {
+				document: IDocument;
+				children: IDocument[];
+			};
+		};
+		'/v1/documents.update': {
+			POST: (params: { 
+				documentId: string; 
+				name?: string; 
+				description?: string; 
+				stageId?: string; 
+				customFields?: ICustomFieldValue[] 
+			}) => {
+				document: IDocument;
+			};
+		};
+		'/v1/documents.moveToStage': {
+			POST: (params: { documentId: string; stageId: string }) => {
+				document: IDocument;
+			};
+		};
+		'/v1/documents.reorder': {
+			POST: (params: { stageId: string; documentIds: string[] }) => {
+				documents: IDocument[];
+			};
+		};
+		'/v1/documents.delete': {
+			POST: (params: { documentId: string }) => {
+				deleted: boolean;
+			};
+		};
+		'/v1/documents.search': {
+			GET: (params: { moduleId: string; searchTerm: string; offset?: number; count?: number }) => {
+				documents: IDocument[];
+				count: number;
+				offset: number;
+			};
+		};
+		'/v1/documents.findByFieldValue': {
+			GET: (params: { moduleId: string; fieldId: string; value: any; offset?: number; count?: number }) => {
+				documents: IDocument[];
+				count: number;
+				offset: number;
+			};
+		};
+	}
+}

@@ -48,8 +48,6 @@ import './v1/voip/omnichannel';
 import './v1/voip';
 import './v1/federation';
 import './v1/moderation';
-import './v1/documents';
-import './v1/modules';
 import './v1/project';
 import './v1/project-properties';
 import './v1/project-tags';
@@ -57,6 +55,9 @@ import './v1/task';
 import './v1/task-properties';
 import './v1/task-tags';
 import './v1/subtask';
+import './v1/modules';
+import './v1/documents';
+import './v1/stages';
 
 // This has to come last so all endpoints are registered before generating the OpenAPI documentation
 import './default/openApi';

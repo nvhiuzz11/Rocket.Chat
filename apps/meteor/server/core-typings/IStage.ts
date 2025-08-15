@@ -6,4 +6,5 @@ export interface IStage extends IRocketChatRecord {
 	name: string;
 	moduleId: IModule['_id'];
 	order: number;
+	color: string;
 }

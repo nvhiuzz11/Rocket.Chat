@@ -49,6 +49,18 @@ export class ModuleRaw extends BaseRaw<IModule> {
 		return this.findOne({ roomId });
 	}
 
+	async findAllByRoomId(roomId: string, options?: { skip?: number; limit?: number }): Promise<IModule[]> {
+		const cursor = this.find(
+			{ roomId },
+			{
+				skip: options?.skip,
+				limit: options?.limit,
+				sort: { createdAt: -1 },
+			},
+		);
+		return cursor.toArray();
+	}
+
 	async findAll(options?: { skip?: number; limit?: number }): Promise<IModule[]> {
 		const cursor = this.find(
 			{},

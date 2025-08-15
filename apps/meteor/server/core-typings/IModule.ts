@@ -10,6 +10,7 @@ export interface IFieldDefinition {
 	type: FieldType;
 	options?: { _id: string; value: string; color?: string; order?: number }[];
 	isRequired: boolean;
+	order: number;
 }
 
 export interface IModule extends IRocketChatRecord {

@@ -13,9 +13,8 @@ export class StageRaw extends BaseRaw<IStage> {
 		return [{ key: { moduleId: 1 } }, { key: { moduleId: 1, order: 1 } }, { key: { name: 1, moduleId: 1 } }];
 	}
 
-	async create(stageData: Omit<IStage, '_id'>): Promise<IStage> {
-		const existingStageCount = await this.countDocuments({ moduleId: stageData.moduleId });
-		const order = stageData.order ?? existingStageCount;
+	async create(stageData: Omit<IStage, '_id' | '_updatedAt'>): Promise<IStage> {
+		const order = stageData.order !== undefined ? stageData.order : await this.countDocuments({ moduleId: stageData.moduleId });
 
 		const { insertedId } = await this.insertOne({
 			...stageData,
