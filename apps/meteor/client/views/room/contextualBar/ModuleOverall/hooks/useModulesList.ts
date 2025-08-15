@@ -26,7 +26,6 @@ export const useModulesList = (options: ModulesListOptions) => {
 				offset: start,
 				count: end - start,
 			});
-			console.log('modules', modules);
 
 			return {
 				items: modules as unknown as ModuleListItem[],
@@ -42,18 +41,16 @@ export const useModulesList = (options: ModulesListOptions) => {
 
 	useComponentDidUpdate(() => {
 		modulesList.clear();
-		// Force load initial data after clearing
 		loadMoreItems(0);
-	}, [modulesList, options, loadMoreItems]);
+	}, [modulesList, loadMoreItems]);
 
 	const reload = useCallback(async () => {
-		// Fetch fresh data and replace existing items to avoid flickering
 		try {
-			const freshData = await fetchData(0, 25);
-			modulesList.replace(freshData);
+			const freshData = await fetchData(0, 100);
+			await modulesList.clear();
+			await modulesList.batchHandle(() => Promise.resolve(freshData));
 		} catch (error) {
-			// If fetch fails, fallback to clear and reload
-			modulesList.clear();
+			await modulesList.clear();
 			loadMoreItems(0);
 		}
 	}, [modulesList, fetchData, loadMoreItems]);

@@ -1,5 +1,5 @@
 import { useDebouncedValue, useEffectEvent } from '@rocket.chat/fuselage-hooks';
-import { useSetModal, usePermission } from '@rocket.chat/ui-contexts';
+import { useSetModal } from '@rocket.chat/ui-contexts';
 import type { ChangeEvent } from 'react';
 import { useCallback, useMemo, useState, lazy } from 'react';
 
@@ -18,8 +18,7 @@ const RoomModuleOverallWithData = () => {
 	const room = useRoom();
 	const setModal = useSetModal();
 	const { closeTab } = useRoomToolbox();
-	const canEditRoom = usePermission('edit-room', room._id);
-	
+
 	const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
 
 	const [text, setText] = useState('');
@@ -40,17 +39,14 @@ const RoomModuleOverallWithData = () => {
 	});
 
 	const handleViewModule = useEffectEvent((moduleId: string) => {
-		// Switch to Module detail view
 		setSelectedModuleId(moduleId);
 	});
-	
+
 	const handleBackToList = useEffectEvent(() => {
-		// Return to module list
 		setSelectedModuleId(null);
 	});
 
 	const handleEditModule = useEffectEvent((moduleId: string) => {
-		// Find the module from the items list
 		const module = items.find((m) => m._id === moduleId);
 		if (module) {
 			setModal(<ModuleDetailModal module={module} onClose={() => setModal(null)} onSuccess={reload} />);
@@ -58,30 +54,26 @@ const RoomModuleOverallWithData = () => {
 	});
 
 	const handleDeleteModule = useEffectEvent((moduleId: string) => {
-		// This is handled in ModuleItemMenu
 		console.log('Delete module:', moduleId);
 	});
 
-	// If a module is selected, show the module detail view
 	if (selectedModuleId) {
 		return <RoomModuleWithData moduleId={selectedModuleId} onClickBack={handleBackToList} />;
 	}
 
-	// Otherwise show the module list
 	return (
 		<RoomModuleOverall
 			loading={phase === AsyncStatePhase.LOADING}
 			modules={items}
-			roomId={room._id}
 			text={text}
 			setText={handleTextChange}
 			onClickClose={closeTab}
-			onClickCreateNew={canEditRoom && handleCreateNew}
+			onClickCreateNew={handleCreateNew}
 			total={total}
 			loadMoreItems={loadMoreItems}
 			onClickView={handleViewModule}
-			onClickEdit={canEditRoom ? handleEditModule : undefined}
-			onClickDelete={canEditRoom ? handleDeleteModule : undefined}
+			onClickEdit={handleEditModule}
+			onClickDelete={handleDeleteModule}
 			reload={reload}
 		/>
 	);

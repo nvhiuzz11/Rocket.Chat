@@ -52,7 +52,7 @@ API.v1.addRoute(
 			const module = await Module.create(
 				{
 					_id: this.userId,
-					username: this.user.username,
+					username: this.user.username || '',
 					name: this.user.name || this.user.username,
 				},
 				{
@@ -124,7 +124,6 @@ API.v1.addRoute(
 				limit: count,
 			});
 
-			// Enrich with stage and document counts
 			const enrichedModules = await Promise.all(
 				modules.map(async (module) => {
 					const stageCount = await Stage.countByModuleId(module._id);
@@ -190,7 +189,7 @@ API.v1.addRoute(
 	},
 	{
 		async post() {
-			const { moduleId, name, roomId, description, fieldDefinitions } = this.bodyParams;
+			const { moduleId, name, description } = this.bodyParams;
 
 			if (!moduleId || typeof moduleId !== 'string') {
 				throw new Meteor.Error('error-invalid-params', 'Module ID is required');
@@ -211,24 +210,8 @@ API.v1.addRoute(
 				updateData.name = name;
 			}
 
-			if (roomId && typeof roomId === 'string') {
-				updateData.roomId = roomId;
-			}
-
 			if (description !== undefined) {
 				updateData.description = description;
-			}
-
-			if (fieldDefinitions && Array.isArray(fieldDefinitions)) {
-				const processedFields: IFieldDefinition[] = fieldDefinitions.map((field, index) => ({
-					_id: field._id || Random.id(),
-					name: field.name,
-					type: field.type,
-					options: field.options,
-					isRequired: field.isRequired || false,
-					order: field.order !== undefined ? field.order : index,
-				}));
-				updateData.fieldDefinitions = processedFields;
 			}
 
 			await Module.updateById(moduleId, updateData);
@@ -367,7 +350,7 @@ API.v1.addRoute(
 			const fieldDefinition: IFieldDefinition = {
 				_id: Random.id(),
 				name,
-				type,
+				type: type as IFieldDefinition['type'],
 				options: options || [],
 				isRequired: isRequired || false,
 				order: order !== undefined ? order : module.fieldDefinitions.length,
@@ -377,9 +360,9 @@ API.v1.addRoute(
 
 			const updatedModule = await Module.findById(moduleId);
 
-			return API.v1.success({ 
+			return API.v1.success({
 				module: updatedModule,
-				field: fieldDefinition 
+				field: fieldDefinition,
 			});
 		},
 	},
@@ -424,9 +407,9 @@ API.v1.addRoute(
 
 			const updatedModule = await Module.findById(module._id);
 
-			return API.v1.success({ 
+			return API.v1.success({
 				module: updatedModule,
-				success: true 
+				success: true,
 			});
 		},
 	},
@@ -455,9 +438,9 @@ API.v1.addRoute(
 
 			const updatedModule = await Module.findById(module._id);
 
-			return API.v1.success({ 
+			return API.v1.success({
 				module: updatedModule,
-				success: true 
+				success: true,
 			});
 		},
 	},
@@ -484,8 +467,8 @@ API.v1.addRoute(
 			// Sort fields by order
 			const sortedFields = [...(module.fieldDefinitions || [])].sort((a, b) => a.order - b.order);
 
-			return API.v1.success({ 
-				fieldDefinitions: sortedFields 
+			return API.v1.success({
+				fieldDefinitions: sortedFields,
 			});
 		},
 	},
@@ -524,7 +507,7 @@ API.v1.addRoute(
 				_id: Random.id(),
 				value,
 				color: color || '#3498db',
-				order: order !== undefined ? order : (field.options?.length || 0),
+				order: order !== undefined ? order : field.options?.length || 0,
 			};
 
 			// Add the new option to the field
@@ -537,9 +520,9 @@ API.v1.addRoute(
 
 			const updatedModule = await Module.findById(module._id);
 
-			return API.v1.success({ 
+			return API.v1.success({
 				module: updatedModule,
-				option: newOption 
+				option: newOption,
 			});
 		},
 	},
@@ -578,18 +561,15 @@ API.v1.addRoute(
 				{ _id: module._id },
 				{ $set: updateFields },
 				{
-					arrayFilters: [
-						{ 'field.options._id': _id },
-						{ 'option._id': _id },
-					],
+					arrayFilters: [{ 'field.options._id': _id }, { 'option._id': _id }],
 				},
 			);
 
 			const updatedModule = await Module.findById(module._id);
 
-			return API.v1.success({ 
+			return API.v1.success({
 				module: updatedModule,
-				success: true 
+				success: true,
 			});
 		},
 	},
@@ -624,9 +604,9 @@ API.v1.addRoute(
 
 			const updatedModule = await Module.findById(module._id);
 
-			return API.v1.success({ 
+			return API.v1.success({
 				module: updatedModule,
-				success: true 
+				success: true,
 			});
 		},
 	},
@@ -651,20 +631,18 @@ API.v1.addRoute(
 					throw new Meteor.Error('error-invalid-params', 'Each option must have _id and order');
 				}
 
-				// Find the module that contains this option
+				// eslint-disable-next-line no-await-in-loop
 				const module = await Module.col.findOne({ 'fieldDefinitions.options._id': option._id });
 				if (module) {
 					// Update the option order
+					// eslint-disable-next-line no-await-in-loop
 					await Module.col.updateOne(
 						{ _id: module._id },
 						{
 							$set: { 'fieldDefinitions.$[field].options.$[option].order': option.order },
 						},
 						{
-							arrayFilters: [
-								{ 'field.options._id': option._id },
-								{ 'option._id': option._id },
-							],
+							arrayFilters: [{ 'field.options._id': option._id }, { 'option._id': option._id }],
 						},
 					);
 				}
@@ -707,7 +685,7 @@ declare module '@rocket.chat/rest-typings' {
 			};
 		};
 		'/v1/modules.update': {
-			POST: (params: { moduleId: string; name: string; roomId: string; description: string; fieldDefinitions: IFieldDefinition[] }) => {
+			POST: (params: { moduleId: string; name: string; description: string }) => {
 				module: IModule;
 			};
 		};

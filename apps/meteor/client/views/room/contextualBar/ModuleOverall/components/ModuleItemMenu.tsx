@@ -1,4 +1,4 @@
-import { GenericModal, GenericMenu } from '@rocket.chat/ui-client';
+import { GenericModal, GenericMenu, type GenericMenuItemProps } from '@rocket.chat/ui-client';
 import { useSetModal, useToastMessageDispatch } from '@rocket.chat/ui-contexts';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -45,8 +45,7 @@ const ModuleItemMenu = ({ module, onClickEdit, onClickDelete, reload }: ModuleIt
 
 		setModal(
 			<GenericModal variant='danger' onConfirm={handleConfirm} onCancel={handleCancel} onClose={handleCancel} confirmText={t('Delete')}>
-				<p>{t('Module_delete_confirmation', { name: module.name })}</p>
-				<p>{t('Module_delete_warning')}</p>
+				{t('Would you like to remove module "${module.name}"? This action cannot be undone.', { module: module.name })}
 			</GenericModal>,
 		);
 	}, [deleteModule, dispatchToastMessage, module._id, module.name, reload, setModal, t]);
@@ -67,19 +66,6 @@ const ModuleItemMenu = ({ module, onClickEdit, onClickDelete, reload }: ModuleIt
 	};
 
 	return (
-		// <MenuV2>
-		// 	{onClickEdit && (
-		// 		<MenuV2.Item icon='edit' onClick={handleEdit}>
-		// 			{t('Edit')}
-		// 		</MenuV2.Item>
-		// 	)}
-		// 	{onClickDelete && (
-		// 		<MenuV2.Item icon='trash' danger onClick={handleDelete}>
-		// 			{t('Delete')}
-		// 		</MenuV2.Item>
-		// 	)}
-		// </MenuV2>
-
 		<GenericMenu
 			title={t('More')}
 			placement='bottom-end'

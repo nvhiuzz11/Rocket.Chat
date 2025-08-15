@@ -1,18 +1,17 @@
-import { Box, Icon, TextInput, Throbber, ButtonGroup, Button } from '@rocket.chat/fuselage';
+import { Box, Icon, TextInput, Throbber, Button } from '@rocket.chat/fuselage';
 import { useEffectEvent, useAutoFocus, useDebouncedCallback } from '@rocket.chat/fuselage-hooks';
 import type { ChangeEvent, SyntheticEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Virtuoso } from 'react-virtuoso';
 
 import ModuleItem from './components/ModuleItem';
-import type { IModule } from '../../../../../../../server/core-typings/IModule';
+import type { IModule } from '../../../../../server/core-typings/IModule';
 import {
 	ContextualbarHeader,
 	ContextualbarIcon,
 	ContextualbarTitle,
 	ContextualbarClose,
 	ContextualbarContent,
-	ContextualbarFooter,
 	ContextualbarEmptyContent,
 	ContextualbarSection,
 	ContextualbarDialogResizable,
@@ -26,11 +25,10 @@ type RoomModuleOverallProps = {
 		stageCount?: number;
 		documentCount?: number;
 	})[];
-	roomId: string;
 	text: string;
 	setText: (e: ChangeEvent<HTMLInputElement>) => void;
 	onClickClose: () => void;
-	onClickCreateNew: false | ((e: SyntheticEvent) => void);
+	onClickCreateNew: (e: SyntheticEvent) => void;
 	total: number;
 	loadMoreItems: (start: number, end: number) => void;
 	onClickView: (moduleId: string) => void;
@@ -42,7 +40,6 @@ type RoomModuleOverallProps = {
 const RoomModuleOverall = ({
 	loading,
 	modules = [],
-	roomId,
 	text,
 	setText,
 	onClickClose,
@@ -87,6 +84,9 @@ const RoomModuleOverall = ({
 					onChange={setText}
 					addon={<Icon name='magnifier' size='x20' />}
 				/>
+				<Button onClick={onClickCreateNew} primary mis={12}>
+					{t('Create_Module')}
+				</Button>
 			</ContextualbarSection>
 			<ContextualbarContent p={12}>
 				{loading && (
@@ -116,11 +116,11 @@ const RoomModuleOverall = ({
 								<Virtuoso
 									totalCount={total}
 									data={modules}
+									// eslint-disable-next-line react/no-multi-comp
 									components={{ Footer: () => <InfiniteListAnchor loadMore={loadMoreModules} /> }}
-									itemContent={(index, data) => (
+									itemContent={(_index, data) => (
 										<ModuleItem
 											module={data}
-											roomId={roomId}
 											onClickView={onClickView}
 											onClickEdit={onClickEdit}
 											onClickDelete={onClickDelete}
@@ -134,15 +134,6 @@ const RoomModuleOverall = ({
 					</>
 				)}
 			</ContextualbarContent>
-			{onClickCreateNew && (
-				<ContextualbarFooter>
-					<ButtonGroup stretch>
-						<Button onClick={onClickCreateNew} primary>
-							{t('Create_Module')}
-						</Button>
-					</ButtonGroup>
-				</ContextualbarFooter>
-			)}
 		</ContextualbarDialogResizable>
 	);
 };
