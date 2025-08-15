@@ -1,5 +1,6 @@
 import { Box, Icon, IconButton, Select, Tag, Table } from '@rocket.chat/fuselage';
-import { UserAvatar } from '@rocket.chat/ui-avatar';
+import { RoomAvatar, UserAvatar } from '@rocket.chat/ui-avatar';
+import { useRouter } from '@rocket.chat/ui-contexts';
 import {
 	createColumnHelper,
 	getCoreRowModel,
@@ -11,6 +12,7 @@ import {
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useChannelInfo } from '../../../../../hooks/useChannelInfo';
 import DocumentItemMenu from './DocumentItemMenu';
 import { MODULE_FIELD_TYPES } from '../../../../../../definition/IModuleConfig';
 import type { IDocument } from '../../../../../../server/core-typings/IDocument';
@@ -57,6 +59,28 @@ const ModuleTableView = ({
 }: IModuleTableViewProps) => {
 	const { t } = useTranslation();
 	const [sorting, setSorting] = useState<SortingState>([]);
+	const router = useRouter();
+
+	// Collect all channel IDs from all documents
+	const allChannelIds = useMemo(() => {
+		const ids: string[] = [];
+		documents.forEach((doc) => {
+			doc.customFields?.forEach((field: any) => {
+				const fieldDef = module.fieldDefinitions?.find((def) => def._id === field.fieldId);
+				if (fieldDef?.type === MODULE_FIELD_TYPES.CHANNEL && field.value) {
+					const channels = Array.isArray(field.value) ? field.value : [field.value];
+					channels.forEach((channel) => {
+						const id = typeof channel === 'string' ? channel : channel?._id;
+						if (id && !ids.includes(id)) ids.push(id);
+					});
+				}
+			});
+		});
+		return ids;
+	}, [documents, module.fieldDefinitions]);
+
+	// Fetch channel info for all channels
+	const { channels: channelInfoList } = useChannelInfo(allChannelIds);
 
 	// Create stage lookup map
 	const stageMap = useMemo(() => {
@@ -177,6 +201,58 @@ const ModuleTableView = ({
 
 			case MODULE_FIELD_TYPES.CHECKBOX:
 				return value ? <Icon name='check' size='x12' color='success' /> : <Icon name='cross' size='x12' color='hint' />;
+
+			case MODULE_FIELD_TYPES.CHANNEL:
+				if (!value) return <Box color='hint'>—</Box>;
+
+				// Now we only store channel IDs
+				const channelIds = Array.isArray(value) ? value : [value];
+				const validChannelIds = channelIds.filter(Boolean);
+
+				if (validChannelIds.length === 0) return <Box color='hint'>—</Box>;
+
+				const displayedChannelIds = validChannelIds.slice(0, 2);
+				const remainingChannelIds = validChannelIds.slice(2);
+				const remainingChannelCount = remainingChannelIds.length;
+
+				return (
+					<Box display='flex' alignItems='center' flexWrap='wrap' style={{ gap: '4px' }}>
+						{displayedChannelIds.map((channelId) => {
+							// Get fresh channel info from hook
+							const channelInfo = channelInfoList.find((ch: any) => ch._id === channelId);
+							const channelName = channelInfo?.name || channelId;
+							const channelType = channelInfo?.type || 'c';
+
+							return (
+								<Box
+									key={channelId}
+									display='flex'
+									alignItems='center'
+									backgroundColor='surface-light'
+									borderRadius='x4'
+									padding='x4'
+									onClick={(e: React.MouseEvent) => {
+										e.stopPropagation();
+										if (channelType === 'c') {
+											router.navigate(`/channel/${channelName}`);
+										}
+										if (channelType === 'p') {
+											router.navigate(`/group/${channelName}`);
+										}
+									}}
+									style={{ cursor: 'pointer' }}
+								>
+									<RoomAvatar size='x16' room={{ _id: channelId, type: channelType }} />
+									<Box mis='x4'>
+										<Icon name={channelType === 'p' ? 'hashtag-lock' : 'hash'} size='x12' />
+										{channelName}
+									</Box>
+								</Box>
+							);
+						})}
+						{remainingChannelCount > 0 && <Tag>+{remainingChannelCount}</Tag>}
+					</Box>
+				);
 
 			default:
 				return String(value);

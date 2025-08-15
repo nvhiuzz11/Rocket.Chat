@@ -1,10 +1,12 @@
 import { draggable, dropTargetForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { css } from '@rocket.chat/css-in-js';
 import { Box, Icon, IconButton, Tag } from '@rocket.chat/fuselage';
-import { UserAvatar } from '@rocket.chat/ui-avatar';
-import { useRef, useEffect, useState } from 'react';
+import { RoomAvatar, UserAvatar } from '@rocket.chat/ui-avatar';
+import { useRouter } from '@rocket.chat/ui-contexts';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useChannelInfo } from '../../../../../hooks/useChannelInfo';
 import { MODULE_FIELD_TYPES } from '../../../../../../definition/IModuleConfig';
 import type { IDocument } from '../../../../../../server/core-typings/IDocument';
 import type { IModule } from '../../../../../../server/core-typings/IModule';
@@ -37,6 +39,26 @@ const DocumentCard = ({
 	const ref = useRef<HTMLDivElement>(null);
 	const [isDragging, setIsDragging] = useState(false);
 	const [isHovered, setIsHovered] = useState(false);
+	const router = useRouter();
+
+	// Collect all channel IDs from custom fields
+	const channelIds = useMemo(() => {
+		const ids: string[] = [];
+		document.customFields?.forEach((field: any) => {
+			const fieldDef = module.fieldDefinitions?.find((def) => def._id === field.fieldId);
+			if (fieldDef?.type === MODULE_FIELD_TYPES.CHANNEL && field.value) {
+				const channels = Array.isArray(field.value) ? field.value : [field.value];
+				channels.forEach((channel) => {
+					const id = typeof channel === 'string' ? channel : channel?._id;
+					if (id) ids.push(id);
+				});
+			}
+		});
+		return ids;
+	}, [document.customFields, module.fieldDefinitions]);
+
+	// Fetch channel info for all channel fields
+	const { channels: channelInfoMap } = useChannelInfo(channelIds);
 
 	// Setup draggable and drop target
 	useEffect(() => {
@@ -153,6 +175,50 @@ const DocumentCard = ({
 
 			case MODULE_FIELD_TYPES.CHECKBOX:
 				return value ? <Icon name='check' size='x12' color='success' /> : <Icon name='cross' size='x12' color='hint' />;
+
+			case MODULE_FIELD_TYPES.CHANNEL:
+				if (!value) return null;
+
+				// Now we only store channel IDs
+				const channelIds = Array.isArray(value) ? value : [value];
+				const validChannelIds = channelIds.filter(Boolean);
+
+				if (validChannelIds.length === 0) return null;
+
+				return (
+					<Box display='flex' flexWrap='wrap' style={{ gap: '4px' }}>
+						{validChannelIds.map((channelId) => {
+							// Get fresh channel info from hook
+							const channelInfo = channelInfoMap.find((ch: any) => ch._id === channelId);
+							const channelName = channelInfo?.name || channelId;
+							const channelType = channelInfo?.type || 'c';
+
+							return (
+								<Tag
+									key={channelId}
+									onClick={(e: React.MouseEvent) => {
+										e.stopPropagation();
+										if (channelType === 'c') {
+											router.navigate(`/channel/${channelName}`);
+										}
+										if (channelType === 'p') {
+											router.navigate(`/group/${channelName}`);
+										}
+									}}
+									style={{ cursor: 'pointer' }}
+								>
+									<Box display='flex' alignItems='center'>
+										<RoomAvatar size='x16' room={{ _id: channelId, type: channelType }} />
+										<Box mis='x4'>
+											<Icon name={channelType === 'p' ? 'hashtag-lock' : 'hash'} size='x12' />
+											{channelName}
+										</Box>
+									</Box>
+								</Tag>
+							);
+						})}
+					</Box>
+				);
 
 			default:
 				return value ? String(value) : null;

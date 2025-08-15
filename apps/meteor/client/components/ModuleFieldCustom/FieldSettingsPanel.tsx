@@ -132,6 +132,7 @@ const FieldSettingsPanel = ({ onClose, field, moduleId, reload, isNewField = fal
 		[MODULE_FIELD_TYPES.CHECKBOX, 'Checkbox'],
 		[MODULE_FIELD_TYPES.DATE, 'Date'],
 		[MODULE_FIELD_TYPES.USER, 'User'],
+		[MODULE_FIELD_TYPES.CHANNEL, 'Channel'],
 	];
 
 	const colorOptions = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e', '#e91e63', '#9c27b0'];

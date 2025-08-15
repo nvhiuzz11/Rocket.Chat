@@ -93,6 +93,8 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 				return '';
 			case MODULE_FIELD_TYPES.USER:
 				return [];
+			case MODULE_FIELD_TYPES.CHANNEL:
+				return [];
 			default:
 				return '';
 		}

@@ -93,6 +93,18 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 			}
 		}
 
+		// Special handling for CHANNEL field type
+		if (fieldType === MODULE_FIELD_TYPES.CHANNEL) {
+			// If value is array, return as is
+			if (Array.isArray(customField.value)) {
+				return customField.value;
+			}
+			// If value is string (channel ID), wrap in array
+			if (typeof customField.value === 'string') {
+				return [customField.value];
+			}
+		}
+
 		return customField.value;
 	}, [document.customFields]);
 
@@ -112,6 +124,8 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 			case MODULE_FIELD_TYPES.DATE:
 				return '';
 			case MODULE_FIELD_TYPES.USER:
+				return [];
+			case MODULE_FIELD_TYPES.CHANNEL:
 				return [];
 			default:
 				return '';

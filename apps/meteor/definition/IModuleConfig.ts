@@ -8,4 +8,5 @@ export const MODULE_FIELD_TYPES = {
 	USER: 'user',
 	CHECKBOX: 'checkbox',
 	ATTACHMENT: 'attachment',
+	CHANNEL: 'channel',
 };
