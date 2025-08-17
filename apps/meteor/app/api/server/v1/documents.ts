@@ -496,18 +496,17 @@ API.v1.addRoute(
 	},
 );
 
-
 declare module '@rocket.chat/rest-typings' {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Endpoints {
 		'/v1/documents.create': {
-			POST: (params: { 
-				name: string; 
-				description?: string; 
-				moduleId: string; 
-				stageId: string; 
-				parentId?: string; 
-				customFields?: ICustomFieldValue[] 
+			POST: (params: {
+				name: string;
+				description?: string;
+				moduleId: string;
+				stageId: string;
+				parentId?: string;
+				customFields?: ICustomFieldValue[];
 			}) => {
 				document: IDocument;
 			};
@@ -538,13 +537,7 @@ declare module '@rocket.chat/rest-typings' {
 			};
 		};
 		'/v1/documents.update': {
-			POST: (params: { 
-				documentId: string; 
-				name?: string; 
-				description?: string; 
-				stageId?: string; 
-				customFields?: ICustomFieldValue[] 
-			}) => {
+			POST: (params: { documentId: string; name?: string; description?: string; stageId?: string; customFields?: ICustomFieldValue[] }) => {
 				document: IDocument;
 			};
 		};
@@ -555,6 +548,11 @@ declare module '@rocket.chat/rest-typings' {
 		};
 		'/v1/documents.reorder': {
 			POST: (params: { stageId: string; documentIds: string[] }) => {
+				documents: IDocument[];
+			};
+		};
+		'/v1/documents.updateOrder': {
+			POST: (params: { documentId: string; newOrder: number }) => {
 				documents: IDocument[];
 			};
 		};

@@ -36,10 +36,12 @@ const ModuleItem = ({ module, onClickView, onClickEdit, onClickDelete, reload }:
 			<OptionContent>
 				<Box display='flex' flexDirection='column'>
 					<Box fontScale='p2m'>{module.name}</Box>
-					{module.description && (
+					{module.description ? (
 						<Box fontScale='p2' color='hint'>
-							{module.description ? module.description : <Box color='hint'>—</Box>}
+							{module.description}
 						</Box>
+					) : (
+						<Box color='hint'>—</Box>
 					)}
 				</Box>
 			</OptionContent>

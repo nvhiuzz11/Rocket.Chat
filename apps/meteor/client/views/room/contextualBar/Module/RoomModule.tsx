@@ -1,12 +1,12 @@
 import { Box, Icon, Throbber } from '@rocket.chat/fuselage';
 import { GenericModal } from '@rocket.chat/ui-client';
-import { useCallback, useState } from 'react';
 import { useSetModal, useEndpoint, useToastMessageDispatch } from '@rocket.chat/ui-contexts';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CreateDocumentModal from './component/CreateDocumentModal';
-import DocumentDetailModal from './component/DocumentDetailModal';
 import CreateStageModal from './component/CreateStageModal';
+import DocumentDetailModal from './component/DocumentDetailModal';
 import EditStageModal from './component/EditStageModal';
 import HeaderTool from './component/HeaderTool';
 import ModuleKanbanView from './component/ModuleKanbanView';
@@ -14,6 +14,7 @@ import ModuleTableView from './component/ModuleTableView';
 import type { IDocument } from '../../../../../server/core-typings/IDocument';
 import type { IModule } from '../../../../../server/core-typings/IModule';
 import type { IStage } from '../../../../../server/core-typings/IStage';
+import { useEndpointAction } from '../../../../hooks/useEndpointAction';
 import {
 	ContextualbarHeader,
 	ContextualbarIcon,
@@ -56,6 +57,11 @@ const RoomModule = ({
 	const { t } = useTranslation();
 	const setModal = useSetModal();
 	const [currentView, setCurrentView] = useState<'kanban' | 'table'>('kanban');
+	const [isEditingName, setIsEditingName] = useState(false);
+	const [isEditingDescription, setIsEditingDescription] = useState(false);
+	const nameRef = useRef<HTMLDivElement>(null);
+	const descriptionRef = useRef<HTMLDivElement>(null);
+	const updateModuleEndpoint = useEndpointAction('POST', '/v1/modules.update');
 
 	const handleTextSearchChange = useCallback(
 		(text: string) => {
@@ -75,20 +81,147 @@ const RoomModule = ({
 	const updateStageOrderEndpoint = useEndpoint('POST', '/v1/stages.updateOrder');
 	const deleteStageEndpoint = useEndpoint('POST', '/v1/stages.delete');
 
+	// Initialize content when module changes
+	useEffect(() => {
+		if (module && nameRef.current && !isEditingName) {
+			nameRef.current.innerText = module.name || '';
+		}
+		if (module && descriptionRef.current && !isEditingDescription) {
+			descriptionRef.current.innerText = module.description || t('Click_to_add_description');
+		}
+	}, [module, isEditingName, isEditingDescription, t]);
+
+	// Focus and place cursor at the end when editing starts
+	useEffect(() => {
+		if (isEditingName && nameRef.current) {
+			nameRef.current.focus();
+			// Place cursor at the end
+			const range = document.createRange();
+			const selection = window.getSelection();
+			range.selectNodeContents(nameRef.current);
+			range.collapse(false); // false means collapse to end
+			selection?.removeAllRanges();
+			selection?.addRange(range);
+		}
+	}, [isEditingName]);
+
+	useEffect(() => {
+		if (isEditingDescription && descriptionRef.current) {
+			descriptionRef.current.focus();
+			// Place cursor at the end
+			const range = document.createRange();
+			const selection = window.getSelection();
+			range.selectNodeContents(descriptionRef.current);
+			range.collapse(false); // false means collapse to end
+			selection?.removeAllRanges();
+			selection?.addRange(range);
+		}
+	}, [isEditingDescription]);
+
+	const handleSaveName = useCallback(async () => {
+		const newName = nameRef.current?.innerText?.trim() || '';
+		if (!module || !newName) {
+			setIsEditingName(false);
+			return;
+		}
+
+		if (newName === module.name) {
+			setIsEditingName(false);
+			return;
+		}
+
+		try {
+			await updateModuleEndpoint({
+				moduleId: module._id,
+				name: newName,
+				description: module.description,
+			});
+			dispatchToastMessage({ type: 'success', message: t('Module_updated_successfully') });
+			_reload();
+		} catch (error) {
+			dispatchToastMessage({ type: 'error', message: t('Error_updating_module') });
+			if (nameRef.current) {
+				nameRef.current.innerText = module.name || '';
+			}
+		} finally {
+			setIsEditingName(false);
+		}
+	}, [module, updateModuleEndpoint, dispatchToastMessage, t, _reload]);
+
+	const handleSaveDescription = useCallback(async () => {
+		const newDescription = descriptionRef.current?.innerText?.trim() || '';
+		if (!module) {
+			setIsEditingDescription(false);
+			return;
+		}
+
+		if (newDescription === (module.description || '')) {
+			setIsEditingDescription(false);
+			return;
+		}
+
+		try {
+			await updateModuleEndpoint({
+				moduleId: module._id,
+				name: module.name || '',
+				description: newDescription,
+			});
+			dispatchToastMessage({ type: 'success', message: t('Module_updated_successfully') });
+			_reload();
+		} catch (error) {
+			dispatchToastMessage({ type: 'error', message: t('Error_updating_module') });
+			if (descriptionRef.current) {
+				descriptionRef.current.innerText = module.description || '';
+			}
+		} finally {
+			setIsEditingDescription(false);
+		}
+	}, [module, updateModuleEndpoint, dispatchToastMessage, t, _reload]);
+
+	const handleKeyDownName = useCallback(
+		(e: React.KeyboardEvent<HTMLDivElement>) => {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				handleSaveName();
+			} else if (e.key === 'Escape') {
+				if (nameRef.current && module) {
+					nameRef.current.innerText = module.name || '';
+				}
+				setIsEditingName(false);
+			}
+		},
+		[handleSaveName, module],
+	);
+
+	const handleKeyDownDescription = useCallback(
+		(e: React.KeyboardEvent<HTMLDivElement>) => {
+			if (e.key === 'Enter' && !e.shiftKey) {
+				e.preventDefault();
+				handleSaveDescription();
+			} else if (e.key === 'Escape') {
+				if (descriptionRef.current && module) {
+					descriptionRef.current.innerText = module.description || '';
+				}
+				setIsEditingDescription(false);
+			}
+		},
+		[handleSaveDescription, module],
+	);
+
 	const handleMoveDocument = useCallback(
 		async (documentId: string, newStageId: string, newOrder?: number) => {
 			try {
 				// First move to new stage if needed
-				const currentDocument = documents.find(doc => doc._id === documentId);
+				const currentDocument = documents.find((doc) => doc._id === documentId);
 				if (currentDocument && currentDocument.stageId !== newStageId) {
 					await moveDocumentToStageEndpoint({ documentId, stageId: newStageId });
 				}
-				
+
 				// Then update order if provided
 				if (newOrder !== undefined) {
 					await updateDocumentOrderEndpoint({ documentId, newOrder });
 				}
-				
+
 				_reload();
 			} catch (error) {
 				dispatchToastMessage({ type: 'error', message: t('Error_moving_document') });
@@ -216,10 +349,41 @@ const RoomModule = ({
 				)}
 				<ContextualbarIcon name='squares' />
 				<ContextualbarTitle>
-					{module?.name || t('Module')}
-					{module?.description && (
-						<Box fontScale='p2' color='hint' marginBlockStart='x4'>
-							{module.description}
+					<Box
+						ref={nameRef}
+						contentEditable={isEditingName}
+						suppressContentEditableWarning
+						onClick={() => !isEditingName && setIsEditingName(true)}
+						onBlur={handleSaveName}
+						onKeyDown={handleKeyDownName}
+						style={{
+							cursor: isEditingName ? 'text' : 'pointer',
+							outline: 'none',
+							minHeight: '24px',
+						}}
+						title={!isEditingName ? t('Click_to_edit') : undefined}
+					>
+						{module?.name || t('Module')}
+					</Box>
+					{module && (
+						<Box
+							ref={descriptionRef}
+							contentEditable={isEditingDescription}
+							suppressContentEditableWarning
+							onClick={() => !isEditingDescription && setIsEditingDescription(true)}
+							onBlur={handleSaveDescription}
+							onKeyDown={handleKeyDownDescription}
+							fontScale='p2'
+							color='hint'
+							marginBlockStart='x4'
+							style={{
+								cursor: isEditingDescription ? 'text' : 'pointer',
+								outline: 'none',
+								minHeight: '20px',
+							}}
+							title={!isEditingDescription ? t('Click_to_edit') : undefined}
+						>
+							{module.description || t('Click_to_add_description')}
 						</Box>
 					)}
 				</ContextualbarTitle>
