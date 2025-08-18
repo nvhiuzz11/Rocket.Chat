@@ -71,42 +71,45 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 	}, [stages]);
 
 	// Helper function to get field value from document
-	const getFieldValue = useCallback((fieldId: string, fieldType: string) => {
-		const customField = document.customFields?.find((cf: any) => cf.fieldId === fieldId);
-		if (!customField) {
-			return getDefaultFieldValue({ type: fieldType });
-		}
+	const getFieldValue = useCallback(
+		(fieldId: string, fieldType: string) => {
+			const customField = document.customFields?.find((cf: any) => cf.fieldId === fieldId);
+			if (!customField) {
+				return getDefaultFieldValue({ type: fieldType });
+			}
 
-		// Special handling for USER field type
-		if (fieldType === MODULE_FIELD_TYPES.USER) {
-			// If value is array of user objects, return as is
-			if (Array.isArray(customField.value)) {
-				return customField.value;
+			// Special handling for USER field type
+			if (fieldType === MODULE_FIELD_TYPES.USER) {
+				// If value is array of user objects, return as is
+				if (Array.isArray(customField.value)) {
+					return customField.value;
+				}
+				// If value is single user object, wrap in array
+				if (customField.value && typeof customField.value === 'object' && customField.value._id) {
+					return [customField.value];
+				}
+				// If value is string (user ID), convert to user object array
+				if (typeof customField.value === 'string') {
+					return [{ _id: customField.value, username: customField.value }];
+				}
 			}
-			// If value is single user object, wrap in array
-			if (customField.value && typeof customField.value === 'object' && customField.value._id) {
-				return [customField.value];
-			}
-			// If value is string (user ID), convert to user object array
-			if (typeof customField.value === 'string') {
-				return [{ _id: customField.value, username: customField.value }];
-			}
-		}
 
-		// Special handling for CHANNEL field type
-		if (fieldType === MODULE_FIELD_TYPES.CHANNEL) {
-			// If value is array, return as is
-			if (Array.isArray(customField.value)) {
-				return customField.value;
+			// Special handling for CHANNEL field type
+			if (fieldType === MODULE_FIELD_TYPES.CHANNEL) {
+				// If value is array, return as is
+				if (Array.isArray(customField.value)) {
+					return customField.value;
+				}
+				// If value is string (channel ID), wrap in array
+				if (typeof customField.value === 'string') {
+					return [customField.value];
+				}
 			}
-			// If value is string (channel ID), wrap in array
-			if (typeof customField.value === 'string') {
-				return [customField.value];
-			}
-		}
 
-		return customField.value;
-	}, [document.customFields]);
+			return customField.value;
+		},
+		[document.customFields],
+	);
 
 	function getDefaultFieldValue(field: any) {
 		switch (field.type) {
@@ -329,14 +332,15 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 									>
 										Stage*
 									</FieldLabel>
-									<Box flexGrow={1}>
-										<Controller
-											control={control}
-											name='stageId'
-											rules={{ required: true }}
-											render={({ field }) => <Select {...field} options={stageOptions} placeholder='Select stage' width='100%' />}
-										/>
-									</Box>
+
+									<Controller
+										control={control}
+										name='stageId'
+										rules={{ required: true }}
+										render={({ field }) => (
+											<Select {...field} options={stageOptions} placeholder='Select stage' width='100%' flexGrow={1} />
+										)}
+									/>
 								</Box>
 								{errors.stageId && <FieldError>Stage is required</FieldError>}
 							</Field>
@@ -377,10 +381,34 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 									</Field>
 								))}
 
-							<Button onClick={handleAddNewField} display='flex' alignItems='center'>
-								<Icon name='plus' size='x16' mie='x4' />
-								Add Field
-							</Button>
+							<Box display='flex' alignItems='center' mb='x4'>
+								<Box
+									width='140px'
+									flexShrink={0}
+									marginInlineEnd='x12'
+									display='flex'
+									alignItems='center'
+									onClick={handleAddNewField}
+									style={{
+										cursor: 'pointer',
+										color: 'var(--rcx-color-button-primary-background, #095ad2)',
+										fontSize: '14px',
+										fontWeight: 500,
+										padding: '4px 0',
+										transition: 'all 0.2s ease',
+									}}
+									onMouseEnter={(e) => {
+										e.currentTarget.style.color = 'var(--rcx-color-button-primary-background-hover, #0d78f2)';
+									}}
+									onMouseLeave={(e) => {
+										e.currentTarget.style.color = 'var(--rcx-color-button-primary-background, #095ad2)';
+									}}
+									title='Add new field'
+								>
+									<Icon name='plus' size='x14' mie='x4' />
+									Add Field
+								</Box>
+							</Box>
 
 							{/* Document Info */}
 							<Field>
@@ -524,14 +552,13 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 								>
 									Stage*
 								</FieldLabel>
-								<Box flexGrow={1}>
-									<Controller
-										control={control}
-										name='stageId'
-										rules={{ required: true }}
-										render={({ field }) => <Select {...field} options={stageOptions} placeholder='Select stage' width='100%' />}
-									/>
-								</Box>
+
+								<Controller
+									control={control}
+									name='stageId'
+									rules={{ required: true }}
+									render={({ field }) => <Select {...field} options={stageOptions} placeholder='Select stage' width='100%' flexGrow={1} />}
+								/>
 							</Box>
 							{errors.stageId && <FieldError>Stage is required</FieldError>}
 						</Field>
@@ -572,10 +599,34 @@ const DocumentDetailModal = ({ onClose, module, stages, reload, document }: Docu
 								</Field>
 							))}
 
-						<Button onClick={handleAddNewField} display='flex' alignItems='center'>
-							<Icon name='plus' size='x16' mie='x4' />
-							Add Field
-						</Button>
+						<Box display='flex' alignItems='center' mb='x4'>
+							<Box
+								width='140px'
+								flexShrink={0}
+								marginInlineEnd='x12'
+								display='flex'
+								alignItems='center'
+								onClick={handleAddNewField}
+								style={{
+									cursor: 'pointer',
+									color: 'var(--rcx-color-button-primary-background, #095ad2)',
+									fontSize: '14px',
+									fontWeight: 500,
+									padding: '4px 0',
+									transition: 'all 0.2s ease',
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.color = 'var(--rcx-color-button-primary-background-hover, #0d78f2)';
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.color = 'var(--rcx-color-button-primary-background, #095ad2)';
+								}}
+								title='Add new field'
+							>
+								<Icon name='plus' size='x14' mie='x4' />
+								Add Field
+							</Box>
+						</Box>
 
 						{/* Document Info */}
 						<Field>

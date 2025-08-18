@@ -1,4 +1,4 @@
-import { Select, TextInput, InputBox, Box, Icon, CheckBox, MultiSelect, AutoComplete, Option, Chip } from '@rocket.chat/fuselage';
+import { Select, TextInput, TextAreaInput, InputBox, Box, CheckBox, MultiSelect, AutoComplete, Option, Chip } from '@rocket.chat/fuselage';
 import { useDebouncedValue } from '@rocket.chat/fuselage-hooks';
 import { RoomAvatar } from '@rocket.chat/ui-avatar';
 import { useEndpoint } from '@rocket.chat/ui-contexts';
@@ -76,6 +76,7 @@ const ChannelSelector = ({ value, onChange, placeholder }: { value: any; onChang
 			setFilter={setFilter}
 			multiple
 			placeholder={placeholder}
+			width='100%'
 			renderSelected={({ selected, onRemove, ...props }) => {
 				// selected is the channel ID
 				const selectedId = typeof selected === 'object' ? selected.value : selected;
@@ -135,13 +136,13 @@ export const DocumentFieldInput = ({ field, value, onChange, placeholder, roomId
 
 		case MODULE_FIELD_TYPES.TEXTAREA:
 			return (
-				<TextInput
+				<TextAreaInput
 					value={value || ''}
-					onChange={(e) => onChange((e.target as HTMLInputElement).value)}
+					onChange={(e) => onChange((e.target as HTMLTextAreaElement).value)}
 					placeholder={defaultPlaceholder}
 					required={field.isRequired}
+					rows={3}
 					width='100%'
-					// For now using TextInput, could be enhanced with Textarea component
 				/>
 			);
 
@@ -159,26 +160,33 @@ export const DocumentFieldInput = ({ field, value, onChange, placeholder, roomId
 
 		case MODULE_FIELD_TYPES.SELECT:
 			return (
-				<Select
-					placeholder={`${t('Select')} ${field.name}...`}
-					value={value || ''}
-					onChange={(selectedValue) => onChange(String(selectedValue))}
-					options={selectOptions}
-					required={field.isRequired}
-					width='100%'
-				/>
+				<Box display='flex' flexGrow={1}>
+					<Select
+						placeholder={`${t('Select')} ${field.name}...`}
+						value={value || ''}
+						onChange={(selectedValue) => onChange(String(selectedValue))}
+						options={selectOptions}
+						required={field.isRequired}
+						width='100%'
+					/>
+				</Box>
 			);
 
 		case MODULE_FIELD_TYPES.MULTI_SELECT:
 			return (
-				<MultiSelect
-					placeholder={`${t('Select')} ${field.name}...`}
-					value={value as string[]}
-					onChange={(selectedValues) => onChange(selectedValues)}
-					options={selectOptions}
-					required={field.isRequired}
-					width='100%'
-				/>
+				<Box display='flex' alignItems='center' position='relative'>
+					{/* <Icon name={icon as any} size='x16' color='hint' style={{ position: 'absolute', left: '8px', pointerEvents: 'none', zIndex: 1 }} /> */}
+					<Box flexGrow={1}>
+						<MultiSelect
+							placeholder={`Select ${field.name}...`}
+							value={value as string[]}
+							onChange={(selectedValues) => onChange(selectedValues)}
+							options={selectOptions}
+							required={field.isRequired}
+							width='100%'
+						/>
+					</Box>
+				</Box>
 			);
 
 		case MODULE_FIELD_TYPES.CHECKBOX:
@@ -195,7 +203,11 @@ export const DocumentFieldInput = ({ field, value, onChange, placeholder, roomId
 			return (
 				<InputBox
 					type='date'
-					value={value ? (value instanceof Date ? value.toISOString().split('T')[0] : new Date(value).toISOString().split('T')[0]) : ''}
+					value={(() => {
+					if (!value) return '';
+					if (value instanceof Date) return value.toISOString().split('T')[0];
+					return new Date(value).toISOString().split('T')[0];
+				})()}
 					onChange={(e) => {
 						const inputValue = (e.target as HTMLInputElement).value;
 						onChange(inputValue ? new Date(inputValue) : '');
@@ -228,7 +240,11 @@ export const DocumentFieldInput = ({ field, value, onChange, placeholder, roomId
 			);
 
 		case MODULE_FIELD_TYPES.CHANNEL:
-			return <ChannelSelector value={value} onChange={onChange} placeholder={`${t('Select')} ${t('channel')}`} />;
+			return (
+				<Box display='flex' flexGrow={1}>
+					<ChannelSelector value={value} onChange={onChange} placeholder={`Select ${field.name}...`} />
+				</Box>
+			);
 
 		default:
 			return (

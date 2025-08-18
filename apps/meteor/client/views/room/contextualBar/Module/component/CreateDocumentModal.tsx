@@ -255,12 +255,14 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 									>
 										Stage*
 									</FieldLabel>
-									<Box flexGrow={1} width='100%'>
+									<Box flexGrow={1}>
 										<Controller
 											control={control}
 											name='stageId'
 											rules={{ required: true }}
-											render={({ field }) => <Select {...field} options={stageOptions} placeholder='Select stage' width='100%' />}
+											render={({ field }) => (
+												<Select {...field} options={stageOptions} placeholder='Select stage' width='100%' flexGrow={1} />
+											)}
 										/>
 									</Box>
 								</Box>
@@ -328,7 +330,7 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 						<Field>
 							<Box display='flex' alignItems='center' mb='x4'>
 								<FieldLabel
-									width='120px'
+									width='140px'
 									flexShrink={0}
 									marginInlineEnd='x12'
 									title='Name*'
@@ -355,7 +357,7 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 						<Field>
 							<Box display='flex' alignItems='center' mb='x4'>
 								<FieldLabel
-									width='120px'
+									width='140px'
 									flexShrink={0}
 									marginInlineEnd='x12'
 									title='Description'
@@ -374,7 +376,7 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 						</Field>
 
 						<Field>
-							<Box display='flex' alignItems='center' mb='x4'>
+							<FieldRow display='flex' alignItems='center' mb='x4'>
 								<FieldLabel
 									width='140px'
 									flexShrink={0}
@@ -388,15 +390,14 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 								>
 									Stage*
 								</FieldLabel>
-								<Box flexGrow={1}>
-									<Controller
-										control={control}
-										name='stageId'
-										rules={{ required: true }}
-										render={({ field }) => <Select {...field} options={stageOptions} placeholder='Select stage' width='100%' />}
-									/>
-								</Box>
-							</Box>
+
+								<Controller
+									control={control}
+									name='stageId'
+									rules={{ required: true }}
+									render={({ field }) => <Select {...field} options={stageOptions} placeholder='Select stage' width='100%' flexGrow={1} />}
+								/>
+							</FieldRow>
 							{errors.stageId && <FieldError>Stage is required</FieldError>}
 						</Field>
 
@@ -436,10 +437,34 @@ const CreateDocumentModal = ({ onClose, module, stages, reload, initialStageId }
 								</Field>
 							))}
 
-						<Button onClick={handleAddNewField} display='flex' alignItems='center'>
-							<Icon name='plus' size='x16' mie='x4' />
-							Add Field
-						</Button>
+						<Box display='flex' alignItems='center' mb='x4'>
+							<Box
+								width='140px'
+								flexShrink={0}
+								marginInlineEnd='x12'
+								display='flex'
+								alignItems='center'
+								onClick={handleAddNewField}
+								style={{
+									cursor: 'pointer',
+									color: 'var(--rcx-color-button-primary-background, #095ad2)',
+									fontSize: '14px',
+									fontWeight: 500,
+									padding: '4px 0',
+									transition: 'all 0.2s ease',
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.color = 'var(--rcx-color-button-primary-background-hover, #0d78f2)';
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.color = 'var(--rcx-color-button-primary-background, #095ad2)';
+								}}
+								title='Add new field'
+							>
+								<Icon name='plus' size='x14' mie='x4' />
+								Add Field
+							</Box>
+						</Box>
 					</FieldGroup>
 				</Modal.Content>
 			)}
